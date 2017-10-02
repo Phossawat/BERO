@@ -1,21 +1,25 @@
+import Expo from 'expo';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
-    );
-  }
-}
+import AppRoot from './containers';
+import reducer from './reducers';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const loggerMiddleware = createLogger({
+  predicate: (getState, action) => __DEV__,
 });
+
+const configureStore = (initialState) => {
+  const enhancer = compose(applyMiddleware(thunkMiddleware, loggerMiddleware));
+
+  return createStore(reducer, initialState, enhancer);
+};
+
+const store = configureStore({});
+
+const App = () => <Provider store={store}><AppRoot /></Provider>;
+
+Expo.registerRootComponent(App);
