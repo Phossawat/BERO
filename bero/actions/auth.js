@@ -17,21 +17,6 @@ firebase.initializeApp(config);
 export const login = () => {
   return dispatch => {
     dispatch({ type: LOGGING_IN });
-  //   const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('1735860930050502', {
-  //     permissions: ['public_profile'],
-  //   });
-  //   console.log(token+" "+type);
-  // if (type === 'success') {
-  //   console.log(token);
-  //   const credential = firebase.auth.FacebookAuthProvider.credential(token);
-  //   firebase.auth().signInWithCredential(credential).catch((error) => {
-  //     console.log("Error")
-  //   });
-  // }
-  // if (type === 'cancel') {
-  //   console.log("Cancel")
-  //   dispatch({ type: SIGN_OUT_USER });
-  // }
     Expo.Facebook
       .logInWithReadPermissionsAsync('1735860930050502', {
         permissions: ['public_profile'],
@@ -69,15 +54,6 @@ export const verifyAuth = () => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log("We are authenticated now!");
-        // fetch(
-        //   'https://www.googleapis.com/userinfo/v2/me',
-        //   {
-        //     headers: { Authorization: `Bearer ${accessToken}` },
-        //   },
-        //   response => {
-        //     console.log(response);
-        //   },
-        // );
         dispatch({ type: AUTH_USER, user });
       } else {
         dispatch({ type: SIGN_OUT_USER });
