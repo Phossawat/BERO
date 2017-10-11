@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator, Text , TouchableHighlight, Image} from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Text, TouchableHighlight, Image } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../actions';
@@ -30,8 +30,7 @@ const AuthScreen = props => {
   if (props.isLoggingIn) {
     content = (
       <View>
-        <Text style={styles.heading}>Logging in</Text>
-        <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" />
       </View>
     );
   } else {

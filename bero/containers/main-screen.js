@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const MainScreen = props => (
+/*const MainScreen = props => (
   <View style={styles.container}>
     <Card title={props.user.displayName} image={{ uri: props.user.photoURL }}>
       <Text style={{ marginBottom: 10 }}>
@@ -22,7 +22,21 @@ const MainScreen = props => (
       <Button onPress={props.logout} title="Logout" backgroundColor="#6495ED" />
     </Card>
   </View>
-);
+);*/
+class MainScreen extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+    <Card title={this.props.user.displayName} image={{ uri: this.props.user.photoURL }}>
+      <Text style={{ marginBottom: 10 }}>
+        {this.props.user.email}
+      </Text>
+      <Button onPress={this.props.logout} title="Logout" backgroundColor="#6495ED" />
+    </Card>
+  </View>
+    );
+  }
+}
 
 const mapStateToProps = state => ({ user: state.auth.user });
 

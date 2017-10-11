@@ -5,6 +5,7 @@ import { StackNavigator, NavigationActions } from 'react-navigation';
 import SplashScreen from '../components/splash-screen';
 import AuthScreen from './auth-screen';
 import MainScreen from './main-screen';
+import NewUserScreen from './newuser-screen';
 
 import { ActionCreators } from '../actions';
 
@@ -17,6 +18,9 @@ const AppRoot = StackNavigator({
     },
     MainScreen: {
       screen: MainScreen
+    },
+    CreateUserScreen: {
+      screen: NewUserScreen
     }
   },
   {
@@ -45,7 +49,10 @@ class App extends React.Component {
       this.navigator.dispatch(actionToDispatch);
     };
 
-    if (this.props.loggedIn) {
+    if(this.props.newUser && this.props.loggedIn){
+      navigateTo('CreateUserScreen');
+    }
+    else if (this.props.loggedIn && this.props.newUser===false) {
       navigateTo('MainScreen');
     } else {
       navigateTo('AuthScreen');
@@ -63,10 +70,11 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ loggedIn: state.auth.isLoggedIn });
+const mapStateToProps = state => ({ loggedIn: state.auth.isLoggedIn, newUser: state.auth.isNewUser });
 
 App.propTypes = {
   loggedIn: React.PropTypes.bool.isRequired,
+  newUser: React.PropTypes.bool.isRequired,
   verifyAuth: React.PropTypes.func.isRequired,
 };
 
