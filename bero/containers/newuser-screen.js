@@ -25,19 +25,14 @@ const styles = StyleSheet.create({
 });
 
 class NewUserScreen extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            textInputSkill: 'Nothing',
-            textInputCName: this.props.user.displayName
-        }
-    }
     componentDidMount() {
     }
     componentDidUpdate() {
     }
     onButtonPress() {
+    const { codeName, skill, score } = this.props;
+ 
+    this.props.userProfileCreate({ codeName, skill, score });
     }
     render() {
         let index = 0;
@@ -57,20 +52,20 @@ class NewUserScreen extends React.Component {
                         <Text>Code Name</Text>
                     </FormLabel>
                     <FormInput style={{ color: 'white', marginTop: 10 }}
-                        value={this.state.textInputCName}
-                        onChangeText={(option) => { this.setState({ textInputCName: option.label }) }}/>
+                        value={this.props.codeName}
+                        onChangeText={text => this.props.userProfileUpdate({ prop: 'codeName', value: text })}/>
                 </View>
                 <View style={{ marginBottom: 40 }}>
                     <ModalSelector
                         data={data}
-                        onChange={(option) => { this.setState({ textInputSkill: option.label }) }}>
+                        onChange={skill => this.props.userProfileUpdate({ prop: 'skill', value: skill.label })}>
                         <FormLabel labelStyle={{ color: 'white' }}>
                             <Text>You Skill</Text>
                         </FormLabel>
                         <FormInput
                             style={{ color: 'white', marginTop: 10 }}
                             editable={false}
-                            value={this.state.textInputSkill} />
+                            value={this.props.skill} />
                     </ModalSelector>
                 </View>
                 <Button
@@ -83,10 +78,11 @@ class NewUserScreen extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ user: state.auth.user });
-
-NewUserScreen.propTypes = {
-    user: React.PropTypes.object.isRequired,
+const mapStateToProps = (state) => {
+  const { codeName, skill, score } = state.userForm;
+ 
+  return { codeName, skill, score };
 };
+
 
 export default connect(mapStateToProps, ActionCreators)(NewUserScreen);

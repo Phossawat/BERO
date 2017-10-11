@@ -1,4 +1,4 @@
-import { AUTH_USER, SIGN_OUT_USER, LOGGING_IN, NEW_USER } from '../actions/types';
+import { AUTH_USER, SIGN_OUT_USER, LOGGING_IN, NEW_USER, JUST_REGIS } from '../actions/types';
 
 const login = (state = { isLoggedIn: false, isLoggingIn: false, isNewUser: false }, action) => {
   switch (action.type) {
@@ -20,6 +20,11 @@ const login = (state = { isLoggedIn: false, isLoggingIn: false, isNewUser: false
         isLoggedIn: true,
         isNewUser: true,
       };
+    case JUST_REGIS:
+      return {
+        ...state,
+        isNewUser: false,
+      }
     case SIGN_OUT_USER:
       return {
          ...state,
