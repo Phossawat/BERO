@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text, Button } from 'react-native-elements';
 import { ActionCreators } from '../actions';
+import { Constants } from 'expo';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,30 +11,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 33,
+    backgroundColor: 'white',
   },
 });
 
-/*const MainScreen = props => (
-  <View style={styles.container}>
-    <Card title={props.user.displayName} image={{ uri: props.user.photoURL }}>
-      <Text style={{ marginBottom: 10 }}>
-        {props.user.email}
-      </Text>
-      <Button onPress={props.logout} title="Logout" backgroundColor="#6495ED" />
-    </Card>
-  </View>
-);*/
 class MainScreen extends React.Component {
+   static navigationOptions = {
+    title: 'Main',
+    headerStyle: {
+      backgroundColor: 'white',
+      borderBottomWidth: 0,
+   },
+  };
+
   render() {
     return (
       <View style={styles.container}>
-    <Card title={this.props.user.displayName} image={{ uri: this.props.user.photoURL }}>
-      <Text style={{ marginBottom: 10 }}>
-        {this.props.user.email}
-      </Text>
-      <Button onPress={this.props.logout} title="Logout" backgroundColor="#6495ED" />
-    </Card>
-  </View>
+      </View>
     );
   }
 }

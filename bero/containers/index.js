@@ -2,31 +2,32 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 
-import SplashScreen from '../components/splash-screen';
-import AuthScreen from './auth-screen';
-import MainScreen from './main-screen';
-import NewUserScreen from './newuser-screen';
+// import SplashScreen from '../components/splash-screen';
+// import AuthScreen from './auth-screen';
+// import MainScreen from './main-screen';
+// import NewUserScreen from './newuser-screen';
+import { AppRoot } from '../navigation/router';
 
 import { ActionCreators } from '../actions';
 
-const AppRoot = StackNavigator({
-    SplashScreen: {
-      screen: SplashScreen
-    },
-    AuthScreen: {
-      screen: AuthScreen
-    },
-    MainScreen: {
-      screen: MainScreen
-    },
-    CreateUserScreen: {
-      screen: NewUserScreen
-    }
-  },
-  {
-    headerMode: 'none'
-  }
-);
+// const AppRoot = StackNavigator({
+//     SplashScreen: {
+//       screen: SplashScreen
+//     },
+//     AuthScreen: {
+//       screen: AuthScreen
+//     },
+//     MainScreen: {
+//       screen: MainScreen
+//     },
+//     CreateUserScreen: {
+//       screen: NewUserScreen
+//     }
+//   },
+//   {
+//     headerMode: 'none'
+//   }
+// );
 
 class App extends React.Component {
   componentDidMount() {
@@ -44,6 +45,7 @@ class App extends React.Component {
     const navigateTo = (routeName) => {
       const actionToDispatch = NavigationActions.reset({
         index: 0,
+        key: null,
         actions: [NavigationActions.navigate({ routeName })],
       });
       this.navigator.dispatch(actionToDispatch);

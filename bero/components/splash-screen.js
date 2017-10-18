@@ -17,10 +17,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const SplashScreen = () => (
+/*const SplashScreen = () => (
   <View style={styles.container}>
     <Image source={require('../assets/app-logo.png')} style={styles.image}/>
   </View>
-);
+);*/
 
-export default SplashScreen;
+export default class SplashScreen extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+          <Image source={require('../assets/app-logo.png')} style={styles.image}/>
+      </View>
+    );
+  }
+}

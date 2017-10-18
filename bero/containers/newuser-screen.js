@@ -25,10 +25,9 @@ const styles = StyleSheet.create({
 });
 
 class NewUserScreen extends React.Component {
-    componentDidMount() {
-    }
-    componentDidUpdate() {
-    }
+    static navigationOptions = {
+    header: null,
+    };
     onButtonPress() {
     const { codeName, skill, score } = this.props;
  
