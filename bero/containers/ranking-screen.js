@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet,View } from 'react-native';
-import FloatingButton from '../components/FloatingButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,9 +11,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class HeroScreen extends React.Component {
+export default class RankingScreen extends React.Component {
     static navigationOptions = {
-    title: 'HERO',
+    title: 'Ranking',
     headerStyle: {
       backgroundColor: 'white',
       borderBottomWidth: 0,
@@ -23,12 +22,7 @@ export default class HeroScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container} >
-        <FloatingButton
-          icon="map"
-          onPress={this.replaceScreen}
-        />
-      </View>
+      <View style={styles.container} />
     );
   }
 }

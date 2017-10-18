@@ -11,6 +11,50 @@ import NewUserScreen from '../containers/newuser-screen';
 import TabNavScreen from '../containers/tabnav-screen';
 import ProfileScreen from '../containers/profile-screen';
 import SettingsScreen from '../containers/setting-screen';
+import RankingScreen from '../containers/ranking-screen';
+import FindingScreen from '../containers/hero/finding-screen';
+import ListHelpScreen from '../containers/hero/listhelp-screen';
+import MapHelpScreen from '../containers/hero/maphelp-screen';
+
+export const HeroStack = StackNavigator({
+  FindingScreen: {
+    screen: FindingScreen,
+    navigationOptions: {
+      headerVisible: false,
+    },
+  },
+  ListHelpScreen: {
+    screen: ListHelpScreen,
+    navigationOptions: {
+      title: 'List',
+    },
+  },
+  MapHelpScreen: {
+    screen: MapHelpScreen,
+    navigationOptions: {
+      title: 'Map',
+    },
+  },
+}, {
+  headerMode: 'screen',
+});
+
+const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;
+HeroStack.router = {
+  ...HeroStack.router,
+  getStateForAction(action, state) {
+    if (state && action.type === 'ReplaceCurrentScreen') {
+      const routes = state.routes.slice(0, state.routes.length - 1);
+      routes.push(action);
+      return {
+        ...state,
+        routes,
+        index: routes.length - 1,
+      };
+    }
+    return prevGetStateForActionHomeStack(action, state);
+  },
+};
 
 export const SettingsStack = StackNavigator({
    Profile: {
@@ -33,7 +77,7 @@ export const TabNav = TabNavigator({
     },
   },
     Hero: {
-    screen: HeroScreen,
+    screen: HeroStack,
     navigationOptions: {
       tabBarLabel: 'HERO',
       tabBarIcon: ({ tintColor }) => <Icon name="face" color={tintColor} />
@@ -46,6 +90,13 @@ export const TabNav = TabNavigator({
       tabBarIcon: ({ tintColor }) => <Icon name="human-handsup" type='material-community' color={tintColor} />
     },
   },
+    Ranking: {
+    screen: RankingScreen,
+    navigationOptions: {
+      tabBarLabel: 'RANK',
+      tabBarIcon: ({ tintColor }) => <Icon name="trophy" type='font-awesome' color={tintColor} />
+    },
+  },
    Profile: {
     screen: SettingsStack,
     navigationOptions: {
@@ -55,7 +106,6 @@ export const TabNav = TabNavigator({
   },
 },
   {
-  swipeEnabled: true,
   animationEnabled: true,
   tabBarOptions: {
     inactiveTintColor: '#2c3e50',

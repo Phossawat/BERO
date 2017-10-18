@@ -36,21 +36,21 @@ class ProfileScreen extends React.Component {
             title="Notification"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'bell-o', type: 'font-awesome', color: '#263238' }}
-            containerStyle={{ borderColor: '#B0BEC5' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
           />
 
           <ListItem
             title="Friends"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'address-book-o', type: 'font-awesome', color: '#263238' }}
-            containerStyle={{ borderColor: '#B0BEC5' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
           />
 
           <ListItem
             title="Settings"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'cog', type: 'font-awesome', color: '#263238' }}
-            containerStyle={{ borderColor: '#B0BEC5' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleSettingsPress}
           />
 
@@ -58,14 +58,14 @@ class ProfileScreen extends React.Component {
             title="Give us feedback"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'feedback', color: '#263238' }}
-            containerStyle={{  borderColor: '#B0BEC5' }}
+            containerStyle={{  borderColor: '#CFD8DC' }}
           />
 
           <ListItem
             title="Get help"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'question', type: 'font-awesome', color: '#263238' }}
-            containerStyle={{ borderBottomWidth: 0, borderColor: '#B0BEC5' }}
+            containerStyle={{ borderBottomWidth: 0, borderColor: '#CFD8DC' }}
           />
         </List>
 

@@ -21,14 +21,14 @@ class Settings extends Component {
           <ListItem
             title="Profile"
             titleStyle= {{ fontWeight: 'bold' }}
-            containerStyle={{ borderColor: '#B0BEC5' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
           />
           <ListItem
             title="Log Out"
             rightIcon={{ name: 'sign-out', type: 'font-awesome' }}
             onPress={this.props.logout}
             titleStyle= {{ fontWeight: 'bold' }}
-            containerStyle={{ borderColor: '#B0BEC5' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
           />
         </List>
       </ScrollView>

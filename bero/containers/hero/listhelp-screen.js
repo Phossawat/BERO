@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet,View } from 'react-native';
-import FloatingButton from '../components/FloatingButton';
+import FloatingButton from '../../components/FloatingButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,13 +12,21 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class HeroScreen extends React.Component {
+export default class ListHelpScreen extends React.Component {
     static navigationOptions = {
-    title: 'HERO',
+    title: 'List',
     headerStyle: {
       backgroundColor: 'white',
       borderBottomWidth: 0,
    },
+  };
+
+  replaceScreen = () => {
+    this.props.navigation.dispatch({
+      key: 'MapHelpScreen',
+      type: 'ReplaceCurrentScreen',
+      routeName: 'MapHelpScreen',
+    });
   };
 
   render() {
