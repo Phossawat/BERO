@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet,View } from 'react-native';
 import FloatingButton from '../../components/FloatingButton';
-import { MapView } from 'expo';
+import { MapView, Constants, Location, Permissions } from 'expo';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
+
+const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 export default class MapHelpScreen extends React.Component {
     static navigationOptions = {
@@ -29,18 +31,31 @@ export default class MapHelpScreen extends React.Component {
       routeName: 'ListHelpScreen',
     });
   };
+  state = {
+    location: { coords: {latitude: 0, longitude: 0}},
+  };
+
+  componentWillMount() {
+    Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged);
+  }
+
+  locationChanged = (location) => {
+    region = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.05,
+    },
+    this.setState({location, region})
+  }
 
   render() {
     return (
       <View style={styles.container} >
         <MapView
         style={{ ...StyleSheet.absoluteFillObject }}
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
+          showsUserLocation={true}
+          region={this.state.region}
       />
         <FloatingButton
           icon="list"

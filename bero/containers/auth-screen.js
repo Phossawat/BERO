@@ -24,34 +24,6 @@ const styles = StyleSheet.create({
   },
 });
 
-/*const AuthScreen = props => {
-  let content;
-
-  if (props.isLoggingIn) {
-    content = (
-      <View>
-          <ActivityIndicator size="large" />
-      </View>
-    );
-  } else {
-    content = (
-      <View>
-        <Image source={require('../assets/app-logo.png') } style={styles.image}/>
-        <Button
-          title="Sign In With Facebook"
-          onPress={props.login}
-          backgroundColor="#3b5998"
-        />
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      {content}
-    </View>
-  );
-};*/
 class AuthScreen extends React.Component {
   constructor(props){
         super(props);

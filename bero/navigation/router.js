@@ -3,7 +3,6 @@ import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
 import MainScreen from '../containers/main-screen';
-import HeroScreen from '../containers/hero-screen';
 import RequesterScreen from '../containers/requester-screen';
 import SplashScreen from '../components/splash-screen';
 import AuthScreen from '../containers/auth-screen';
@@ -15,6 +14,8 @@ import RankingScreen from '../containers/ranking-screen';
 import FindingScreen from '../containers/hero/finding-screen';
 import ListHelpScreen from '../containers/hero/listhelp-screen';
 import MapHelpScreen from '../containers/hero/maphelp-screen';
+import LoadingScreen from '../containers/loading-screen';
+import FormReqScreen from '../containers/requester/formReq-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -33,6 +34,28 @@ export const HeroStack = StackNavigator({
     screen: MapHelpScreen,
     navigationOptions: {
       title: 'Map',
+    },
+  },
+}, {
+  headerMode: 'screen',
+});
+
+export const RequesterStack = StackNavigator({
+  FormReqScreen: {
+    screen: FormReqScreen,
+    navigationOptions: {
+      title: 'Request',
+    },
+  },
+}, {
+  headerMode: 'screen',
+});
+
+export const HomeStack = StackNavigator({
+  HomeScreen: {
+    screen: MainScreen,
+    navigationOptions: {
+      headerVisible: false,
     },
   },
 }, {
@@ -70,7 +93,7 @@ export const SettingsStack = StackNavigator({
 
 export const TabNav = TabNavigator({
     Main: {
-    screen: MainScreen,
+    screen: HomeStack,
     navigationOptions: {
       tabBarLabel: 'HOME',
       tabBarIcon: ({ tintColor }) => <Icon name="home-outline" type='material-community' color={tintColor} />,
@@ -84,7 +107,7 @@ export const TabNav = TabNavigator({
     },
   },
     Requester: {
-    screen: RequesterScreen,
+    screen: RequesterStack,
     navigationOptions: {
       tabBarLabel: 'HELP',
       tabBarIcon: ({ tintColor }) => <Icon name="human-handsup" type='material-community' color={tintColor} />
