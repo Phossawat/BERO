@@ -24,6 +24,13 @@ export default class MapHelpScreen extends React.Component {
       borderBottomWidth: 0,
    },
   };
+  state = {
+    location: { coords: {latitude: 0, longitude: 0}},
+    locationMarker: {
+        latitude: 13.731014,
+        longitude: 100.781193,
+    }
+};
 
   replaceScreen = () => {
     this.props.navigation.dispatch({
@@ -31,9 +38,6 @@ export default class MapHelpScreen extends React.Component {
       type: 'ReplaceCurrentScreen',
       routeName: 'ListHelpScreen',
     });
-  };
-  state = {
-    location: { coords: {latitude: 0, longitude: 0}},
   };
 
   componentWillMount() {
@@ -60,7 +64,12 @@ export default class MapHelpScreen extends React.Component {
           showsUserLocation={true}
           region={this.state.region}
           ref="myRef"
-      />
+        >
+        <MapView.Marker
+        coordinate={this.state.locationMarker}
+        onPress={()=>this.props.navigation.navigate('RequestView')}
+        />
+        </MapView>
         <FloatingButton
           icon="list"
           onPress={this.replaceScreen}

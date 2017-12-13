@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import Expo from 'expo';
-import { REQUEST_CREATE, REQUEST_UPDATE, REQUEST_FETCH_SUCCESS } from './types';
+import { REQUEST_CREATE, REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_STATUS_CREATE, REQUEST_STATUS_INPROGRESS, REQUEST_STATUS_LOADING } from './types';
 
 export const requestUpdate = ({ prop, value }) => {
   return {
@@ -36,10 +36,12 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
         hero, 
         detail, 
         mark_position,
+        'status': "in progress",
         'when': new Date().getTime()
       })
       .then(() => {
         dispatch({ type: REQUEST_CREATE });
+        dispatch({ type: REQUEST_STATUS_INPROGRESS });
       });
   };
 };
@@ -57,3 +59,24 @@ export const requestFetch = () => {
     });
   };
 };
+
+export const request_form = () => {
+  return dispatch => {
+    dispatch({ type: REQUEST_STATUS_CREATE });
+  };
+  
+}
+
+export const request_loading = () => {
+  return dispatch => {
+    dispatch({ type: REQUEST_STATUS_LOADING });
+  };
+  
+}
+
+export const request_inprogress = () => {
+  return dispatch => {
+    dispatch({ type: REQUEST_STATUS_INPROGRESS });
+  };
+  
+}

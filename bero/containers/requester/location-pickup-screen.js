@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,View, Button } from 'react-native';
+import { StyleSheet,View, Button, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
 import { MapView, Constants, Location, Permissions } from 'expo';

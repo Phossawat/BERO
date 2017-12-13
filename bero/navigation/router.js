@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
@@ -18,6 +19,7 @@ import LoadingScreen from '../containers/loading-screen';
 import FormReqScreen from '../containers/requester/formReq-screen';
 import LocationPickupScreen from '../containers/requester/location-pickup-screen';
 import ChoosePhotoScreen from '../containers/requester/choosePhoto-screen';
+import RequestView from '../containers/hero/requestView';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -26,26 +28,40 @@ export const HeroStack = StackNavigator({
   ListHelpScreen: {
     screen: ListHelpScreen,
     navigationOptions: {
+      headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
       title: 'List',
     },
   },
   MapHelpScreen: {
     screen: MapHelpScreen,
     navigationOptions: {
+      headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
       title: 'Map',
     },
+  },
+  RequestView: {
+    screen: RequestView,
   },
 });
 
 export const RequesterStack = StackNavigator({
   FormReqScreen: {
     screen: FormReqScreen,
+    navigationOptions: {
+      headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
+    },
   },
   LocationPickupScreen: {
     screen: LocationPickupScreen,
+    navigationOptions: {
+      headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
+    },
   },
   ChoosePhotoScreen: {
     screen: ChoosePhotoScreen,
+    navigationOptions: {
+      headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
+    },
   },
 });
 
@@ -84,6 +100,7 @@ export const SettingsStack = StackNavigator({
    screen: SettingsScreen,
    navigationOptions: {
      title: 'Settings',
+     headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
    },
  },
 });
@@ -133,10 +150,13 @@ export const TabNav = TabNavigator({
   },
 },
   {
+  navigationOptions: { headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight } },
   animationEnabled: true,
+  lazy: true,
   tabBarPosition: 'bottom',
   tabBarOptions: {
     showIcon: true,
+    showLabel: (Platform.OS !== 'android'),
     inactiveTintColor: '#2c3e50',
     activeTintColor: '#EF5350',
     style: {
@@ -163,7 +183,7 @@ export const AppRoot = StackNavigator({
       screen: SettingsStack
     },
   },
-  {
+  {   
   mode: 'modal',
   headerMode: 'none',
 }
