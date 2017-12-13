@@ -29,9 +29,9 @@ class NewUserScreen extends React.Component {
     header: null,
     };
     onButtonPress() {
-    const { codeName, skill, score } = this.props;
+    const { skill, score } = this.props;
  
-    this.props.userProfileCreate({ codeName, skill, score });
+    this.props.userProfileCreate({ skill, score });
     }
     render() {
         let index = 0;
@@ -46,14 +46,6 @@ class NewUserScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.heading}>WELCOME HERO</Text>
-                <View style={{ marginBottom: 10 }}>
-                    <FormLabel labelStyle={{ color: 'white' }}>
-                        <Text>Code Name</Text>
-                    </FormLabel>
-                    <FormInput style={{ color: 'white', marginTop: 10 }}
-                        value={this.props.codeName}
-                        onChangeText={text => this.props.userProfileUpdate({ prop: 'codeName', value: text })}/>
-                </View>
                 <View style={{ marginBottom: 40 }}>
                     <ModalSelector
                         data={data}
@@ -78,9 +70,9 @@ class NewUserScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { codeName, skill, score } = state.userForm;
+  const { skill, score } = state.userForm;
  
-  return { codeName, skill, score };
+  return { skill, score };
 };
 
 

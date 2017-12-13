@@ -9,7 +9,7 @@ const window = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: 'red',
+    backgroundColor: '#EF5350',
     width: window.width * 0.4,
     height: window.width * 0.4,
     borderRadius: 600,

@@ -1,7 +1,6 @@
 import { USER_PROFILE_UPDATE } from '../actions/types';
 
 const INITIAL_STATE = {
-  codeName: '',
   skill: 'Nothing',
   score: 0,
 };

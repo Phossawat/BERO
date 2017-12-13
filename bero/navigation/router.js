@@ -16,13 +16,12 @@ import ListHelpScreen from '../containers/hero/listhelp-screen';
 import MapHelpScreen from '../containers/hero/maphelp-screen';
 import LoadingScreen from '../containers/loading-screen';
 import FormReqScreen from '../containers/requester/formReq-screen';
+import LocationPickupScreen from '../containers/requester/location-pickup-screen';
+import ChoosePhotoScreen from '../containers/requester/choosePhoto-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
     screen: FindingScreen,
-    navigationOptions: {
-      headerVisible: false,
-    },
   },
   ListHelpScreen: {
     screen: ListHelpScreen,
@@ -36,19 +35,18 @@ export const HeroStack = StackNavigator({
       title: 'Map',
     },
   },
-}, {
-  headerMode: 'screen',
 });
 
 export const RequesterStack = StackNavigator({
   FormReqScreen: {
     screen: FormReqScreen,
-    navigationOptions: {
-      title: 'Request',
-    },
   },
-}, {
-  headerMode: 'screen',
+  LocationPickupScreen: {
+    screen: LocationPickupScreen,
+  },
+  ChoosePhotoScreen: {
+    screen: ChoosePhotoScreen,
+  },
 });
 
 export const HomeStack = StackNavigator({
@@ -58,8 +56,6 @@ export const HomeStack = StackNavigator({
       headerVisible: false,
     },
   },
-}, {
-  headerMode: 'screen',
 });
 
 const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;
@@ -79,22 +75,26 @@ HeroStack.router = {
   },
 };
 
+
 export const SettingsStack = StackNavigator({
-   Profile: {
-    screen: ProfileScreen,
-   },
-  Settings: {
-    screen: SettingsScreen,
-    navigationOptions: {
-      title: 'Settings',
-    },
+  Profile: {
+   screen: ProfileScreen,
   },
+ Settings: {
+   screen: SettingsScreen,
+   navigationOptions: {
+     title: 'Settings',
+   },
+ },
 });
+
+
 
 export const TabNav = TabNavigator({
     Main: {
     screen: HomeStack,
     navigationOptions: {
+      gesturesEnabled: false,
       tabBarLabel: 'HOME',
       tabBarIcon: ({ tintColor }) => <Icon name="home-outline" type='material-community' color={tintColor} />,
     },
@@ -102,6 +102,7 @@ export const TabNav = TabNavigator({
     Hero: {
     screen: HeroStack,
     navigationOptions: {
+      gesturesEnabled: false,
       tabBarLabel: 'HERO',
       tabBarIcon: ({ tintColor }) => <Icon name="face" color={tintColor} />
     },
@@ -109,6 +110,7 @@ export const TabNav = TabNavigator({
     Requester: {
     screen: RequesterStack,
     navigationOptions: {
+      gesturesEnabled: false,
       tabBarLabel: 'HELP',
       tabBarIcon: ({ tintColor }) => <Icon name="human-handsup" type='material-community' color={tintColor} />
     },
@@ -116,6 +118,7 @@ export const TabNav = TabNavigator({
     Ranking: {
     screen: RankingScreen,
     navigationOptions: {
+      gesturesEnabled: false,
       tabBarLabel: 'RANK',
       tabBarIcon: ({ tintColor }) => <Icon name="trophy" type='font-awesome' color={tintColor} />
     },
@@ -123,6 +126,7 @@ export const TabNav = TabNavigator({
    Profile: {
     screen: SettingsStack,
     navigationOptions: {
+      gesturesEnabled: false,
       tabBarLabel: 'PROFILE',
       tabBarIcon: ({ tintColor }) => <Icon name="user-o" type='font-awesome' color={tintColor} />
     },
@@ -130,7 +134,9 @@ export const TabNav = TabNavigator({
 },
   {
   animationEnabled: true,
+  tabBarPosition: 'bottom',
   tabBarOptions: {
+    showIcon: true,
     inactiveTintColor: '#2c3e50',
     activeTintColor: '#EF5350',
     style: {

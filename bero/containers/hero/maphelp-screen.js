@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet,View } from 'react-native';
 import FloatingButton from '../../components/FloatingButton';
 import { MapView, Constants, Location, Permissions } from 'expo';
+import { LOCATION } from 'expo/src/Permissions';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,8 +46,10 @@ export default class MapHelpScreen extends React.Component {
       longitude: location.coords.longitude,
       latitudeDelta: 0.1,
       longitudeDelta: 0.05,
-    },
+    }
+    if (this.refs.myRef) {
     this.setState({location, region})
+    }
   }
 
   render() {
@@ -56,6 +59,7 @@ export default class MapHelpScreen extends React.Component {
         style={{ ...StyleSheet.absoluteFillObject }}
           showsUserLocation={true}
           region={this.state.region}
+          ref="myRef"
       />
         <FloatingButton
           icon="list"

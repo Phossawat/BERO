@@ -21,12 +21,7 @@ const styles = StyleSheet.create({
 });
 
 export default class FindingScreen extends React.Component {
-    static navigationOptions = {
-    headerStyle: {
-      backgroundColor: 'white',
-      borderBottomWidth: 0,
-   },
-  };
+  static navigationOptions = { header: null };
     constructor(props) {
     super(props);
 
@@ -35,31 +30,14 @@ export default class FindingScreen extends React.Component {
     };
   }
 
-  handleGeolocationSuccess = (position) => {
-    const params = {
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    };
+  goToNearMe = async () => {
+    this.setState({ loading: true });
     setTimeout(() => {
-      this.props.navigation.navigate('ListHelpScreen', { position });
+      this.props.navigation.navigate('ListHelpScreen');
       this.setState({ loading: false });
     }, 3000);
   };
 
-  goToNearMe = async () => {
-    this.setState({ loading: true });
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-    else{
-      let location = await Location.getCurrentPositionAsync({});
-      console.log(location);
-      this.handleGeolocationSuccess(location);
-    }
-  };
 
   render() {
     return (

@@ -9,25 +9,6 @@ const styles = StyleSheet.create({
         height: 70,
         paddingRight: 10,
     },
-    image: {
-        width: 100,
-        height: 50,
-        alignSelf: 'center',
-        borderRadius: 3,
-    },
-    typeHeader: {
-        color: '#1ABC9C',
-        fontSize: 10,
-    },
-    header: {
-        color: '#34495e',
-        fontSize: 12,
-        fontWeight: 'bold',
-    },
-    main: {
-        color: '#95a5a6',
-        fontSize: 10,
-    },
     button: {
         backgroundColor: '#EF5350',
         width: 100,

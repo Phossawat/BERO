@@ -6,12 +6,12 @@ import { ActionCreators } from '../actions';
 import { Constants } from 'expo';
 import MiniCard  from '../components/MiniCard';
 import CatagoryCard from '../components/CatagoryCard';
+import SearchBox from '../components/SearchBox';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: 20,
     backgroundColor: 'white',
   },
   Header: {
@@ -25,20 +25,21 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain',
   },
+  more: {
+    paddingRight: 10, 
+    color: 'grey',
+  },
 });
 
+
 class MainScreen extends React.Component {
-  static navigationOptions = {
-    headerStyle: {
-      backgroundColor: 'white',
-      borderBottomWidth: 0,
-    },
-  };
+  static navigationOptions = { header: null };
 
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <SearchBox />
+        <ScrollView showsVerticalScrollIndicator={false} style={{paddingLeft: 20, zIndex: 1}}>
           <Text style={styles.Header}>category</Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingBottom: 20, paddingTop: 20}}>
             <CatagoryCard icon="build"/>
@@ -47,7 +48,10 @@ class MainScreen extends React.Component {
             <CatagoryCard icon="local-hospital"/>
             <CatagoryCard icon="translate"/>
           </ScrollView>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
           <Text style={styles.Header}>Recently Added</Text>
+          <Text style={styles.more}>More ></Text>
+          </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <MiniCard />
             <MiniCard />
@@ -55,17 +59,25 @@ class MainScreen extends React.Component {
             <MiniCard />
             <MiniCard />
           </ScrollView>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
+          <View>
           <Text style={styles.Header}>Match For</Text>
           <Text style={styles.Header}>Your Skills</Text>
-          <ScrollView horizontal={true}>
+          </View>
+          <Text style={styles.more}>More ></Text>
+          </View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <MiniCard />
             <MiniCard />
             <MiniCard />
             <MiniCard />
             <MiniCard />
           </ScrollView>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
           <Text style={styles.Header}>Official</Text>
-          <ScrollView horizontal={true}>
+          <Text style={styles.more}>More ></Text>
+          </View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <MiniCard />
             <MiniCard />
             <MiniCard />
