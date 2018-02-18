@@ -20,6 +20,7 @@ import FormReqScreen from '../containers/requester/formReq-screen';
 import LocationPickupScreen from '../containers/requester/location-pickup-screen';
 import ChoosePhotoScreen from '../containers/requester/choosePhoto-screen';
 import RequestView from '../containers/hero/requestView';
+import FriendListScreen from '../containers/friendList-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -27,10 +28,6 @@ export const HeroStack = StackNavigator({
   },
   ListHelpScreen: {
     screen: ListHelpScreen,
-    navigationOptions: {
-      headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
-      title: 'List',
-    },
   },
   MapHelpScreen: {
     screen: MapHelpScreen,
@@ -42,7 +39,7 @@ export const HeroStack = StackNavigator({
   RequestView: {
     screen: RequestView,
   },
-});
+})
 
 export const RequesterStack = StackNavigator({
   FormReqScreen: {
@@ -63,7 +60,7 @@ export const RequesterStack = StackNavigator({
       headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
     },
   },
-});
+})
 
 export const HomeStack = StackNavigator({
   HomeScreen: {
@@ -72,7 +69,7 @@ export const HomeStack = StackNavigator({
       headerVisible: false,
     },
   },
-});
+})
 
 const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;
 HeroStack.router = {
@@ -89,7 +86,7 @@ HeroStack.router = {
     }
     return prevGetStateForActionHomeStack(action, state);
   },
-};
+}
 
 
 export const SettingsStack = StackNavigator({
@@ -98,12 +95,11 @@ export const SettingsStack = StackNavigator({
   },
  Settings: {
    screen: SettingsScreen,
-   navigationOptions: {
-     title: 'Settings',
-     headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
-   },
  },
-});
+ FriendList: {
+   screen: FriendListScreen,
+ },
+})
 
 
 
@@ -132,14 +128,6 @@ export const TabNav = TabNavigator({
       tabBarIcon: ({ tintColor }) => <Icon name="human-handsup" type='material-community' color={tintColor} />
     },
   },
-    Ranking: {
-    screen: RankingScreen,
-    navigationOptions: {
-      gesturesEnabled: false,
-      tabBarLabel: 'RANK',
-      tabBarIcon: ({ tintColor }) => <Icon name="trophy" type='font-awesome' color={tintColor} />
-    },
-  },
    Profile: {
     screen: SettingsStack,
     navigationOptions: {
@@ -163,7 +151,7 @@ export const TabNav = TabNavigator({
       backgroundColor: 'white',
     },
   },
-});
+})
 
 
 export const AppRoot = StackNavigator({
@@ -187,4 +175,4 @@ export const AppRoot = StackNavigator({
   mode: 'modal',
   headerMode: 'none',
 }
-);
+)

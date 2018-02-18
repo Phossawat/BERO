@@ -1,12 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, ScrollView, TouchableHighlight, Image } from 'react-native';
-import { Card, Text, Button } from 'react-native-elements';
+import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
 import { Constants } from 'expo';
-import MiniCard  from '../components/MiniCard';
+import MiniCard from '../components/MiniCard';
 import CatagoryCard from '../components/CatagoryCard';
 import SearchBox from '../components/SearchBox';
+import { FloatingAction } from 'react-native-floating-action';
+import call from 'react-native-phone-call'
+import Colors from '../constants/colors';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -26,31 +30,66 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   more: {
-    paddingRight: 10, 
+    paddingRight: 10,
     color: 'grey',
   },
 });
+
+const actions = [{
+  text: 'เจ็บป่วยฉุกเฉิน',
+  icon: <Icon name="ambulance" type='font-awesome' color="white" />,
+  name: 'ambulance',
+  position: 3,
+  color: Colors.red,
+},
+{
+  text: 'เหตุด่วนเหตุร้าย',
+  icon: <Icon name="taxi" type='font-awesome' color="white" />,
+  name: 'police',
+  position: 2,
+  color: Colors.red,
+},
+{
+  text: 'เหตุไฟไหม้รถดับเพลิง',
+  icon: <Icon name="fire-extinguisher" type='font-awesome' color="white" />,
+  name: 'fire',
+  position: 1,
+  color: Colors.red,
+},
+];
 
 
 class MainScreen extends React.Component {
   static navigationOptions = { header: null };
 
+  state = {
+    visible: true
+  };
+
   render() {
+    const { visible } = this.state;
     return (
       <View style={styles.container}>
         <SearchBox />
-        <ScrollView showsVerticalScrollIndicator={false} style={{paddingLeft: 20, zIndex: 1}}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ paddingLeft: 20 }}
+        onScrollBeginDrag={()=> this.setState({
+          visible: false
+        })}
+        onScrollEndDrag={()=> this.setState({
+          visible: true
+        })}
+        >
           <Text style={styles.Header}>category</Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingBottom: 20, paddingTop: 20}}>
-            <CatagoryCard icon="build"/>
-            <CatagoryCard icon="fitness-center"/>
-            <CatagoryCard icon="drive-eta"/>
-            <CatagoryCard icon="local-hospital"/>
-            <CatagoryCard icon="translate"/>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ paddingBottom: 20, paddingTop: 20 }}>
+            <CatagoryCard icon="build" />
+            <CatagoryCard icon="fitness-center" />
+            <CatagoryCard icon="drive-eta" />
+            <CatagoryCard icon="local-hospital" />
+            <CatagoryCard icon="translate" />
           </ScrollView>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
-          <Text style={styles.Header}>Recently Added</Text>
-          <Text style={styles.more}>More ></Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+            <Text style={styles.Header}>Recently Added</Text>
+            <Text style={styles.more}>More ></Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <MiniCard />
@@ -59,12 +98,12 @@ class MainScreen extends React.Component {
             <MiniCard />
             <MiniCard />
           </ScrollView>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
-          <View>
-          <Text style={styles.Header}>Match For</Text>
-          <Text style={styles.Header}>Your Skills</Text>
-          </View>
-          <Text style={styles.more}>More ></Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+            <View>
+              <Text style={styles.Header}>Match For</Text>
+              <Text style={styles.Header}>Your Skills</Text>
+            </View>
+            <Text style={styles.more}>More ></Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <MiniCard />
@@ -73,9 +112,9 @@ class MainScreen extends React.Component {
             <MiniCard />
             <MiniCard />
           </ScrollView>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',}}>
-          <Text style={styles.Header}>Official</Text>
-          <Text style={styles.more}>More ></Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+            <Text style={styles.Header}>Official</Text>
+            <Text style={styles.more}>More ></Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <MiniCard />
@@ -85,6 +124,38 @@ class MainScreen extends React.Component {
             <MiniCard />
           </ScrollView>
         </ScrollView>
+        <FloatingAction
+          visible={visible}
+          actions={actions}
+          distanceToEdge={10}
+          buttonColor={Colors.red}
+          onPressItem={
+            (name) => {
+              switch (name) {
+                case "ambulance":
+                  call({
+                    number: '1669',
+                    prompt: false
+                  }).catch(console.error)
+                  break;
+                case "police":
+                call({
+                  number: '191',
+                  prompt: false
+                }).catch(console.error)
+                  break;
+                case "fire":
+                call({
+                  number: '199',
+                  prompt: false
+                }).catch(console.error)
+                  break;
+                default:
+                console.log(`selected button: ${name}`)
+              }
+            }
+          }
+        />
       </View>
     );
   }

@@ -37,6 +37,10 @@ class ProfileScreen extends React.Component {
    handleSettingsPress = () => {
     this.props.navigation.navigate('Settings');
   }; 
+   handleFriendsPress = () => {
+     this.props.navigation.navigate('FriendList');
+   };
+
   render() {
     return (
    <ScrollView style={{ backgroundColor: 'white' }}>
@@ -89,6 +93,7 @@ class ProfileScreen extends React.Component {
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'address-book-o', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
+            onPress={this.handleFriendsPress}
             underlayColor="#ecf0f1"
           />
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, Image, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import FloatingButton from '../../components/FloatingButton';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import Colors from '../../constants/colors';
@@ -9,7 +9,9 @@ const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 20,
     backgroundColor: 'white',
   },
 });
@@ -17,7 +19,10 @@ const styles = StyleSheet.create({
 export default class ListHelpScreen extends React.Component {
   static navigationOptions = {
     title: 'List',
+    headerTintColor: '#EF5350',
+    headerTitleStyle: { color: 'black' },
     headerStyle: {
+      marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight,
       backgroundColor: 'white',
       borderBottomWidth: 0,
     },

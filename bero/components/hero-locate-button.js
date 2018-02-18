@@ -50,12 +50,12 @@ const HeroLocateButton = ({ onPress = () => null , loading = false ,animation = 
               }
             }}
             style={{
-              width: window.width * 0.4,
-              height: window.width * 0.4,
+              width: window.width * 0.6,
+              height: window.width * 0.6,
               backgroundColor: 'white',
             }}
             loop={true}
-            source={require('../assets/animations/bouncy_mapmaker.json')}
+            source={require('../assets/animations/location.json')}
           />
           </View>
         :

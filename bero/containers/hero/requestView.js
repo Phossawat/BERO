@@ -1,12 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
-import { StyleSheet, View, ScrollView, TextInput, Dimensions, Image } from 'react-native';
+import {
+    StyleSheet, View, ScrollView, TextInput, Dimensions, Image, Animated, Platform,
+    StatusBar,
+} from 'react-native';
 import Colors from '../../constants/colors';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import { MapView, Constants, Location, Permissions } from 'expo';
 
 const window = Dimensions.get('window');
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 60 : 73;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const styles = StyleSheet.create({
     container: {
@@ -29,12 +35,75 @@ const styles = StyleSheet.create({
         width: 40,
         borderRadius: 20,
     },
+    fill: {
+        flex: 1,
+    },
+    content: {
+        flex: 1,
+    },
+    header: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(52, 52, 52, 0.9)',
+        overflow: 'hidden',
+        height: HEADER_MAX_HEIGHT,
+    },
+    backgroundImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: null,
+        height: HEADER_MAX_HEIGHT,
+        resizeMode: 'cover',
+    },
+    bar: {
+        backgroundColor: 'transparent',
+        marginTop: Platform.OS === 'ios' ? 28 : 38,
+        height: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+    },
+    title: {
+        color: 'white',
+        fontSize: 18,
+    },
+    scrollViewContent: {
+        marginTop: HEADER_MAX_HEIGHT,
+    },
+    row: {
+        height: 40,
+        margin: 16,
+        backgroundColor: '#D3D3D3',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });
 
 export default class RequestView extends React.Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = { header: null }
     constructor(props) {
         super(props)
+
+        this.state = {
+            scrollY: new Animated.Value(0),
+            location: {
+                latitude: 13.731014,
+                longitude: 100.781193,
+            },
+            region: {
+                latitude: 13.731014,
+                longitude: 100.781193,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.05,
+            }
+        }
     }
     state = {
         location: {
@@ -49,13 +118,53 @@ export default class RequestView extends React.Component {
         }
     };
     render() {
+        const headerTranslate = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE],
+            outputRange: [0, -HEADER_SCROLL_DISTANCE],
+            extrapolate: 'clamp',
+        });
+
+        const imageOpacity = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [1, 1, 0],
+            extrapolate: 'clamp',
+        });
+        const imageTranslate = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE],
+            outputRange: [0, 100],
+            extrapolate: 'clamp',
+        });
+
+        const titleScale = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [1, 1, 0.8],
+            extrapolate: 'clamp',
+        });
+        const titleTranslate = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [0, 0, -8],
+            extrapolate: 'clamp',
+        });
+
         return (
             <View style={{ flex: 1, backgroundColor: 'white', }}>
-                <ScrollView style={{ backgroundColor: 'white', }}>
-                    <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
+                <StatusBar
+                    translucent
+                    barStyle="light-content"
+                    backgroundColor="rgba(0, 0, 0, 0.251)"
+                />
+                <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
                         <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
-                    </View>
-                    <Image source={{ uri: "https://firebasestorage.googleapis.com/v0/b/bero-be-a-hero.appspot.com/o/images%2Ftest1.jpg?alt=media&token=bcdbb820-6b5d-42f1-908d-3dc9997314ed" }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
+                </View>
+                <Animated.ScrollView
+                    style={styles.fill}
+                    scrollEventThrottle={1}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+                        { useNativeDriver: true },
+                    )}
+                >
+                    <View style={styles.scrollViewContent}>
                     <View style={styles.headerTopic}>
                         <Text style={styles.topic}>รถเสีย</Text>
                         <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -141,20 +250,51 @@ export default class RequestView extends React.Component {
                                     <Text style={{ color: Colors.grey2, fontSize: 15, }}>21 Oct 2017</Text>
                                 </View>
                             </View>
-                            <Text style={{ color: Colors.grey2, fontSize: 15,paddingBottom: 15 }}>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between'}}>
-                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop:10 }}>Read all 1 Reviews</Text>
-                                    <View style={{ flexDirection: 'row', paddingTop:10 }}>
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                    </View>
-                                </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
+                            <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}>Read all 1 Reviews</Text>
+                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                <Icon name="star" color={Colors.mintColor} size={15} />
+                                <Icon name="star" color={Colors.mintColor} size={15} />
+                                <Icon name="star" color={Colors.mintColor} size={15} />
+                                <Icon name="star" color={Colors.mintColor} size={15} />
+                                <Icon name="star" color={Colors.mintColor} size={15} />
+                            </View>
+                        </View>
                     </View>
-                </ScrollView>
+                    </View>
+                </Animated.ScrollView>
+                <Animated.View
+                    style={[
+                        styles.header,
+                        { transform: [{ translateY: headerTranslate }] },
+                    ]}
+                >
+                    <Animated.Image
+            style={[
+              styles.backgroundImage,
+              {
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
+              },
+            ]}
+            source={{ uri: "https://firebasestorage.googleapis.com/v0/b/bero-be-a-hero.appspot.com/o/images%2Ftest1.jpg?alt=media&token=bcdbb820-6b5d-42f1-908d-3dc9997314ed" }}
+                    />
+                    </Animated.View>
+                    <Animated.View
+                        style={[
+                            styles.bar,
+                            {
+                                transform: [
+                                    { scale: titleScale },
+                                    { translateY: titleTranslate },
+                                ],
+                            },
+                        ]}
+                    >
+                        <Text style={styles.title}>#00001</Text>
+                    </Animated.View>
             </View>
         );
     }

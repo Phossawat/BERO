@@ -19,7 +19,7 @@ export const login = () => {
 
     Expo.Facebook
       .logInWithReadPermissionsAsync('1735860930050502', {
-        permissions: ['public_profile'],
+        permissions: ['public_profile', 'email', 'user_friends'],
       })
       .then((result) => {
         if (result.type === 'success') {

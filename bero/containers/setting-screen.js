@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, Platform } from 'react-native';
 import { List, ListItem, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ class Settings extends Component {
     headerTintColor: '#EF5350',
     headerTitleStyle: { color: 'black' },
     headerStyle: {
+      marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight,
       backgroundColor: 'white',
       borderBottomWidth: 0,
    },

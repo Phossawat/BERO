@@ -3,7 +3,8 @@ import { StyleSheet,View, Button, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
 import { MapView, Constants, Location, Permissions } from 'expo';
-import Colors from '../../constants/colors'
+import Colors from '../../constants/colors';
+import MapMarker from '../../assets/icons/map-marker-icon.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -83,6 +84,7 @@ class LocationPickupScreen extends React.Component {
           initialRegion={region}
         >
           <MapView.Marker
+            image={MapMarker}
             coordinate={this.props.mark_position}
             onSelect={(e) => log('onSelect', e)}
             onDrag={(e) => log('onDrag', e)}
