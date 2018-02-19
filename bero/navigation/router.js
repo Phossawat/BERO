@@ -21,6 +21,8 @@ import LocationPickupScreen from '../containers/requester/location-pickup-screen
 import ChoosePhotoScreen from '../containers/requester/choosePhoto-screen';
 import RequestView from '../containers/hero/requestView';
 import FriendListScreen from '../containers/friendList-screen';
+import ChatScreen1 from '../containers/requester/chat-screen';
+import MapRouteScreen from '../containers/hero/mapRoute-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -38,6 +40,12 @@ export const HeroStack = StackNavigator({
   },
   RequestView: {
     screen: RequestView,
+  },
+  ChatScreen: {
+    screen: ChatScreen1,
+  },
+  MapRouteScreen: {
+    screen: MapRouteScreen,
   },
 })
 
@@ -60,6 +68,9 @@ export const RequesterStack = StackNavigator({
       headerStyle: { marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight },
     },
   },
+  ChatScreen: {
+    screen: ChatScreen1,
+  },
 })
 
 export const HomeStack = StackNavigator({
@@ -68,6 +79,9 @@ export const HomeStack = StackNavigator({
     navigationOptions: {
       headerVisible: false,
     },
+  },
+  RequestView: {
+    screen: RequestView,
   },
 })
 

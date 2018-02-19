@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 const styles = StyleSheet.create({
@@ -34,12 +34,13 @@ const styles = StyleSheet.create({
 
 const MiniCard = (props) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container}
+    onPress={props.onPress}>
         <Image source={require('../../assets/Test.jpeg')} style={styles.image} resizeMode="stretch"/>
         <Text style={styles.typeHeader}>Car</Text>
         <Text style={styles.header}>Lorem Ipsum</Text>
         <Text style={styles.main}>is simply dummy text of the printing a</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

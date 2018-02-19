@@ -162,7 +162,8 @@ class FormReqScreen extends React.Component {
                                         backgroundColor='#EF5350'
                                         fontWeight='bold'
                                         color='white'
-                                        title='Chat' />
+                                        title='Chat'
+                                        onPress={()=>this.props.navigation.navigate('ChatScreen')}/>
                                     <Button
                                         style={{ width: window.width * 0.3, }}
                                         fontWeight='bold'

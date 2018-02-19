@@ -80,19 +80,17 @@ class MainScreen extends React.Component {
         })}
         >
           <Text style={styles.Header}>category</Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ paddingBottom: 20, paddingTop: 20 }}>
             <CatagoryCard icon="build" />
             <CatagoryCard icon="fitness-center" />
             <CatagoryCard icon="drive-eta" />
             <CatagoryCard icon="local-hospital" />
             <CatagoryCard icon="translate" />
-          </ScrollView>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
             <Text style={styles.Header}>Recently Added</Text>
             <Text style={styles.more}>More ></Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <MiniCard />
+            <MiniCard onPress={()=>this.props.navigation.navigate('RequestView')}/>
             <MiniCard />
             <MiniCard />
             <MiniCard />

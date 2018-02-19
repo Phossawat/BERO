@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default class RequestView extends React.Component {
+class RequestView extends React.Component {
     static navigationOptions = { header: null }
     constructor(props) {
         super(props)
@@ -117,7 +117,18 @@ export default class RequestView extends React.Component {
             longitudeDelta: 0.05,
         }
     };
+
+    handleAcceptPress = ()=>{
+        this.props.hero_accepted();
+        this.props.navigation.navigate('FindingScreen');
+    }
     render() {
+        if(this.props.status=="accepted"){
+            buttonStatus = true
+        }
+        else{
+            buttonStatus = false
+        }
         const headerTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
             outputRange: [0, -HEADER_SCROLL_DISTANCE],
@@ -262,6 +273,15 @@ export default class RequestView extends React.Component {
                                 <Icon name="star" color={Colors.mintColor} size={15} />
                             </View>
                         </View>
+                        <Button
+                            style={{ paddingTop: 10, paddingBottom: 10, borderRadius: 3, }}
+                            buttonStyle={{ borderRadius: 3, }}
+                            backgroundColor='#EF5350'
+                            fontWeight='bold'
+                            color='white'
+                            onPress={this.handleAcceptPress}
+                            disabled={buttonStatus}
+                            title='Accept' />
                     </View>
                     </View>
                 </Animated.ScrollView>
@@ -299,3 +319,11 @@ export default class RequestView extends React.Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    const { status } = state.heroStatus;
+    return { status };
+};
+
+
+export default connect(mapStateToProps, ActionCreators)(RequestView);
