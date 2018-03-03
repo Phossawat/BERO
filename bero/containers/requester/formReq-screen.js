@@ -22,11 +22,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     Header: {
-        color: Colors.red,
-        fontSize: 20,
+        color: Colors.grey1,
+        fontSize: 25,
         fontWeight: 'bold',
         paddingLeft: 20,
         paddingTop: 50,
+        paddingBottom: 20,
     },
     topic: {
         color: Colors.grey1,
@@ -257,10 +258,10 @@ class FormReqScreen extends React.Component {
                     <View style={{ backgroundColor: 'white' }}>
                         <Button
                             style={{ paddingTop: 10, paddingBottom: 10, borderRadius: 3, }}
-                            buttonStyle={{ borderRadius: 3, }}
-                            backgroundColor='#EF5350'
-                            fontWeight='bold'
-                            color='white'
+                            buttonStyle={{ borderRadius: 6, borderColor: Colors.mintColor, borderWidth: 1, }}
+                            backgroundColor='white'
+                            fontSize= {15}
+                            color= {Colors.mintColor}
                             onPress={this.handleNextPress}
                             title='Next' />
                     </View>
@@ -285,7 +286,7 @@ class FormReqScreen extends React.Component {
                                 backgroundColor: 'white',
                             }}
                             loop={true}
-                            source={require('../../assets/animations/loading.json')}
+                            source={require('../../assets/animations/legoSpinner.json')}
                         />
                     </View>
                 </View>

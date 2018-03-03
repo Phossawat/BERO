@@ -292,7 +292,7 @@ class FindingScreen extends React.Component {
                   backgroundColor: 'white',
                 }}
                 loop={true}
-                source={require('../../assets/animations/loading.json')}
+                source={require('../../assets/animations/legoSpinner.json')}
               />
             </View>
           </View>

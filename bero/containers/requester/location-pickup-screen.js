@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet,View, Button, Platform } from 'react-native';
+import { StyleSheet,View, Platform } from 'react-native';
+import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
 import { MapView, Constants, Location, Permissions } from 'expo';
@@ -29,7 +30,7 @@ class LocationPickupScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
     title: 'Position',
-    headerRight: <Button color={Colors.red} title={"Next"} onPress={()=> navigation.navigate('ChoosePhotoScreen')} />,
+    headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Next"} onPress={()=> navigation.navigate('ChoosePhotoScreen')} />,
     headerTintColor: '#EF5350',
     headerTitleStyle: { color: 'black' },
     headerStyle: {

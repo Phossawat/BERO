@@ -39,16 +39,21 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
         'status': "in progress",
         'when': new Date().getTime()
       })
-      .then(() => {
-        dispatch({ type: REQUEST_CREATE });
-        dispatch({ type: REQUEST_STATUS_INPROGRESS });
+      .then((result) => {
+        var ref = firebase.database().ref('users/'+owneruid);
+        ref.update({
+          "Profile/statusCreate": "in-progress",
+          "Profile/requestCreate": result.key,
+        });
+        dispatch({ type: REQUEST_CREATE })
+        dispatch({ type: REQUEST_STATUS_INPROGRESS })
       });
   };
 };
 
 export const requestFetch = () => {
-  const { currentUser } = firebase.auth();
-  const request = firebase.database().ref(`/request`);
+  const { currentUser } = firebase.auth()
+  const request = firebase.database().ref(`/request`)
  
   return (dispatch) => {
     request.on('value', snapshot => {
@@ -62,21 +67,21 @@ export const requestFetch = () => {
 
 export const request_form = () => {
   return dispatch => {
-    dispatch({ type: REQUEST_STATUS_CREATE });
+    dispatch({ type: REQUEST_STATUS_CREATE })
   };
   
 }
 
 export const request_loading = () => {
   return dispatch => {
-    dispatch({ type: REQUEST_STATUS_LOADING });
+    dispatch({ type: REQUEST_STATUS_LOADING })
   };
   
 }
 
 export const request_inprogress = () => {
   return dispatch => {
-    dispatch({ type: REQUEST_STATUS_INPROGRESS });
+    dispatch({ type: REQUEST_STATUS_INPROGRESS })
   };
   
 }

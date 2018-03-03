@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, ScrollView, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
 import { Constants } from 'expo';
@@ -11,7 +11,7 @@ import { FloatingAction } from 'react-native-floating-action';
 import call from 'react-native-phone-call'
 import Colors from '../constants/colors';
 
-
+const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -33,6 +33,14 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     color: 'grey',
   },
+  LongButton: {
+    backgroundColor: '#EF5350',
+    width: window.width * 0.9,
+    height: 70,
+    borderRadius: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
 
 const actions = [{
@@ -58,7 +66,6 @@ const actions = [{
 },
 ];
 
-
 class MainScreen extends React.Component {
   static navigationOptions = { header: null };
 
@@ -72,25 +79,26 @@ class MainScreen extends React.Component {
       <View style={styles.container}>
         <SearchBox />
         <ScrollView showsVerticalScrollIndicator={false} style={{ paddingLeft: 20 }}
-        onScrollBeginDrag={()=> this.setState({
-          visible: false
-        })}
-        onScrollEndDrag={()=> this.setState({
-          visible: true
-        })}
-        >
-          <Text style={styles.Header}>category</Text>
-            <CatagoryCard icon="build" />
-            <CatagoryCard icon="fitness-center" />
-            <CatagoryCard icon="drive-eta" />
-            <CatagoryCard icon="local-hospital" />
-            <CatagoryCard icon="translate" />
+          onScrollBeginDrag={() => this.setState({
+            visible: false
+          })}
+          onScrollEndDrag={() => this.setState({
+            visible: true
+          })}
+        ><View style={{ paddingBottom: 20, paddingTop: 20 }}>
+            <TouchableOpacity style={styles.LongButton}>
+              {/* <Image source={require('../../assets/Test.jpeg')} style={styles.image} resizeMode="stretch" /> */}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                <Text style={{color:"white",fontSize:30, fontWeight:"bold" }}>Map</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
             <Text style={styles.Header}>Recently Added</Text>
             <Text style={styles.more}>More ></Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <MiniCard onPress={()=>this.props.navigation.navigate('RequestView')}/>
+            <MiniCard onPress={() => this.props.navigation.navigate('RequestView')} />
             <MiniCard />
             <MiniCard />
             <MiniCard />
@@ -137,19 +145,19 @@ class MainScreen extends React.Component {
                   }).catch(console.error)
                   break;
                 case "police":
-                call({
-                  number: '191',
-                  prompt: false
-                }).catch(console.error)
+                  call({
+                    number: '191',
+                    prompt: false
+                  }).catch(console.error)
                   break;
                 case "fire":
-                call({
-                  number: '199',
-                  prompt: false
-                }).catch(console.error)
+                  call({
+                    number: '199',
+                    prompt: false
+                  }).catch(console.error)
                   break;
                 default:
-                console.log(`selected button: ${name}`)
+                  console.log(`selected button: ${name}`)
               }
             }
           }
