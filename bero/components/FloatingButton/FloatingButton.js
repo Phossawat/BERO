@@ -5,8 +5,8 @@ import { Icon } from 'react-native-elements';
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: 10,
+    right: 10,
   },
 });
 

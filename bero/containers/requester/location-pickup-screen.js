@@ -29,6 +29,7 @@ function log(eventName, e) {
 class LocationPickupScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
+    tabBarVisible: false,
     title: 'Position',
     headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Next"} onPress={()=> navigation.navigate('ChoosePhotoScreen')} />,
     headerTintColor: '#EF5350',

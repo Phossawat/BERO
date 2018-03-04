@@ -20,7 +20,10 @@ const styles = StyleSheet.create({
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 export default class MapHelpScreen extends React.Component {
-  static navigationOptions = { header: null }
+  static navigationOptions = { 
+    header: null,
+    tabBarVisible: false,
+   }
   state = {
     location: { coords: {latitude: 0, longitude: 0}},
     locationMarker: {

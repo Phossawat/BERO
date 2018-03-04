@@ -41,6 +41,7 @@ class ChoosePhotoScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state
     return {
+      tabBarVisible: false,
       title: 'Image',
       headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Done"} onPress={() => params.handlePress()} />,
       headerTintColor: '#EF5350',

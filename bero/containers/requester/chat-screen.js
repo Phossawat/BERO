@@ -10,6 +10,7 @@ export default class ChatScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state
         return {
+            tabBarVisible: false,
             title: "Test Test",
             headerTintColor: '#EF5350',
             headerTitleStyle: { color: 'black' },
@@ -62,7 +63,6 @@ export default class ChatScreen extends React.Component {
                 }
                 {Platform.OS === 'ios' &&
                     <GiftedChat
-                        bottomOffset={55}
                         messages={this.state.messages}
                         onSend={(messages) => this.onSend(messages)}
                         user={{

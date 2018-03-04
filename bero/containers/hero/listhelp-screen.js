@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
 
 export default class ListHelpScreen extends React.Component {
   static navigationOptions = {
+    tabBarVisible: false,
     title: 'List',
     headerTintColor: '#EF5350',
     headerTitleStyle: { color: 'black' },

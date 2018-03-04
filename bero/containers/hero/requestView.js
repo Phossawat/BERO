@@ -87,7 +87,10 @@ const styles = StyleSheet.create({
 });
 
 class RequestView extends React.Component {
-    static navigationOptions = { header: null }
+    static navigationOptions = { 
+        header: null,
+        tabBarVisible: false,
+     }
     constructor(props) {
         super(props)
 

@@ -286,7 +286,7 @@ class FormReqScreen extends React.Component {
                                 backgroundColor: 'white',
                             }}
                             loop={true}
-                            source={require('../../assets/animations/legoSpinner.json')}
+                            source={require('../../assets/animations/loading.json')}
                         />
                     </View>
                 </View>

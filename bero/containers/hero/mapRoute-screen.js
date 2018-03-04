@@ -21,7 +21,10 @@ const styles = StyleSheet.create({
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 export default class MapRouteScreen extends React.Component {
-  static navigationOptions = { header: null }
+  static navigationOptions = { 
+    header: null,
+    tabBarVisible: false,
+   }
   state = {
     coords: [],
     location: { coords: {latitude: 0, longitude: 0}},

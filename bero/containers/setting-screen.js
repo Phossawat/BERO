@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 class Settings extends Component {
     static navigationOptions = {
+    tabBarVisible: false,
     title: 'Settings',
     headerTintColor: '#EF5350',
     headerTitleStyle: { color: 'black' },
