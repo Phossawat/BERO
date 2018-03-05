@@ -97,7 +97,7 @@ class MainScreen extends React.Component {
             <Text style={styles.Header}>Recently Added</Text>
             <Text style={styles.more}>More ></Text>
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
             <MiniCard onPress={() => this.props.navigation.navigate('RequestView')} />
             <MiniCard />
             <MiniCard />
@@ -111,7 +111,7 @@ class MainScreen extends React.Component {
             </View>
             <Text style={styles.more}>More ></Text>
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
             <MiniCard />
             <MiniCard />
             <MiniCard />
@@ -122,7 +122,7 @@ class MainScreen extends React.Component {
             <Text style={styles.Header}>Official</Text>
             <Text style={styles.more}>More ></Text>
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
             <MiniCard />
             <MiniCard />
             <MiniCard />

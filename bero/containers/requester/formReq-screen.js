@@ -112,7 +112,7 @@ class FormReqScreen extends React.Component {
             content = (
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ backgroundColor: 'white' }}>
-                        <Image source={{ uri:  "https://firebasestorage.googleapis.com/v0/b/bero-be-a-hero.appspot.com/o/images%2Ftest1.jpg?alt=media&token=bcdbb820-6b5d-42f1-908d-3dc9997314ed"}} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
+                        <Image source={{ uri:  this.props.uri }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
                         <View style={styles.headerTopic}>
                             <Text style={styles.topic}>{this.props.topic}</Text>
                             <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>

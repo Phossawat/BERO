@@ -77,7 +77,7 @@ export default class ListHelpScreen extends React.Component {
         </ScrollView>
         <FloatingButton
           icon="map"
-          onPress={this.replaceScreen}
+          onPress={()=>this.props.navigation.navigate('MapHelpScreen')}
         />
       </View>
     );
