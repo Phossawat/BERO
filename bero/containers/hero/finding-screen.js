@@ -113,13 +113,12 @@ class FindingScreen extends React.Component {
 
   goToNearMe = async () => {
     this.setState({ loading: true });
+    this.props.requestFetch()
     setTimeout(() => {
       this.props.navigation.navigate('ListHelpScreen');
       this.setState({ loading: false });
     }, 3000);
   };
-
-
 
   render() {
     const headerTranslate = this.state.scrollY.interpolate({

@@ -27,13 +27,13 @@ class FriendListScreen extends React.Component {
         },
     };
 
-    componentWillMount() {
+    componentDidMount() {
         login()
     }
     async logIn() {
         const response = await fetch(
             `https://graph.facebook.com/v2.3/me/friendsaccess_token=${token}&debug=all`);
-            console.log(await response.json)
+            console.log("friendlist "+response)
             this.setState(token)
     }
 
@@ -41,7 +41,7 @@ class FriendListScreen extends React.Component {
 
         return (
             <View style={styles.container}>
-            <Text>{this.props.user.accessToken}</Text>
+            <Text>Hello{Object.values(this.props.user)}</Text>
             </View>
         );
     }
@@ -51,7 +51,6 @@ const mapStateToProps = state => ({ user: state.auth.user });
 
 FriendListScreen.propTypes = {
   user: React.PropTypes.object.isRequired,
-  logout: React.PropTypes.func.isRequired,
 };
   
 export default connect(mapStateToProps, ActionCreators)(FriendListScreen);

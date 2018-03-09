@@ -5,6 +5,9 @@ import { MapView, Constants, Location, Permissions } from 'expo';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import { LOCATION } from 'expo/src/Permissions';
 import Colors from '../../constants/colors';
+import { connect } from 'react-redux';
+import { ActionCreators } from '../../actions';
+import _ from 'lodash';
 
 const window = Dimensions.get('window');
 
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
-export default class MapHelpScreen extends React.Component {
+class MapHelpScreen extends React.Component {
   static navigationOptions = { 
     header: null,
     tabBarVisible: false,
@@ -138,8 +141,8 @@ export default class MapHelpScreen extends React.Component {
       },
     ],
     region: {
-      latitude: 45.52220671242907,
-      longitude: -122.6653281029795,
+      latitude: 13.731014,
+      longitude: 100.781193,
       latitudeDelta: 0.04864195044303443,
       longitudeDelta: 0.040142817690068,
     },
@@ -164,8 +167,8 @@ export default class MapHelpScreen extends React.Component {
     // We should just debounce the event listener here
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-      if (index >= this.state.markers.length) {
-        index = this.state.markers.length - 1;
+      if (index >= this.props.requestArray.length) {
+        index = this.props.requestArray.length - 1;
       }
       if (index <= 0) {
         index = 0;
@@ -175,10 +178,10 @@ export default class MapHelpScreen extends React.Component {
       this.regionTimeout = setTimeout(() => {
         if (this.index !== index) {
           this.index = index;
-          const { coordinate } = this.state.markers[index];
+          const { mark_position } = this.props.requestArray[index];
           this.map.animateToRegion(
             {
-              ...coordinate,
+              ...mark_position,
               latitudeDelta: this.state.region.latitudeDelta,
               longitudeDelta: this.state.region.longitudeDelta,
             },
@@ -203,7 +206,7 @@ export default class MapHelpScreen extends React.Component {
   }
 
   render() {
-    const interpolations = this.state.markers.map((marker, index) => {
+    const interpolations = this.props.requestArray.map((marker, index) => {
       const inputRange = [
         (index - 1) * CARD_WIDTH,
         index * CARD_WIDTH,
@@ -229,9 +232,10 @@ export default class MapHelpScreen extends React.Component {
                 <MapView
           ref={map => this.map = map}
           initialRegion={this.state.region}
+          showsUserLocation={true}
           style={styles.container}
         >
-          {this.state.markers.map((marker, index) => {
+          {this.props.requestArray.map((marker, index) => {
             const scaleStyle = {
               transform: [
                 {
@@ -243,7 +247,7 @@ export default class MapHelpScreen extends React.Component {
               opacity: interpolations[index].opacity,
             };
             return (
-              <MapView.Marker key={index} coordinate={marker.coordinate}>
+              <MapView.Marker key={index} coordinate={marker.mark_position}>
                 <Animated.View style={[styles.markerWrap, opacityStyle]}>
                   <Animated.View style={[styles.ring, scaleStyle]} />
                   <View style={styles.marker} />
@@ -272,38 +276,34 @@ export default class MapHelpScreen extends React.Component {
           style={styles.scrollView}
           contentContainerStyle={styles.endPadding}
         >
-          {this.state.markers.map((marker, index) => (
+          {this.props.requestArray.map((marker, index) => (
             <TouchableOpacity style={styles.card} key={index}  onPress={()=>this.props.navigation.navigate('RequestView')}>
               <Image
-                source={marker.image}
+                source={{ uri: marker.imageUrl }}
                 style={styles.cardImage}
                 resizeMode="cover"
               />
               <View style={styles.textContent}>
-                <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
+                <Text numberOfLines={1} style={styles.cardtitle}>{marker.topic}</Text>
                 <Text numberOfLines={1} style={styles.cardDescription}>
-                  {marker.description}
+                  {marker.detail}
                 </Text>
               </View>
             </TouchableOpacity>
           ))}
         </Animated.ScrollView>
-        {/* <MapView
-        style={{ ...StyleSheet.absoluteFillObject }}
-          region={this.state.region}
-          ref="myRef"
-        >
-        <MapView.Marker
-        image={MapMarker}
-        coordinate={this.state.locationMarker}
-        onPress={()=>this.props.navigation.navigate('RequestView')}
-        />
-        </MapView>
-        <FloatingButton
-          icon="list"
-          onPress={this.replaceScreen}
-        /> */}
       </View>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { requestObject } = state.requestForm;
+  const requestArray = _.map(requestObject, (val, uid) => {
+    return { ...val, uid }; 
+});
+  return { requestObject, requestArray };
+};
+
+
+export default connect(mapStateToProps, ActionCreators)(MapHelpScreen);

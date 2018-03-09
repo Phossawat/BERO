@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,View, Platform } from 'react-native';
+import { StyleSheet, View, Platform, Image } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
@@ -17,40 +17,39 @@ const styles = StyleSheet.create({
   },
 });
 
-const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const SPACE = 0.01;
-
-function log(eventName, e) {
-  console.log(eventName, e.nativeEvent);
-}
-
 class LocationPickupScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-    tabBarVisible: false,
-    title: 'Position',
-    headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Next"} onPress={()=> navigation.navigate('ChoosePhotoScreen')} />,
-    headerTintColor: '#EF5350',
-    headerTitleStyle: { color: 'black' },
-    headerStyle: {
-      backgroundColor: 'white',
-      borderBottomWidth: 0,
-   },
-  }};
-  state = {
-    location: null,
-    errorMessage: null,
-    region: {
-      latitude: 13.731014,
-      longitude: 100.781193,
-      latitudeDelta: 0.1,
-      longitudeDelta: 0.05,
+      tabBarVisible: false,
+      title: 'Position',
+      headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Next"} onPress={() => {navigation.navigate('ChoosePhotoScreen')}} />,
+      headerTintColor: '#EF5350',
+      headerTitleStyle: { color: 'black' },
+      headerStyle: {
+        backgroundColor: 'white',
+        borderBottomWidth: 0,
+      },
     }
   };
+  // state = {
+  //   location: null,
+  //   errorMessage: null,
+  //   region: {
+  //     latitude: 13.731014,
+  //     longitude: 100.781193,
+  //     latitudeDelta: 0.1,
+  //     longitudeDelta: 0.05,
+  //   },
+  //   locationResult: null,
+  //   location: {coords: { latitude: 37.78825, longitude: -122.4324}},
+  // };
+  state = {
+    mapRegion: null,
+    lastLat: null,
+    lastLong: null,
+  }
 
-  componentWillMount() {
+  componentDidMount() {
     this._getLocationAsync();
   }
 
@@ -59,23 +58,43 @@ class LocationPickupScreen extends React.Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
-        errorMessage: 'Permission to access location was denied',
+        locationResult: 'Permission to access location was denied',
+        location,
       });
     }
-
+ 
     let location = await Location.getCurrentPositionAsync({});
-    region = {
-      latitude: 13.731014,
-      longitude: 0.781193,
-      latitudeDelta: 0.002,
-      longitudeDelta: 0.0421,
-    },
-    this.setState({ location, region });
-    this.props.mark_position = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.latitude
+    let region = {
+      latitude:       location.coords.latitude,
+      longitude:      location.coords.longitude,
+      latitudeDelta:  0.00922*1.5,
+      longitudeDelta: 0.00421*1.5
     }
+    this.setState({ mapRegion: region })
   };
+
+  onRegionChange(region){
+    console.log(region.latitude+" "+region.longitude)
+    this.setState({
+      mapRegion: region,
+    });
+  // var position = {
+  //     latitude: region.latitude,
+  //     longitude: region.longitude
+  //   }
+  // this.props.requestUpdate({  prop: 'mark_position', value: position  })
+  }
+
+  onRegionChangeComplete(region){
+    this.setState({
+      mapRegion: region,
+    });
+  var position = {
+      latitude: region.latitude,
+      longitude: region.longitude
+    }
+  this.props.requestUpdate({  prop: 'mark_position', value: position  })
+  }
 
   render() {
     let { region } = this.state;
@@ -83,19 +102,16 @@ class LocationPickupScreen extends React.Component {
       <View style={styles.container} >
         <MapView
           style={{ ...StyleSheet.absoluteFillObject }}
-          initialRegion={region}
-        >
-          <MapView.Marker
-            image={MapMarker}
-            coordinate={this.props.mark_position}
-            onSelect={(e) => log('onSelect', e)}
-            onDrag={(e) => log('onDrag', e)}
-            onDragStart={(e) => log('onDragStart', e)}
-            onDragEnd={(e) => log('onDragEnd', e)}
-            onPress={(e) => log('onPress', e)}
-            draggable
-          />
-        </MapView>
+          initialRegion={this.state.mapRegion}
+          region={this.state.mapRegion}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
+          onRegionChange={(region)=>this.onRegionChange(region)}
+          onRegionChangeComplete={(region)=>this.onRegionChangeComplete(region)}
+        />
+        <View pointerEvents="none" style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
+          <Image pointerEvents="none" source={MapMarker} style={{width: 20, height: 30, }}/>
+        </View>
       </View>
     );
   }
@@ -103,7 +119,7 @@ class LocationPickupScreen extends React.Component {
 
 const mapStateToProps = (state) => {
   const { mark_position } = state.requestForm;
- 
+
   return { mark_position };
 };
 

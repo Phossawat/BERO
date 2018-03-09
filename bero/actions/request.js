@@ -36,7 +36,8 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
         hero, 
         detail, 
         mark_position,
-        'status': "in progress",
+        'requestType': 'Request',
+        'status': 'in progress',
         'when': new Date().getTime()
       })
       .then((result) => {
@@ -53,7 +54,7 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
 
 export const requestFetch = () => {
   const { currentUser } = firebase.auth()
-  const request = firebase.database().ref(`/request`)
+  const request = firebase.database().ref(`/requests`)
  
   return (dispatch) => {
     request.on('value', snapshot => {

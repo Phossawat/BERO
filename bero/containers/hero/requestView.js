@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         marginTop: HEADER_MAX_HEIGHT,
+        flex: 0.9
     },
     row: {
         height: 40,
@@ -180,7 +181,7 @@ class RequestView extends React.Component {
                 >
                     <View style={styles.scrollViewContent}>
                     <View style={styles.headerTopic}>
-                        <Text style={styles.topic}>รถเสีย</Text>
+                        <Text style={styles.topic}>{this.props.navigation.state.params.item.topic}</Text>
                         <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                             <View>
                                 <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>Mechanic</Text>
@@ -239,6 +240,7 @@ class RequestView extends React.Component {
                             coordinate={this.state.location}
                         />
                     </MapView>
+                    {this.props.navigation.state.params.item.requestType =='Event' &&
                     <View style={styles.headerTopic}>
                         <View style={{ borderColor: Colors.grey3, borderBottomWidth: 1, borderTopWidth: 1 }} >
                             <Text style={{
@@ -285,9 +287,22 @@ class RequestView extends React.Component {
                             onPress={this.handleAcceptPress}
                             disabled={buttonStatus}
                             title='Accept' />
-                    </View>
+                    </View>}
+                    {this.props.navigation.state.params.item.requestType =='Request' &&
+                    <View style={{ paddingTop: 15, paddingBottom: 10, }}/>
+                    }
                     </View>
                 </Animated.ScrollView>
+                <View style={{ borderTopColor: Colors.grey2, borderTopWidth: 1, flex: 0.1, justifyContent: 'center', alignItems: 'flex-end' }}>
+                    <Button
+                            buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
+                            backgroundColor='#EF5350'
+                            fontWeight='bold'
+                            color='white'
+                            onPress={this.handleAcceptPress}
+                            disabled={buttonStatus}
+                            title='Accept' />
+                </View>
                 <Animated.View
                     style={[
                         styles.header,
@@ -302,7 +317,7 @@ class RequestView extends React.Component {
                 transform: [{ translateY: imageTranslate }],
               },
             ]}
-            source={{ uri: "https://firebasestorage.googleapis.com/v0/b/bero-be-a-hero.appspot.com/o/images%2Ftest1.jpg?alt=media&token=bcdbb820-6b5d-42f1-908d-3dc9997314ed" }}
+            source={{ uri: this.props.navigation.state.params.item.imageUrl }}
                     />
                     </Animated.View>
                     <Animated.View
@@ -316,7 +331,7 @@ class RequestView extends React.Component {
                             },
                         ]}
                     >
-                        <Text style={styles.title}>#00001</Text>
+                        <Text style={styles.title}>{this.props.navigation.state.params.item.uid}</Text>
                     </Animated.View>
             </View>
         );

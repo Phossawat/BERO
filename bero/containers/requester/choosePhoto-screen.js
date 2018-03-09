@@ -79,8 +79,8 @@ class ChoosePhotoScreen extends React.Component {
       <View style={styles.container}>
       <Loader
           loading={this.state.uploading} />
-      {url &&
-          <Image source={{ uri: url }} style={{ width: window.width * 0.6, height: window.width * 0.6, borderRadius: 6, }} />}
+      {this.props.photo &&
+          <Image source={{ uri: this.props.photo }} style={{ width: window.width * 0.6, height: window.width * 0.6, borderRadius: 6, }} />}
         {/* {this.state.uploading &&
           <View pointerEvents="none" style={styles.loading}>
             <ActivityIndicator size='large' />
@@ -113,7 +113,7 @@ class ChoosePhotoScreen extends React.Component {
 
   _pickImage = async () => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      quality: .8,
+      quality: .3,
       allowsEditing: true,
       aspect: [4, 3],
     });
@@ -123,7 +123,7 @@ class ChoosePhotoScreen extends React.Component {
 
   _takePhoto = async () => {
     let pickerResult = await ImagePicker.launchCameraAsync({
-      quality: .8,
+      quality: .3,
       allowsEditing: true,
       aspect: [4, 3],
     });
@@ -141,6 +141,7 @@ class ChoosePhotoScreen extends React.Component {
         uploadResponse = await uploadImageAsync(pickerResult.uri);
         uploadResult = await uploadResponse.json();
         this.setState({ url: uploadResult.location });
+        this.props.requestUpdate({  prop: 'photo', value: uploadResult.location })
       }
     } catch (e) {
       console.log({ uploadResponse });
@@ -180,9 +181,9 @@ async function uploadImageAsync(uri) {
 
 
 const mapStateToProps = (state) => {
-  const { topic, type, view, must_be, hero, detail, mark_position } = state.requestForm
+  const { topic, type, view, must_be, hero, detail, mark_position, photo } = state.requestForm
 
-  return { topic, type, view, must_be, hero, detail, mark_position, };
+  return { topic, type, view, must_be, hero, detail, mark_position, photo };
 };
 
 

@@ -10,25 +10,6 @@ import { AppRoot } from '../navigation/router';
 
 import { ActionCreators } from '../actions';
 
-// const AppRoot = StackNavigator({
-//     SplashScreen: {
-//       screen: SplashScreen
-//     },
-//     AuthScreen: {
-//       screen: AuthScreen
-//     },
-//     MainScreen: {
-//       screen: MainScreen
-//     },
-//     CreateUserScreen: {
-//       screen: NewUserScreen
-//     }
-//   },
-//   {
-//     headerMode: 'none'
-//   }
-// );
-
 class App extends React.Component {
   componentDidMount() {
     this.props.verifyAuth();

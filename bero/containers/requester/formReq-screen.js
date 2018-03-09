@@ -66,16 +66,6 @@ class FormReqScreen extends React.Component {
     }
     
     handleNextPress = () => {
-        _getLocationAsync = async () => {
-            let { status } = await Permissions.askAsync(Permissions.LOCATION);
-            if (status !== 'granted') {
-                this.setState({
-                    errorMessage: 'Permission to access location was denied',
-                });
-            }
-            let region = await Location.getCurrentPositionAsync({});
-
-        };
         this.props.navigation.navigate('LocationPickupScreen');
     };
 
@@ -112,7 +102,7 @@ class FormReqScreen extends React.Component {
             content = (
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ backgroundColor: 'white' }}>
-                        <Image source={{ uri:  this.props.uri }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
+                        <Image source={{ uri:  this.props.photo }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
                         <View style={styles.headerTopic}>
                             <Text style={styles.topic}>{this.props.topic}</Text>
                             <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
@@ -301,10 +291,10 @@ class FormReqScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const { topic, type, view, must_be, hero, detail } = state.requestForm;
+    const { topic, type, view, must_be, hero, detail, photo } = state.requestForm;
     const { status } = state.requestStatus;
 
-    return { topic, type, view, must_be, hero, detail, status };
+    return { topic, type, view, must_be, hero, detail, status, photo };
 };
 
 
