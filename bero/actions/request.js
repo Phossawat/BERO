@@ -1,6 +1,15 @@
 import firebase from 'firebase';
 import Expo from 'expo';
-import { REQUEST_CREATE, REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_STATUS_CREATE, REQUEST_STATUS_INPROGRESS, REQUEST_STATUS_LOADING } from './types';
+import {
+  REQUEST_CREATE,
+  REQUEST_UPDATE,
+  REQUEST_FETCH_SUCCESS,
+  REQUEST_STATUS_CREATE,
+  REQUEST_STATUS_INPROGRESS,
+  REQUEST_STATUS_LOADING,
+  REQUEST_FETCH_SINGLE_SUCCESS,
+  REQUEST_FETCH_ACCEPTED_SUCCESS,
+} from './types';
 
 export const requestUpdate = ({ prop, value }) => {
   return {
@@ -10,44 +19,42 @@ export const requestUpdate = ({ prop, value }) => {
 };
 
 export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_position }, url) => {
-    const { currentUser } = firebase.auth();
-    var facebookUid = null;
-    const requestDB = firebase.database().ref(`/requests`);
-    var ownerName = currentUser.displayName;
-    var owneruid = currentUser.uid;
-    var owneremail = currentUser.email;
-    var ownerprofilePicture = currentUser.photoURL;
-    currentUser.providerData.forEach(function (profile) {
-      facebookUid = profile.uid;
-    });
+  const { currentUser } = firebase.auth();
+  var facebookUid = null;
+  const requestDB = firebase.database().ref(`/requests`);
+  var ownerName = currentUser.displayName;
+  var owneruid = currentUser.uid;
+  var owneremail = currentUser.email;
+  currentUser.providerData.forEach(function (profile) {
+    facebookUid = profile.uid;
+  });
 
-    return (dispatch) => {
-      requestDB.push({
-        'imageUrl': url,
-        ownerName,
-        owneruid,
-        owneremail,
-        ownerprofilePicture,
-        facebookUid,
-        topic, 
-        type, 
-        view, 
-        must_be, 
-        hero, 
-        detail, 
-        mark_position,
-        'requestType': 'Request',
-        'status': 'in progress',
-        'when': new Date().getTime()
-      })
+  return (dispatch) => {
+    requestDB.push({
+      'imageUrl': url,
+      ownerName,
+      owneruid,
+      owneremail,
+      'ownerprofilePicture': 'http://graph.facebook.com/' + facebookUid + '/picture?type=square',
+      facebookUid,
+      topic,
+      type,
+      view,
+      must_be,
+      hero,
+      detail,
+      mark_position,
+      'requestType': 'Request',
+      'status': 'in progress',
+      'when': new Date().getTime()
+    })
       .then((result) => {
-        var ref = firebase.database().ref('users/'+owneruid);
+        var ref = firebase.database().ref('users/' + owneruid);
         ref.update({
           "Profile/statusCreate": "in-progress",
           "Profile/requestCreate": result.key,
         });
         dispatch({ type: REQUEST_CREATE })
-        dispatch({ type: REQUEST_STATUS_INPROGRESS })
       });
   };
 };
@@ -55,7 +62,7 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
 export const requestFetch = () => {
   const { currentUser } = firebase.auth()
   const request = firebase.database().ref(`/requests`)
- 
+
   return (dispatch) => {
     request.on('value', snapshot => {
       dispatch({
@@ -66,23 +73,59 @@ export const requestFetch = () => {
   };
 };
 
-export const request_form = () => {
+export const requestFetchSingle = (requestId) => {
+  const { currentUser } = firebase.auth()
+  const request = firebase.database().ref('requests/' + requestId)
+
+  return (dispatch) => {
+    request.on('value', snapshot => {
+      dispatch({
+        type: REQUEST_FETCH_SINGLE_SUCCESS,
+        payload: snapshot.val()
+      });
+    });
+  };
+};
+
+
+export const requestFetchAccepted = (requestId) => {
+  const { currentUser } = firebase.auth()
+  const request = firebase.database().ref('requests/' + requestId)
+
+  return (dispatch) => {
+    request.on('value', snapshot => {
+      dispatch({
+        type: REQUEST_FETCH_ACCEPTED_SUCCESS,
+        payload: snapshot.val()
+      });
+    });
+  };
+};
+
+export const request_form = (requestId) => {
+  const { currentUser } = firebase.auth();
+  var owneruid = currentUser.uid;
   return dispatch => {
+    var ref = firebase.database().ref('users/' + owneruid);
+        ref.update({
+          "Profile/statusCreate": "accepted",
+          "Profile/requestCreate": requestId,
+        });
     dispatch({ type: REQUEST_STATUS_CREATE })
   };
-  
+
 }
 
 export const request_loading = () => {
   return dispatch => {
     dispatch({ type: REQUEST_STATUS_LOADING })
   };
-  
+
 }
 
 export const request_inprogress = () => {
   return dispatch => {
     dispatch({ type: REQUEST_STATUS_INPROGRESS })
   };
-  
+
 }

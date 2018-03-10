@@ -81,11 +81,6 @@ class ChoosePhotoScreen extends React.Component {
           loading={this.state.uploading} />
       {this.props.photo &&
           <Image source={{ uri: this.props.photo }} style={{ width: window.width * 0.6, height: window.width * 0.6, borderRadius: 6, }} />}
-        {/* {this.state.uploading &&
-          <View pointerEvents="none" style={styles.loading}>
-            <ActivityIndicator size='large' />
-          </View>
-        } */}
        <View style={{ paddingTop: 20 }}>
         <Button
           buttonStyle={styles.button}

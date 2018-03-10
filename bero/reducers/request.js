@@ -1,4 +1,4 @@
-import { REQUEST_UPDATE, REQUEST_FETCH_SUCCESS } from '../actions/types';
+import { REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_FETCH_SINGLE_SUCCESS, REQUEST_FETCH_ACCEPTED_SUCCESS } from '../actions/types';
 
 const INITIAL_STATE = {
   topic: '',
@@ -13,6 +13,8 @@ const INITIAL_STATE = {
     longitude: 100.781193,
   },
   requestObject: null,
+  requestSingle: null,
+  requestAccepted: null,
 };
 
 const request = (state = INITIAL_STATE, action) => {
@@ -20,8 +22,11 @@ const request = (state = INITIAL_STATE, action) => {
     case REQUEST_UPDATE:
       return { ...state, [action.payload.prop]: action.payload.value };
     case REQUEST_FETCH_SUCCESS:
-      console.log(action);
       return { ...state, requestObject: action.payload };
+    case REQUEST_FETCH_SINGLE_SUCCESS:
+      return { ...state, requestSingle: action.payload };
+    case REQUEST_FETCH_ACCEPTED_SUCCESS:
+      return { ...state, requestAccepted: action.payload };
     default:
       return state;
   }

@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import Expo from 'expo';
-import { USER_PROFILE_UPDATE, USER_PROFILE_CREATE, JUST_REGIS } from './types';
+import { USER_PROFILE_UPDATE, USER_PROFILE_CREATE, JUST_REGIS, USER_PROFILE_FETCH } from './types';
 
 export const userProfileUpdate = ({ prop, value }) => {
   return {
@@ -31,10 +31,25 @@ export const userProfileCreate = ({ skill, score }) => {
       profilePicture,
       statusCreate: "create",
       requestCreate: "none",
+      statusRequest: "finding",
+      requestAccepted: "none",
     })
       .then(() => {
         dispatch({ type: JUST_REGIS });
         dispatch({ type: USER_PROFILE_CREATE });
       });
+  };
+};
+
+export const userProfileFetch = () => {
+  const { currentUser } = firebase.auth()
+  var userProfile = firebase.database().ref(`/users/${currentUser.uid}/Profile`);
+  return (dispatch) => {
+    userProfile.on('value', snapshot => {
+      dispatch({
+        type: USER_PROFILE_FETCH,
+        payload: snapshot.val()
+      });
+    });
   };
 };

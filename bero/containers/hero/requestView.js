@@ -88,49 +88,36 @@ const styles = StyleSheet.create({
 });
 
 class RequestView extends React.Component {
-    static navigationOptions = { 
+    static navigationOptions = {
         header: null,
         tabBarVisible: false,
-     }
+    }
     constructor(props) {
         super(props)
 
         this.state = {
             scrollY: new Animated.Value(0),
-            location: {
-                latitude: 13.731014,
-                longitude: 100.781193,
-            },
             region: {
-                latitude: 13.731014,
-                longitude: 100.781193,
+                latitude: this.props.navigation.state.params.item.mark_position.latitude,
+                longitude: this.props.navigation.state.params.item.mark_position.longitude,
                 latitudeDelta: 0.1,
                 longitudeDelta: 0.05,
             }
         }
-    }
-    state = {
-        location: {
-            latitude: 13.731014,
-            longitude: 100.781193,
-        },
-        region: {
-            latitude: 13.731014,
-            longitude: 100.781193,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.05,
-        }
     };
 
-    handleAcceptPress = ()=>{
-        this.props.hero_accepted();
+    handleAcceptPress = () => {
+        this.props.hero_accepted(this.props.navigation.state.params.item.uid);
+        this.props.navigation.navigate('FindingScreen');
+    }
+    handleSavePress = () => {
         this.props.navigation.navigate('FindingScreen');
     }
     render() {
-        if(this.props.status=="accepted"){
+        if (this.props.status == "accepted") {
             buttonStatus = true
         }
-        else{
+        else {
             buttonStatus = false
         }
         const headerTranslate = this.state.scrollY.interpolate({
@@ -169,7 +156,7 @@ class RequestView extends React.Component {
                     backgroundColor="rgba(0, 0, 0, 0.251)"
                 />
                 <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
-                        <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
+                    <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
                 </View>
                 <Animated.ScrollView
                     style={styles.fill}
@@ -180,128 +167,131 @@ class RequestView extends React.Component {
                     )}
                 >
                     <View style={styles.scrollViewContent}>
-                    <View style={styles.headerTopic}>
-                        <Text style={styles.topic}>{this.props.navigation.state.params.item.topic}</Text>
-                        <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View>
-                                <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>Mechanic</Text>
-                                <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>Watthakorn malikaow</Text></Text>
-                                <Text style={{ color: Colors.grey2, fontSize: 10, }}>Created 21/10/17</Text>
-                            </View>
-                            <Image
-                                style={styles.image}
-                                resizeMode={"cover"}
-                                source={{ uri: "https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg" }}
-                            />
-                        </View>
-                        <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-                                <View style={{ alignItems: 'center', }}>
-                                    <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
-                                    <Text style={{ color: Colors.grey2 }}>0/1</Text>
+                        <View style={styles.headerTopic}>
+                            <Text style={styles.topic}>{this.props.navigation.state.params.item.topic}</Text>
+                            <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View>
+                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.navigation.state.params.item.type}</Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.item.ownerName}</Text></Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Created 21/10/17</Text>
                                 </View>
-                                <View style={{ alignItems: 'center', }}>
-                                    <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
-                                    <Text style={{ color: Colors.grey2 }}>Public</Text>
-                                </View>
-                                <View style={{ alignItems: 'center', }}>
-                                    <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
-                                    <Text style={{ color: Colors.grey2 }}>No</Text>
-                                </View>
-                                <View style={{ alignItems: 'center', }}>
-                                    <Icon name="symbol-female" type='simple-line-icon' color={Colors.grey2} />
-                                    <Text style={{ color: Colors.grey2 }}>Yes</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
-                            <Text style={styles.topic}>Details</Text>
-                            <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>Lorem Ipsum is simply dummy text of
-                        the printing and typesetting industry. Lorem Ipsum has
-                        been the industry's standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book. It has survived
-                         not only five centuries, but also the leap into electronic
-                         typesetting, remaining essentially unchanged. It was popularised
-                         in the 1960s with the release of Letraset sheets containing
-                         Lorem Ipsum passages, and more recently with desktop publishing
-                         software like Aldus PageMaker including versions of Lorem Ipsum.
-                         </Text>
-                        </View>
-                        <View style={{ paddingTop: 15, paddingBottom: 10, }}>
-                            <Text style={styles.topic}>Location</Text>
-                        </View>
-                    </View>
-                    <MapView
-                        style={{ height: window.height * 0.3 }}
-                        initialRegion={this.state.region}
-                    >
-                        <MapView.Marker
-                            coordinate={this.state.location}
-                        />
-                    </MapView>
-                    {this.props.navigation.state.params.item.requestType =='Event' &&
-                    <View style={styles.headerTopic}>
-                        <View style={{ borderColor: Colors.grey3, borderBottomWidth: 1, borderTopWidth: 1 }} >
-                            <Text style={{
-                                color: Colors.grey1,
-                                fontSize: 25,
-                                fontWeight: 'bold',
-                                paddingTop: 10,
-                                paddingBottom: 10,
-                            }}>Reviews</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
                                 <Image
-                                    style={{
-                                        height: 40,
-                                        width: 40,
-                                        borderRadius: 20,
-                                        paddingRight: 5,
-                                    }}
+                                    style={styles.image}
                                     resizeMode={"cover"}
-                                    source={{ uri: "https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg" }}
+                                    source={{ uri: this.props.navigation.state.params.item.ownerprofilePicture }}
                                 />
-                                <View style={{ width: window.width * 0.3 }} >
-                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>Test Test</Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>21 Oct 2017</Text>
+                            </View>
+                            <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                                    <View style={{ alignItems: 'center', }}>
+                                        <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
+                                        <Text style={{ color: Colors.grey2 }}>0/1</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center', }}>
+                                        <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
+                                        <Text style={{ color: Colors.grey2 }}>Public</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center', }}>
+                                        <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
+                                        <Text style={{ color: Colors.grey2 }}>No</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center', }}>
+                                        <Icon name="symbol-female" type='simple-line-icon' color={Colors.grey2} />
+                                        <Text style={{ color: Colors.grey2 }}>Yes</Text>
+                                    </View>
                                 </View>
                             </View>
-                            <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
-                            <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}>Read all 1 Reviews</Text>
-                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                <Icon name="star" color={Colors.mintColor} size={15} />
-                                <Icon name="star" color={Colors.mintColor} size={15} />
-                                <Icon name="star" color={Colors.mintColor} size={15} />
-                                <Icon name="star" color={Colors.mintColor} size={15} />
-                                <Icon name="star" color={Colors.mintColor} size={15} />
+                            <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
+                                <Text style={styles.topic}>Details</Text>
+                                <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
+                                    {this.props.navigation.state.params.item.detail}
+                                </Text>
+                            </View>
+                            <View style={{ paddingTop: 15, paddingBottom: 10, }}>
+                                <Text style={styles.topic}>Location</Text>
                             </View>
                         </View>
-                        <Button
-                            style={{ paddingTop: 10, paddingBottom: 10, borderRadius: 3, }}
-                            buttonStyle={{ borderRadius: 3, }}
-                            backgroundColor='#EF5350'
-                            fontWeight='bold'
-                            color='white'
-                            onPress={this.handleAcceptPress}
-                            disabled={buttonStatus}
-                            title='Accept' />
-                    </View>}
-                    {this.props.navigation.state.params.item.requestType =='Request' &&
-                    <View style={{ paddingTop: 15, paddingBottom: 10, }}/>
-                    }
+                        <MapView
+                            style={{ height: window.height * 0.3 }}
+                            initialRegion={this.state.region}
+                        >
+                            <MapView.Marker
+                                coordinate={this.props.navigation.state.params.item.mark_position}
+                            />
+                        </MapView>
+                        {this.props.navigation.state.params.item.requestType == 'Event' &&
+                            <View style={styles.headerTopic}>
+                                <View style={{ borderColor: Colors.grey3, borderBottomWidth: 1, borderTopWidth: 1 }} >
+                                    <Text style={{
+                                        color: Colors.grey1,
+                                        fontSize: 25,
+                                        fontWeight: 'bold',
+                                        paddingTop: 10,
+                                        paddingBottom: 10,
+                                    }}>Reviews</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
+                                        <Image
+                                            style={{
+                                                height: 40,
+                                                width: 40,
+                                                borderRadius: 20,
+                                                paddingRight: 5,
+                                            }}
+                                            resizeMode={"cover"}
+                                            source={{ uri: "https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg" }}
+                                        />
+                                        <View style={{ width: window.width * 0.3 }} >
+                                            <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>Test Test</Text>
+                                            <Text style={{ color: Colors.grey2, fontSize: 15, }}>21 Oct 2017</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
+                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}>Read all 1 Reviews</Text>
+                                    <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                        <Icon name="star" color={Colors.mintColor} size={15} />
+                                        <Icon name="star" color={Colors.mintColor} size={15} />
+                                        <Icon name="star" color={Colors.mintColor} size={15} />
+                                        <Icon name="star" color={Colors.mintColor} size={15} />
+                                        <Icon name="star" color={Colors.mintColor} size={15} />
+                                    </View>
+                                </View>
+                            </View>}
+                        {this.props.navigation.state.params.item.requestType == 'Request' &&
+                            <View style={{ paddingTop: 15, paddingBottom: 10, }} />
+                        }
                     </View>
                 </Animated.ScrollView>
-                <View style={{ borderTopColor: Colors.grey2, borderTopWidth: 1, flex: 0.1, justifyContent: 'center', alignItems: 'flex-end' }}>
-                    <Button
-                            buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
-                            backgroundColor='#EF5350'
-                            fontWeight='bold'
-                            color='white'
-                            onPress={this.handleAcceptPress}
-                            disabled={buttonStatus}
-                            title='Accept' />
+                <View style={{ borderTopColor: Colors.grey2, borderTopWidth: 1, flex: 0.1, justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <View style={{ paddingLeft: 10, flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold' }}>{((this.props.navigation.state.params.item.topic).length > 18) ?
+                                (((this.props.navigation.state.params.item.topic).substring(0, 18 - 3)) + '...') :
+                                this.props.navigation.state.params.item.topic}</Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.item.uid}</Text></Text>
+                        </View>
+                        {this.props.navigation.state.params.item.requestType == 'Request' &&
+                            <Button
+                                buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
+                                backgroundColor='#EF5350'
+                                fontWeight='bold'
+                                color='white'
+                                onPress={this.handleAcceptPress}
+                                disabled={buttonStatus}
+                                title='Accept' />
+                        }
+                        {this.props.navigation.state.params.item.requestType == 'Event' &&
+                            <Button
+                                buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
+                                backgroundColor='#EF5350'
+                                fontWeight='bold'
+                                color='white'
+                                onPress={this.handleSavePress}
+                                disabled={buttonStatus}
+                                title='Save' />
+                        }
+                    </View>
                 </View>
                 <Animated.View
                     style={[
@@ -310,29 +300,31 @@ class RequestView extends React.Component {
                     ]}
                 >
                     <Animated.Image
-            style={[
-              styles.backgroundImage,
-              {
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-              },
-            ]}
-            source={{ uri: this.props.navigation.state.params.item.imageUrl }}
-                    />
-                    </Animated.View>
-                    <Animated.View
                         style={[
-                            styles.bar,
+                            styles.backgroundImage,
                             {
-                                transform: [
-                                    { scale: titleScale },
-                                    { translateY: titleTranslate },
-                                ],
+                                opacity: imageOpacity,
+                                transform: [{ translateY: imageTranslate }],
                             },
                         ]}
-                    >
-                        <Text style={styles.title}>{this.props.navigation.state.params.item.uid}</Text>
-                    </Animated.View>
+                        source={{ uri: this.props.navigation.state.params.item.imageUrl }}
+                    />
+                </Animated.View>
+                <Animated.View
+                    style={[
+                        styles.bar,
+                        {
+                            transform: [
+                                { scale: titleScale },
+                                { translateY: titleTranslate },
+                            ],
+                        },
+                    ]}
+                >
+                    <Text style={styles.title}>{((this.props.navigation.state.params.item.topic).length > 18) ?
+                        (((this.props.navigation.state.params.item.topic).substring(0, 18 - 3)) + '...') :
+                        this.props.navigation.state.params.item.topic}</Text>
+                </Animated.View>
             </View>
         );
     }

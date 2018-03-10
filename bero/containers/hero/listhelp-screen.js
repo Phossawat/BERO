@@ -92,7 +92,7 @@ class ListHelpScreen extends React.Component {
           //   </View>
           // </TouchableOpacity>
         )}
-        keyExtractor={item => item.imageUrl}
+        keyExtractor={item => item.uid}
         />
         <FloatingButton
           icon="map"

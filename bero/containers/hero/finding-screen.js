@@ -101,8 +101,12 @@ class FindingScreen extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.status == 'accepted') {
-
+    this.props.request_loading()
+    if (this.props.userProfileObject.statusRequest == 'accepted') {
+      this.props.requestFetchAccepted(this.props.userProfileObject.requestAccepted)
+      setTimeout(() => {
+        this.props.hero_inprogress();
+      }, 3000);
     }
     else {
       setTimeout(() => {
@@ -149,7 +153,7 @@ class FindingScreen extends React.Component {
       extrapolate: 'clamp',
     });
     let content;
-    if (this.props.status == "accepted") {
+    if (this.props.status == "in-progress") {
       content = (
         <View style={{ flex: 1, backgroundColor: 'white', }}>
           <StatusBar
@@ -167,17 +171,17 @@ class FindingScreen extends React.Component {
           >
             <View style={styles.scrollViewContent}>
               <View style={styles.headerTopic}>
-                <Text style={styles.topic}>รถเสีย</Text>
+                <Text style={styles.topic}>{this.props.requestAccepted.topic}</Text>
                 <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View>
-                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>Mechanic</Text>
-                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>Watthakorn malikaow</Text></Text>
+                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.requestAccepted.type}</Text>
+                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.ownerName}</Text></Text>
                     <Text style={{ color: Colors.grey2, fontSize: 10, }}>Created 21/10/17</Text>
                   </View>
                   <Image
                     style={styles.image}
                     resizeMode={"cover"}
-                    source={{ uri: "https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg" }}
+                    source={{ uri: this.props.requestAccepted.ownerprofilePicture }}
                   />
                 </View>
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
@@ -202,16 +206,8 @@ class FindingScreen extends React.Component {
                 </View>
                 <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
                   <Text style={styles.topic}>Details</Text>
-                  <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>Lorem Ipsum is simply dummy text of
-              the printing and typesetting industry. Lorem Ipsum has
-              been the industry's standard dummy text ever since the
-              1500s, when an unknown printer took a galley of type and
-              scrambled it to make a type specimen book. It has survived
-               not only five centuries, but also the leap into electronic
-               typesetting, remaining essentially unchanged. It was popularised
-               in the 1960s with the release of Letraset sheets containing
-               Lorem Ipsum passages, and more recently with desktop publishing
-               software like Aldus PageMaker including versions of Lorem Ipsum.
+                  <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
+                  {this.props.requestAccepted.detail}
                  </Text>
                 </View>
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
@@ -243,7 +239,7 @@ class FindingScreen extends React.Component {
                   transform: [{ translateY: imageTranslate }],
                 },
               ]}
-              source={{ uri: "https://firebasestorage.googleapis.com/v0/b/bero-be-a-hero.appspot.com/o/images%2Ftest1.jpg?alt=media&token=bcdbb820-6b5d-42f1-908d-3dc9997314ed" }}
+              source={{ uri: this.props.requestAccepted.imageUrl }}
             />
           </Animated.View>
           <Animated.View
@@ -257,7 +253,7 @@ class FindingScreen extends React.Component {
               },
             ]}
           >
-            <Text style={styles.title}>#00001</Text>
+            <Text style={styles.title}>{this.props.requestAccepted.topic}</Text>
           </Animated.View>
         </View>
       );
@@ -309,8 +305,10 @@ class FindingScreen extends React.Component {
 
 const mapStateToProps = (state) => {
   const { status } = state.heroStatus;
+  const { userProfileObject } = state.userForm;
+  const { requestAccepted } = state.requestForm;
 
-  return { status };
+  return { status, userProfileObject, requestAccepted };
 };
 
 

@@ -73,6 +73,10 @@ class MainScreen extends React.Component {
     visible: true
   };
 
+  componentDidMount(){
+    this.props.userProfileFetch()
+  }
+
   render() {
     const { visible } = this.state;
     return (
@@ -167,7 +171,7 @@ class MainScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ user: state.auth.user });
+const mapStateToProps = state => ({ user: state.auth.user, userProfileObject: state.userForm });
 
 MainScreen.propTypes = {
   user: React.PropTypes.object.isRequired,

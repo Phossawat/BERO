@@ -277,7 +277,8 @@ class MapHelpScreen extends React.Component {
           contentContainerStyle={styles.endPadding}
         >
           {this.props.requestArray.map((marker, index) => (
-            <TouchableOpacity style={styles.card} key={index}  onPress={()=>this.props.navigation.navigate('RequestView')}>
+            <TouchableOpacity style={styles.card} key={index}  onPress={()=>this.props.navigation.navigate('RequestView', {
+              item: marker })}>
               <Image
                 source={{ uri: marker.imageUrl }}
                 style={styles.cardImage}

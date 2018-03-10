@@ -55,8 +55,12 @@ class FormReqScreen extends React.Component {
     };
 
     componentWillMount() {
-        if(this.props.status=='in-progress'){
-
+        this.props.request_loading()
+        if(this.props.userProfileObject.statusCreate == 'in-progress'){
+            this.props.requestFetchSingle(this.props.userProfileObject.requestCreate)
+            setTimeout(() => {
+                this.props.request_inprogress()
+              }, 3000);
         }
         else{
         setTimeout(() => {
@@ -102,18 +106,18 @@ class FormReqScreen extends React.Component {
             content = (
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ backgroundColor: 'white' }}>
-                        <Image source={{ uri:  this.props.photo }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
+                        <Image source={{ uri:  this.props.requestSingle.imageUrl }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
                         <View style={styles.headerTopic}>
-                            <Text style={styles.topic}>{this.props.topic}</Text>
+                            <Text style={styles.topic}>{this.props.requestSingle.topic}</Text>
                             <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>1/{this.props.hero}</Text>
+                                        <Text style={{ color: Colors.grey2 }}>1/{this.props.requestSingle.hero}</Text>
                                     </View>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>{this.props.view}</Text>
+                                        <Text style={{ color: Colors.grey2 }}>{this.props.requestSingle.view}</Text>
                                     </View>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
@@ -160,7 +164,7 @@ class FormReqScreen extends React.Component {
                                         fontWeight='bold'
                                         buttonStyle={{ borderRadius: 3, }}
                                         backgroundColor='#EF5350'
-                                        onPress={()=>this.props.request_form()}
+                                        onPress={()=>this.props.request_form(this.props.userProfileObject.requestCreate)}
                                         color='white'
                                         title='Done' />
                                 </View>
@@ -291,10 +295,11 @@ class FormReqScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const { topic, type, view, must_be, hero, detail, photo } = state.requestForm;
+    const { topic, type, view, must_be, hero, detail, photo, requestSingle } = state.requestForm;
     const { status } = state.requestStatus;
+    const { userProfileObject } = state.userForm;
 
-    return { topic, type, view, must_be, hero, detail, status, photo };
+    return { topic, type, view, must_be, hero, detail, status, photo, userProfileObject, requestSingle };
 };
 
 

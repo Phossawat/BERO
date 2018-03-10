@@ -71,6 +71,7 @@ class LocationPickupScreen extends React.Component {
       longitudeDelta: 0.00421*1.5
     }
     this.setState({ mapRegion: region })
+    this.onRegionChangeComplete(region)
   };
 
   onRegionChange(region){
