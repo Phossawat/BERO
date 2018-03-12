@@ -35,7 +35,7 @@ export default class ChatScreen extends React.Component {
                         _id: 2,
                         name: 'React Native',
                         avatar: 'https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg',
-                    },
+                    }
                 },
             ],
         });
@@ -48,6 +48,7 @@ export default class ChatScreen extends React.Component {
     }
 
     render() {
+
         return (
             <View style={{ flex: 1 }}>
                 {Platform.OS === 'android' &&

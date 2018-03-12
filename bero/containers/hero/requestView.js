@@ -102,23 +102,59 @@ class RequestView extends React.Component {
                 longitude: this.props.navigation.state.params.item.mark_position.longitude,
                 latitudeDelta: 0.1,
                 longitudeDelta: 0.05,
-            }
+            },
+            user_location: null,
         }
     };
 
+    componentDidMount(){
+        this._getLocationAsync();
+    }
+
+    _getLocationAsync = async () => {
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+          this.setState({
+            locationResult: 'Permission to access location was denied',
+            location,
+          });
+        }
+     
+        let location = await Location.getCurrentPositionAsync({});
+        let user_location = {
+          latitude:       location.coords.latitude,
+          longitude:      location.coords.longitude,
+        }
+        this.setState({ user_location: user_location })
+      };
+
     handleAcceptPress = () => {
-        this.props.hero_accepted(this.props.navigation.state.params.item.uid);
+        this.props.hero_accepted(this.props.navigation.state.params.item.uid, this.state.user_location);
         this.props.navigation.navigate('FindingScreen');
     }
     handleSavePress = () => {
         this.props.navigation.navigate('FindingScreen');
     }
     render() {
-        if (this.props.status == "accepted") {
+        if (this.props.requestAccepted.heroAccepted >= Number(this.props.requestAccepted.hero)) {
+            console.log(this.props.requestAccepted +" "+ this.props.requestAccepted.hero)
             buttonStatus = true
         }
         else {
             buttonStatus = false
+        }
+
+        if (this.props.requestAccepted.must_be == 'Male'){
+            femaleStatus = "No"
+            maleStatus = "Yes"
+        }
+        else if(this.props.requestAccepted.must_be == 'Female'){
+            maleStatus = "No"
+            femaleStatus = "Yes"
+        }
+        else{
+            maleStatus = "Yes"
+            femaleStatus = "Yes"
         }
         const headerTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -168,43 +204,43 @@ class RequestView extends React.Component {
                 >
                     <View style={styles.scrollViewContent}>
                         <View style={styles.headerTopic}>
-                            <Text style={styles.topic}>{this.props.navigation.state.params.item.topic}</Text>
+                            <Text style={styles.topic}>{this.props.requestAccepted.topic}</Text>
                             <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <View>
-                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.navigation.state.params.item.type}</Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.item.ownerName}</Text></Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Created 21/10/17</Text>
+                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.requestAccepted.type}</Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.ownerName}</Text></Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>{ new Date(this.props.requestAccepted.when).toString()}</Text>
                                 </View>
                                 <Image
                                     style={styles.image}
                                     resizeMode={"cover"}
-                                    source={{ uri: this.props.navigation.state.params.item.ownerprofilePicture }}
+                                    source={{ uri: this.props.requestAccepted.ownerprofilePicture }}
                                 />
                             </View>
                             <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>0/1</Text>
+                                        <Text style={{ color: Colors.grey2 }}>{this.props.requestAccepted.heroAccepted}/{this.props.requestAccepted.hero}</Text>
                                     </View>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>Public</Text>
+                                        <Text style={{ color: Colors.grey2 }}>{this.props.requestAccepted.view}</Text>
                                     </View>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>No</Text>
+                                        <Text style={{ color: Colors.grey2 }}>{maleStatus}</Text>
                                     </View>
                                     <View style={{ alignItems: 'center', }}>
                                         <Icon name="symbol-female" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>Yes</Text>
+                                        <Text style={{ color: Colors.grey2 }}>{femaleStatus}</Text>
                                     </View>
                                 </View>
                             </View>
                             <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
                                 <Text style={styles.topic}>Details</Text>
                                 <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
-                                    {this.props.navigation.state.params.item.detail}
+                                    {this.props.requestAccepted.detail}
                                 </Text>
                             </View>
                             <View style={{ paddingTop: 15, paddingBottom: 10, }}>
@@ -216,10 +252,10 @@ class RequestView extends React.Component {
                             initialRegion={this.state.region}
                         >
                             <MapView.Marker
-                                coordinate={this.props.navigation.state.params.item.mark_position}
+                                coordinate={this.props.requestAccepted.mark_position}
                             />
                         </MapView>
-                        {this.props.navigation.state.params.item.requestType == 'Event' &&
+                        {this.props.requestAccepted.requestType == 'Event' &&
                             <View style={styles.headerTopic}>
                                 <View style={{ borderColor: Colors.grey3, borderBottomWidth: 1, borderTopWidth: 1 }} >
                                     <Text style={{
@@ -258,7 +294,7 @@ class RequestView extends React.Component {
                                     </View>
                                 </View>
                             </View>}
-                        {this.props.navigation.state.params.item.requestType == 'Request' &&
+                        {this.props.requestAccepted.requestType == 'Request' &&
                             <View style={{ paddingTop: 15, paddingBottom: 10, }} />
                         }
                     </View>
@@ -266,12 +302,12 @@ class RequestView extends React.Component {
                 <View style={{ borderTopColor: Colors.grey2, borderTopWidth: 1, flex: 0.1, justifyContent: 'center' }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ paddingLeft: 10, flexDirection: 'column', justifyContent: 'space-between' }}>
-                            <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold' }}>{((this.props.navigation.state.params.item.topic).length > 18) ?
-                                (((this.props.navigation.state.params.item.topic).substring(0, 18 - 3)) + '...') :
-                                this.props.navigation.state.params.item.topic}</Text>
-                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.item.uid}</Text></Text>
+                            <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold' }}>{((this.props.requestAccepted.topic).length > 18) ?
+                                (((this.props.requestAccepted.topic).substring(0, 18 - 3)) + '...') :
+                                this.props.requestAccepted.topic}</Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.uid}</Text></Text>
                         </View>
-                        {this.props.navigation.state.params.item.requestType == 'Request' &&
+                        {this.props.requestAccepted.requestType == 'Request' &&
                             <Button
                                 buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
                                 backgroundColor='#EF5350'
@@ -281,7 +317,7 @@ class RequestView extends React.Component {
                                 disabled={buttonStatus}
                                 title='Accept' />
                         }
-                        {this.props.navigation.state.params.item.requestType == 'Event' &&
+                        {this.props.requestAccepted.requestType == 'Event' &&
                             <Button
                                 buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
                                 backgroundColor='#EF5350'
@@ -307,7 +343,7 @@ class RequestView extends React.Component {
                                 transform: [{ translateY: imageTranslate }],
                             },
                         ]}
-                        source={{ uri: this.props.navigation.state.params.item.imageUrl }}
+                        source={{ uri: this.props.requestAccepted.imageUrl }}
                     />
                 </Animated.View>
                 <Animated.View
@@ -321,9 +357,9 @@ class RequestView extends React.Component {
                         },
                     ]}
                 >
-                    <Text style={styles.title}>{((this.props.navigation.state.params.item.topic).length > 18) ?
-                        (((this.props.navigation.state.params.item.topic).substring(0, 18 - 3)) + '...') :
-                        this.props.navigation.state.params.item.topic}</Text>
+                    <Text style={styles.title}>{((this.props.requestAccepted.topic).length > 18) ?
+                        (((this.props.requestAccepted.topic).substring(0, 18 - 3)) + '...') :
+                        this.props.requestAccepted.topic}</Text>
                 </Animated.View>
             </View>
         );
@@ -332,7 +368,8 @@ class RequestView extends React.Component {
 
 const mapStateToProps = (state) => {
     const { status } = state.heroStatus;
-    return { status };
+    const { requestAccepted } = state.requestForm;
+    return { status, requestAccepted };
 };
 
 

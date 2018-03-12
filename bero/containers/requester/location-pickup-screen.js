@@ -75,7 +75,6 @@ class LocationPickupScreen extends React.Component {
   };
 
   onRegionChange(region){
-    console.log(region.latitude+" "+region.longitude)
     this.setState({
       mapRegion: region,
     });

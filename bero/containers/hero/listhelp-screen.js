@@ -48,6 +48,12 @@ class ListHelpScreen extends React.Component {
     this.setState({ refreshing: false })
   }
 
+  handleRequest = (item) => {
+    this.props.requestFetchAccepted(item.uid)
+    this.props.navigation.navigate('RequestView', {
+      item: item })
+  }
+
   render() {
     return (
       <View style={styles.container} >
@@ -58,14 +64,14 @@ class ListHelpScreen extends React.Component {
         onRefresh={this.handleRefresh}
         renderItem={({ item }) => (
           <TouchableOpacity style={{paddingTop: 5, paddingBottom: 10}}
-          onPress={()=>this.props.navigation.navigate('RequestView', {
-            item: item })}>
+          onPress={()=>this.handleRequest(item)}>
             <Image resizeMode={"cover"}
               source={{ uri: item.imageUrl }}
               style={{ height: window.height * 0.3, borderRadius: 3, }} />
-            <Text style={{ color: Colors.grey1, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
+            <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
             <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
-            <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>0/1 persons</Text>
+            <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
+            {item.type == 'Event' &&
             <View style={{ flexDirection: 'row', paddingTop: 3, }}>
               <Icon name="star" color={Colors.mintColor} size={15} />
               <Icon name="star" color={Colors.mintColor} size={15} />
@@ -74,23 +80,8 @@ class ListHelpScreen extends React.Component {
               <Icon name="star" color={Colors.grey3} size={15} />
               <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold', }}> 0 reviews</Text>
             </View>
+            }
           </TouchableOpacity>
-          // <TouchableOpacity style={{paddingTop: 5, paddingBottom: 10}}>
-          //   <Image resizeMode={"cover"}
-          //     source={{ uri: "https://firebasestorage.googleapis.com/v0/b/bero-be-a-hero.appspot.com/o/images%2Ftest2.jpg?alt=media&token=440b10a4-f4b6-43c6-8a63-d134d5b21a73" }}
-          //     style={{ height: window.height * 0.3, borderRadius: 3, }} />
-          //   <Text style={{ color: Colors.grey1, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>Official</Text>
-          //   <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>จิตอาสาเฉพาะกิจงานพระราชพิธี...</Text>
-          //   <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>233/300 persons</Text>
-          //   <View style={{ flexDirection: 'row', paddingTop: 3, }}>
-          //     <Icon name="star" color={Colors.mintColor} size={15} />
-          //     <Icon name="star" color={Colors.mintColor} size={15} />
-          //     <Icon name="star" color={Colors.mintColor} size={15} />
-          //     <Icon name="star" color={Colors.mintColor} size={15} />
-          //     <Icon name="star" color={Colors.mintColor} size={15} />
-          //     <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold', }}> 233 reviews</Text>
-          //   </View>
-          // </TouchableOpacity>
         )}
         keyExtractor={item => item.uid}
         />

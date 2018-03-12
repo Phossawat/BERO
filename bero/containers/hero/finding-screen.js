@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Platform, Text, Dimensions, ScrollView, Image, Animated, StatusBar } from 'react-native';
+import { StyleSheet, View, Platform, Text, Dimensions, ScrollView, Image, Animated, StatusBar, Modal } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
-import { Constants, Location, Permissions, DangerZone } from 'expo';
+import { Constants, Location, Permissions, DangerZone, Font } from 'expo';
 import HeroLocateButton from '../../components/hero-locate-button';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
@@ -87,6 +87,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040'
+  },
+  Wrapper: {
+    backgroundColor: '#FFFFFF',
+    height: window.height * 0.3,
+    width: window.width * 0.8,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  viewImage: {
+    zIndex: 2,
+    top: window.height * 0.22,
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageModal: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+  },
+  outerCircle: {
+    borderRadius: 55,
+    width: 110,
+    height: 110,
+    backgroundColor: Colors.mintColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 class FindingScreen extends React.Component {
@@ -100,9 +136,15 @@ class FindingScreen extends React.Component {
     };
   }
 
+  componentDidMount() {
+    Font.loadAsync({
+      'choco': require('../../assets/fonts/chocolate-cake.ttf'),
+    });
+  }
+
   componentWillMount() {
-    this.props.request_loading()
-    if (this.props.userProfileObject.statusRequest == 'accepted') {
+    this.props.hero_loading()
+    if (this.props.userProfileObject.statusRequest == 'accepted' || this.props.userProfileObject.statusRequest == 'in-progress') {
       this.props.requestFetchAccepted(this.props.userProfileObject.requestAccepted)
       setTimeout(() => {
         this.props.hero_inprogress();
@@ -124,7 +166,16 @@ class FindingScreen extends React.Component {
     }, 3000);
   };
 
+  cancleHandle = () => {
+    this.props.hero_cancle(this.props.userProfileObject.requestAccepted);
+  }
+
+  handleDone = () => {
+    this.props.hero_finding();
+  }
+
   render() {
+
     const headerTranslate = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [0, -HEADER_SCROLL_DISTANCE],
@@ -156,6 +207,38 @@ class FindingScreen extends React.Component {
     if (this.props.status == "in-progress") {
       content = (
         <View style={{ flex: 1, backgroundColor: 'white', }}>
+          {this.props.requestAccepted.status == 'done' &&
+            <Modal
+              transparent={true}
+              animationType={'slide'}
+              onRequestClose={() => { console.log('close modal') }}>
+              <View style={styles.modalBackground}>
+                <View style={styles.viewImage}>
+                  <View style={styles.outerCircle}>
+                    <Image
+                      style={styles.imageModal}
+                      resizeMode={"cover"}
+                      source={{ uri: this.props.requestAccepted.ownerprofilePicture }}
+                    />
+                  </View>
+                </View>
+
+                <View style={styles.Wrapper}>
+                  <View style={{ alignItems: 'center', paddingTop:20 }}>
+                    <Text style={{ fontFamily: 'choco', fontSize: 32, color: Colors.red }}>Thank you</Text>
+                    <Text style={{ fontFamily: 'choco', fontSize: 18, color: Colors.red }}>for your help</Text>
+                  </View>
+                  <Button
+                    buttonStyle={{ borderRadius: 6, width: window.width * 0.3,}}
+                    backgroundColor={Colors.mintColor}
+                    fontWeight='bold'
+                    color='white'
+                    title='OK'
+                    onPress={this.handleDone} />
+                </View>
+              </View>
+            </Modal>
+          }
           <StatusBar
             translucent
             barStyle="light-content"
@@ -187,16 +270,14 @@ class FindingScreen extends React.Component {
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                     <Button
-                      style={{ width: window.width * 0.3, }}
-                      buttonStyle={{ borderRadius: 3, }}
+                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3,}}
                       backgroundColor='#EF5350'
                       fontWeight='bold'
                       color='white'
                       title='Route'
                       onPress={() => this.props.navigation.navigate('MapRouteScreen')} />
                     <Button
-                      style={{ width: window.width * 0.3, }}
-                      buttonStyle={{ borderRadius: 3, }}
+                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3,}}
                       backgroundColor='#EF5350'
                       fontWeight='bold'
                       color='white'
@@ -207,19 +288,18 @@ class FindingScreen extends React.Component {
                 <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
                   <Text style={styles.topic}>Details</Text>
                   <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
-                  {this.props.requestAccepted.detail}
-                 </Text>
+                    {this.props.requestAccepted.detail}
+                  </Text>
                 </View>
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
                     <Button
-                      style={{ width: window.width * 0.3, }}
-                      buttonStyle={{ borderRadius: 3, }}
+                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                       backgroundColor='#EF5350'
                       fontWeight='bold'
                       color='white'
                       title='Cancel'
-                      onPress={() => this.props.hero_finding()} />
+                      onPress={this.cancleHandle} />
                   </View>
                 </View>
               </View>
@@ -296,7 +376,7 @@ class FindingScreen extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1, backgroundColor: 'white', }}>
         {content}
       </View>
     );

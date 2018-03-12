@@ -92,15 +92,15 @@ const styles = StyleSheet.create({
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 class MapHelpScreen extends React.Component {
-  static navigationOptions = { 
+  static navigationOptions = {
     header: null,
     tabBarVisible: false,
-   }
+  }
   state = {
-    location: { coords: {latitude: 0, longitude: 0}},
+    location: { coords: { latitude: 0, longitude: 0 } },
     locationMarker: {
-        latitude: 13.731014,
-        longitude: 100.781193,
+      latitude: 13.731014,
+      longitude: 100.781193,
     },
     markers: [
       {
@@ -146,7 +146,7 @@ class MapHelpScreen extends React.Component {
       latitudeDelta: 0.04864195044303443,
       longitudeDelta: 0.040142817690068,
     },
-};
+  };
 
   replaceScreen = () => {
     this.props.navigation.dispatch({
@@ -201,8 +201,14 @@ class MapHelpScreen extends React.Component {
       longitudeDelta: 0.05,
     }
     if (this.refs.myRef) {
-    this.setState({location, region})
+      this.setState({ location, region })
     }
+  }
+
+  handleRequest = (item) => {
+    this.props.requestFetchAccepted(item.uid)
+    this.props.navigation.navigate('RequestView', {
+      item: item })
   }
 
   render() {
@@ -226,10 +232,10 @@ class MapHelpScreen extends React.Component {
     });
     return (
       <View style={styles.container} >
-      <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
-                        <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
-                </View>
-                <MapView
+        <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
+          <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
+        </View>
+        <MapView
           ref={map => this.map = map}
           initialRegion={this.state.region}
           showsUserLocation={true}
@@ -277,18 +283,23 @@ class MapHelpScreen extends React.Component {
           contentContainerStyle={styles.endPadding}
         >
           {this.props.requestArray.map((marker, index) => (
-            <TouchableOpacity style={styles.card} key={index}  onPress={()=>this.props.navigation.navigate('RequestView', {
-              item: marker })}>
+            <TouchableOpacity style={styles.card} key={index} onPress={() => this.handleRequest(marker)}>
               <Image
                 source={{ uri: marker.imageUrl }}
                 style={styles.cardImage}
                 resizeMode="cover"
               />
               <View style={styles.textContent}>
-                <Text numberOfLines={1} style={styles.cardtitle}>{marker.topic}</Text>
+                <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{marker.type}</Text>
+                <Text numberOfLines={1} style={styles.cardtitle}>{((marker.topic).length > 30) ?
+                                (((marker.topic).substring(0, 30 - 3)) + '...') :
+                                marker.topic}</Text>
                 <Text numberOfLines={1} style={styles.cardDescription}>
-                  {marker.detail}
+                {((marker.detail).length > 30) ?
+                                (((marker.detail).substring(0, 30 - 3)) + '...') :
+                                marker.detail}
                 </Text>
+                <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{marker.heroAccepted}/{marker.hero} persons</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -301,8 +312,8 @@ class MapHelpScreen extends React.Component {
 const mapStateToProps = (state) => {
   const { requestObject } = state.requestForm;
   const requestArray = _.map(requestObject, (val, uid) => {
-    return { ...val, uid }; 
-});
+    return { ...val, uid };
+  });
   return { requestObject, requestArray };
 };
 

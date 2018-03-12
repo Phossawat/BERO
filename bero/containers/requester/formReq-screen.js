@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
-import { StyleSheet, View, ScrollView, TextInput, Dimensions, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, TextInput, Dimensions, Image, FlatList, TouchableOpacity } from 'react-native';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import { DangerZone } from 'expo';
 import ModalSelector from 'react-native-modal-selector'
 import Colors from '../../constants/colors';
 import { style } from 'expo/src/Font';
 import firebase from 'firebase';
+import _ from 'lodash'
+
 const { Lottie } = DangerZone;
 
 
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
 
 class FormReqScreen extends React.Component {
     static navigationOptions = { header: null };
-    constructor(props){
+    constructor(props) {
         super(props)
     }
     state = {
@@ -56,19 +58,19 @@ class FormReqScreen extends React.Component {
 
     componentWillMount() {
         this.props.request_loading()
-        if(this.props.userProfileObject.statusCreate == 'in-progress'){
+        if (this.props.userProfileObject.statusCreate == 'in-progress') {
             this.props.requestFetchSingle(this.props.userProfileObject.requestCreate)
             setTimeout(() => {
                 this.props.request_inprogress()
-              }, 3000);
+            }, 3000);
         }
-        else{
-        setTimeout(() => {
-            this.props.request_form();
-          }, 3000);
+        else {
+            setTimeout(() => {
+                this.props.request_form();
+            }, 3000);
         }
     }
-    
+
     handleNextPress = () => {
         this.props.navigation.navigate('LocationPickupScreen');
     };
@@ -103,74 +105,86 @@ class FormReqScreen extends React.Component {
         let content;
 
         if (this.props.status == "in-progress") {
+            if (this.props.requestSingle.must_be == 'Male') {
+                femaleStatus = "No"
+                maleStatus = "Yes"
+            }
+            else if (this.props.requestSingle.must_be == 'Female') {
+                maleStatus = "No"
+                femaleStatus = "Yes"
+            }
+            else {
+                maleStatus = "Yes"
+                femaleStatus = "Yes"
+            }
             content = (
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ backgroundColor: 'white' }}>
-                        <Image source={{ uri:  this.props.requestSingle.imageUrl }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
+                        <Image source={{ uri: this.props.requestSingle.imageUrl }} style={{ flex: 1, width: window.width, height: window.height * 0.4, }} />
                         <View style={styles.headerTopic}>
                             <Text style={styles.topic}>{this.props.requestSingle.topic}</Text>
                             <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>1/{this.props.requestSingle.hero}</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>{this.props.requestSingle.view}</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>No</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="symbol-female" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>Yes</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <Text style={{ color: Colors.grey1, fontSize: 20, paddingTop: 20, fontWeight: 'bold', paddingBottom: 20, }}>Heros</Text>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20, }}>
-                                <Image
-                                    style={styles.image}
-                                    resizeMode={"cover"}
-                                    source={{ uri: "https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg" }}
-                                />
-                                <View style={{ width: window.width * 0.3 }} >
-                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>Test Test</Text>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold', }}> 0 reviews</Text>
-                                    </View>
-                                </View>
-                                <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>is coming</Text>
-                            </View>
-                            <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                                     <Button
-                                        style={{ width: window.width * 0.3, }}
-                                        buttonStyle={{ borderRadius: 3, }}
+                                        buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                                         backgroundColor='#EF5350'
                                         fontWeight='bold'
                                         color='white'
                                         title='Chat'
-                                        onPress={()=>this.props.navigation.navigate('ChatScreen')}/>
+                                        onPress={() => this.props.navigation.navigate('ChatScreen')} />
                                     <Button
-                                        style={{ width: window.width * 0.3, }}
                                         fontWeight='bold'
-                                        buttonStyle={{ borderRadius: 3, }}
+                                        buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                                         backgroundColor='#EF5350'
-                                        onPress={()=>this.props.request_form(this.props.userProfileObject.requestCreate)}
+                                        onPress={() => this.props.request_form(this.props.userProfileObject.requestCreate)}
                                         color='white'
                                         title='Done' />
                                 </View>
                             </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                                <Text style={{ color: Colors.grey1, fontSize: 25, paddingTop: 20, fontWeight: 'bold', paddingBottom: 20, }}>Heros</Text>
+                                <Text style={{ color: Colors.mintColor }}>{this.props.requestSingle.heroAccepted}/{this.props.requestSingle.hero}</Text>
+                            </View>
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                data={_.map(this.props.requestSingle.Helpers, (val, uid) => {
+                                    return { ...val, uid };
+                                })}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20, }}>
+                                            <Image
+                                                style={styles.image}
+                                                resizeMode={"cover"}
+                                                source={{ uri: item.ownerprofilePicture }}
+                                            />
+                                            <View style={{ width: window.width * 0.3 }} >
+                                                <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{((item.ownerName).length > 10) ?
+                                                    (((item.ownerName).substring(0, 18 - 3)) + '...') :
+                                                    item.ownerName}</Text>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Icon name="star" color={Colors.mintColor} size={15} />
+                                                    <Icon name="star" color={Colors.mintColor} size={15} />
+                                                    <Icon name="star" color={Colors.mintColor} size={15} />
+                                                    <Icon name="star" color={Colors.mintColor} size={15} />
+                                                    <Icon name="star" color={Colors.mintColor} size={15} />
+                                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold', }}> 0 reviews</Text>
+                                                </View>
+                                            </View>
+                                            <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>is coming</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
+                                keyExtractor={item => item.uid}
+                            />
+                            <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, paddingTop: 20 }}>
+                                <Text style={styles.topic}>Details</Text>
+                                <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
+                                    {this.props.requestSingle.detail}
+                                </Text>
+                            </View>
+                            <Text style={{ color: Colors.grey2, fontSize: 10, paddingTop: 10, }}>{ new Date(this.props.requestSingle.when).toString()}</Text>
                         </View>
-
                     </ScrollView>
                 </View>
             );
@@ -254,8 +268,8 @@ class FormReqScreen extends React.Component {
                             style={{ paddingTop: 10, paddingBottom: 10, borderRadius: 3, }}
                             buttonStyle={{ borderRadius: 6, borderColor: Colors.mintColor, borderWidth: 1, }}
                             backgroundColor='white'
-                            fontSize= {15}
-                            color= {Colors.mintColor}
+                            fontSize={15}
+                            color={Colors.mintColor}
                             onPress={this.handleNextPress}
                             title='Next' />
                     </View>
@@ -263,7 +277,7 @@ class FormReqScreen extends React.Component {
             );
         } else {
             content = (
-                <View style={{ flex: 1,backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
+                <View style={{ flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', }}>
                     <View>
                         <Lottie
                             ref={animation => {
@@ -296,10 +310,13 @@ class FormReqScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     const { topic, type, view, must_be, hero, detail, photo, requestSingle } = state.requestForm;
+    // const { heroArray } = _.map(requestSingle.helpers, (val, uid) => {
+    //         return { ...val, uid }; 
+    //     });
     const { status } = state.requestStatus;
     const { userProfileObject } = state.userForm;
 
-    return { topic, type, view, must_be, hero, detail, status, photo, userProfileObject, requestSingle };
+    return { topic, type, view, must_be, hero, detail, status, photo, userProfileObject, requestSingle, };
 };
 
 

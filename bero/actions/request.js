@@ -45,8 +45,9 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
       detail,
       mark_position,
       'requestType': 'Request',
-      'status': 'in progress',
-      'when': new Date().getTime()
+      'status': 'in-progress',
+      'when': Date.now(),
+      heroAccepted: 0,
     })
       .then((result) => {
         var ref = firebase.database().ref('users/' + owneruid);
@@ -64,7 +65,7 @@ export const requestFetch = () => {
   const request = firebase.database().ref(`/requests`)
 
   return (dispatch) => {
-    request.on('value', snapshot => {
+    request.orderByChild('status').equalTo('in-progress').on('value', snapshot => {
       dispatch({
         type: REQUEST_FETCH_SUCCESS,
         payload: snapshot.val()
@@ -107,10 +108,18 @@ export const request_form = (requestId) => {
   var owneruid = currentUser.uid;
   return dispatch => {
     var ref = firebase.database().ref('users/' + owneruid);
-        ref.update({
-          "Profile/statusCreate": "accepted",
-          "Profile/requestCreate": requestId,
-        });
+    ref.update({
+      "Profile/statusCreate": "create",
+    });
+    if(requestId==null){
+
+    }
+    else{
+    var ref2 = firebase.database().ref('requests/' + requestId);
+    ref2.update({
+      "status": "done",
+    });
+    }
     dispatch({ type: REQUEST_STATUS_CREATE })
   };
 
