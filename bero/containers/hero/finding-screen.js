@@ -275,7 +275,7 @@ class FindingScreen extends React.Component {
                       fontWeight='bold'
                       color='white'
                       title='Route'
-                      onPress={() => this.props.navigation.navigate('MapRouteScreen')} />
+                      onPress={() => this.props.navigation.navigate('MapRouteScreen',{ item: this.props.requestAccepted.mark_position })} />
                     <Button
                       buttonStyle={{ borderRadius: 3, width: window.width * 0.3,}}
                       backgroundColor='#EF5350'

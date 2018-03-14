@@ -30,8 +30,8 @@ export default class MapRouteScreen extends React.Component {
     coords: [],
     location: { coords: { latitude: 0, longitude: 0 } },
     locationMarker: {
-      latitude: 13.731014,
-      longitude: 100.781193,
+      latitude: this.props.navigation.state.params.item.latitude,
+      longitude: this.props.navigation.state.params.item.longitude,
     },
     region: null,
   };
@@ -42,13 +42,14 @@ export default class MapRouteScreen extends React.Component {
 
   locationChanged = (location) => {
     region = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+      latitude: this.props.navigation.state.params.item.latitude,
+      longitude: this.props.navigation.state.params.item.longitude,
       latitudeDelta: 0.1,
       longitudeDelta: 0.05,
     }
     var StringLocation = location.coords.latitude + ',' + location.coords.longitude
-    this.getDirections(StringLocation, "13.731014,100.781193")
+    var StringMarkLocation = this.props.navigation.state.params.item.latitude + ',' + this.props.navigation.state.params.item.longitude
+    this.getDirections(StringLocation, StringMarkLocation)
     if (this.refs.myRef) {
       this.setState({ location, region })
     }
@@ -90,7 +91,7 @@ export default class MapRouteScreen extends React.Component {
         name={'map'}
         type="font-awesome"
         color={'#EF5350'}
-        onPress={() => openMap({ latitude: 13.731014, longitude: 100.781193 })}
+        onPress={() => openMap({ latitude: this.props.navigation.state.params.item.latitude, longitude: this.props.navigation.state.params.item.longitude })}
       />
         </View>
         <MapView
