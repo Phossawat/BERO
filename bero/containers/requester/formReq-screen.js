@@ -60,6 +60,7 @@ class FormReqScreen extends React.Component {
         this.props.request_loading()
         if (this.props.userProfileObject.statusCreate == 'in-progress') {
             this.props.requestFetchSingle(this.props.userProfileObject.requestCreate)
+            this.props.fetch_messages(this.props.userProfileObject.requestCreate)
             setTimeout(() => {
                 this.props.request_inprogress()
             }, 3000);
@@ -73,6 +74,9 @@ class FormReqScreen extends React.Component {
 
     handleNextPress = () => {
         this.props.navigation.navigate('LocationPickupScreen');
+    };
+    handleChatPress = () => {
+        this.props.navigation.navigate('ChatScreen',{ requestId: this.props.userProfileObject.requestCreate})
     };
 
     render() {
@@ -131,7 +135,7 @@ class FormReqScreen extends React.Component {
                                         fontWeight='bold'
                                         color='white'
                                         title='Chat'
-                                        onPress={() => this.props.navigation.navigate('ChatScreen')} />
+                                        onPress={this.handleChatPress} />
                                     <Button
                                         fontWeight='bold'
                                         buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}

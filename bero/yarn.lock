@@ -3792,6 +3792,19 @@ react-native-phone-call@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/react-native-phone-call/-/react-native-phone-call-1.0.4.tgz#809b7dd27452e429c9deddb4c311997702e333ba"
 
+react-native-rating@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-rating/-/react-native-rating-2.0.4.tgz#4af61b445fa81d869dee63545507a42ef19948ce"
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-ratings@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-5.3.0.tgz#f496ac6ebe934e29d7e2cfe8359b6a812ec95599"
+  dependencies:
+    lodash "^4.17.4"
+    prop-types "^15.5.10"
+
 react-native-safe-module@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-module/-/react-native-safe-module-1.2.0.tgz#a23824ca24edc2901913694a76646475113d570d"

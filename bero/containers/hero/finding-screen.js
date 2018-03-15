@@ -146,6 +146,7 @@ class FindingScreen extends React.Component {
     this.props.hero_loading()
     if (this.props.userProfileObject.statusRequest == 'accepted' || this.props.userProfileObject.statusRequest == 'in-progress') {
       this.props.requestFetchAccepted(this.props.userProfileObject.requestAccepted)
+      this.props.fetch_messages(this.props.userProfileObject.requestAccepted);
       setTimeout(() => {
         this.props.hero_inprogress();
       }, 3000);
@@ -157,13 +158,11 @@ class FindingScreen extends React.Component {
     }
   }
 
-  goToNearMe = async () => {
+  goToNearMe = () => {
     this.setState({ loading: true });
     this.props.requestFetch()
-    setTimeout(() => {
-      this.props.navigation.navigate('ListHelpScreen');
-      this.setState({ loading: false });
-    }, 3000);
+    this.props.navigation.navigate('ListHelpScreen');
+    this.setState({ loading: false });
   };
 
   cancleHandle = () => {
@@ -172,6 +171,10 @@ class FindingScreen extends React.Component {
 
   handleDone = () => {
     this.props.hero_finding();
+  }
+
+  handleChat = () => {
+    this.props.navigation.navigate('ChatScreen', { requestId: this.props.userProfileObject.requestAccepted})
   }
 
   render() {
@@ -224,12 +227,12 @@ class FindingScreen extends React.Component {
                 </View>
 
                 <View style={styles.Wrapper}>
-                  <View style={{ alignItems: 'center', paddingTop:20 }}>
+                  <View style={{ alignItems: 'center', paddingTop: 20 }}>
                     <Text style={{ fontFamily: 'choco', fontSize: 32, color: Colors.red }}>Thank you</Text>
                     <Text style={{ fontFamily: 'choco', fontSize: 18, color: Colors.red }}>for your help</Text>
                   </View>
                   <Button
-                    buttonStyle={{ borderRadius: 6, width: window.width * 0.3,}}
+                    buttonStyle={{ borderRadius: 6, width: window.width * 0.3, }}
                     backgroundColor={Colors.mintColor}
                     fontWeight='bold'
                     color='white'
@@ -270,19 +273,19 @@ class FindingScreen extends React.Component {
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                     <Button
-                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3,}}
+                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                       backgroundColor='#EF5350'
                       fontWeight='bold'
                       color='white'
                       title='Route'
-                      onPress={() => this.props.navigation.navigate('MapRouteScreen',{ item: this.props.requestAccepted.mark_position })} />
+                      onPress={() => this.props.navigation.navigate('MapRouteScreen', { item: this.props.requestAccepted.mark_position })} />
                     <Button
-                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3,}}
+                      buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                       backgroundColor='#EF5350'
                       fontWeight='bold'
                       color='white'
                       title='Chat'
-                      onPress={() => this.props.navigation.navigate('ChatScreen')} />
+                      onPress={this.handleChat} />
                   </View>
                 </View>
                 <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>

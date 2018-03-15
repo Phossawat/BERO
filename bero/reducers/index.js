@@ -4,6 +4,7 @@ import userReducer from './user';
 import requestReducer from './request';
 import requestStatus from './requestStatus';
 import heroStatus from './heroStatus';
+import chat from './chat';
 
 export default combineReducers({
   auth: authReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
   requestForm: requestReducer,
   requestStatus: requestStatus,
   heroStatus: heroStatus,
+  chatMessages: chat,
 });

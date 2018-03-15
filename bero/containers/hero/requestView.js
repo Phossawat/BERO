@@ -8,6 +8,8 @@ import {
 import Colors from '../../constants/colors';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import { MapView, Constants, Location, Permissions } from 'expo';
+import Loader from '../../components/loader';
+import _ from 'lodash'
 
 const window = Dimensions.get('window');
 const HEADER_MAX_HEIGHT = 300;
@@ -104,57 +106,77 @@ class RequestView extends React.Component {
                 longitudeDelta: 0.05,
             },
             user_location: null,
+            loading: false,
         }
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this._getLocationAsync();
+    }
+
+    ratingCompleted(rating) {
+        console.log("Rating is: " + rating)
     }
 
     _getLocationAsync = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
-          this.setState({
-            locationResult: 'Permission to access location was denied',
-            location,
-          });
+            this.setState({
+                locationResult: 'Permission to access location was denied',
+                location,
+            });
         }
-     
+
         let location = await Location.getCurrentPositionAsync({});
         let user_location = {
-          latitude:       location.coords.latitude,
-          longitude:      location.coords.longitude,
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
         }
         this.setState({ user_location: user_location })
-      };
+    };
 
     handleAcceptPress = () => {
+        this.setState({ loading: true })
         this.props.hero_accepted(this.props.navigation.state.params.item.uid, this.state.user_location);
-        this.props.navigation.navigate('FindingScreen');
+        setTimeout(() => {
+            this.props.navigation.navigate('FindingScreen');
+            this.setState({ loading: false });
+        }, 1000)
     }
     handleSavePress = () => {
-        this.props.navigation.navigate('FindingScreen');
+        this.setState({ loading: true })
+        this.props.save_event(this.props.navigation.state.params.item.uid);
+        setTimeout(() => {
+            this.props.navigation.navigate('FindingScreen');
+            this.setState({ loading: false });
+        }, 1000)
     }
     render() {
         if (this.props.requestAccepted.heroAccepted >= Number(this.props.requestAccepted.hero)) {
-            console.log(this.props.requestAccepted +" "+ this.props.requestAccepted.hero)
+            console.log(this.props.requestAccepted + " " + this.props.requestAccepted.hero)
             buttonStatus = true
         }
         else {
             buttonStatus = false
         }
 
-        if (this.props.requestAccepted.must_be == 'Male'){
+        if (this.props.requestAccepted.must_be == 'Male') {
             femaleStatus = "No"
             maleStatus = "Yes"
         }
-        else if(this.props.requestAccepted.must_be == 'Female'){
+        else if (this.props.requestAccepted.must_be == 'Female') {
             maleStatus = "No"
             femaleStatus = "Yes"
         }
-        else{
+        else {
             maleStatus = "Yes"
             femaleStatus = "Yes"
+        }
+        if (this.props.requestAccepted.numComments > 0) {
+            comment = _.map(this.props.requestAccepted.Comments, (val, uid) => {
+                return { ...val, uid };
+            })
+            lastComment = this.props.requestAccepted.numComments - 1
         }
         const headerTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -186,6 +208,8 @@ class RequestView extends React.Component {
 
         return (
             <View style={{ flex: 1, backgroundColor: 'white', }}>
+                <Loader
+                    loading={this.state.loading} />
                 <StatusBar
                     translucent
                     barStyle="light-content"
@@ -209,7 +233,7 @@ class RequestView extends React.Component {
                                 <View>
                                     <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.requestAccepted.type}</Text>
                                     <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.ownerName}</Text></Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>{ new Date(this.props.requestAccepted.when).toString()}</Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>{new Date(this.props.requestAccepted.when).toString()}</Text>
                                 </View>
                                 <Image
                                     style={styles.image}
@@ -217,26 +241,40 @@ class RequestView extends React.Component {
                                     source={{ uri: this.props.requestAccepted.ownerprofilePicture }}
                                 />
                             </View>
-                            <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>{this.props.requestAccepted.heroAccepted}/{this.props.requestAccepted.hero}</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>{this.props.requestAccepted.view}</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>{maleStatus}</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <Icon name="symbol-female" type='simple-line-icon' color={Colors.grey2} />
-                                        <Text style={{ color: Colors.grey2 }}>{femaleStatus}</Text>
+                            {this.props.requestAccepted.requestType == 'Request' &&
+                                <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                                        <View style={{ alignItems: 'center', }}>
+                                            <Icon name="people" type='simple-line-icon' color={Colors.grey2} />
+                                            <Text style={{ color: Colors.grey2 }}>{this.props.requestAccepted.heroAccepted}/{this.props.requestAccepted.hero}</Text>
+                                        </View>
+                                        <View style={{ alignItems: 'center', }}>
+                                            <Icon name="eye" type='simple-line-icon' color={Colors.grey2} />
+                                            <Text style={{ color: Colors.grey2 }}>{this.props.requestAccepted.view}</Text>
+                                        </View>
+                                        <View style={{ alignItems: 'center', }}>
+                                            <Icon name="symbol-male" type='simple-line-icon' color={Colors.grey2} />
+                                            <Text style={{ color: Colors.grey2 }}>{maleStatus}</Text>
+                                        </View>
+                                        <View style={{ alignItems: 'center', }}>
+                                            <Icon name="symbol-female" type='simple-line-icon' color={Colors.grey2} />
+                                            <Text style={{ color: Colors.grey2 }}>{femaleStatus}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
+                            }
+                            {this.props.requestAccepted.requestType == 'Event' &&
+                                <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                                        <Icon name="clock" type='simple-line-icon' color={Colors.mintColor} />
+                                        <Text style={{ color: Colors.grey2, paddingLeft: 10 }}>{this.props.requestAccepted.timeEvent}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                                        <Icon name="users" type='font-awesome' color={Colors.mintColor} />
+                                        <Text style={{ color: Colors.grey2, paddingLeft: 10 }}>{this.props.requestAccepted.heroAccepted}/{this.props.requestAccepted.hero} Persons</Text>
+                                    </View>
+                                </View>
+                            }
                             <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
                                 <Text style={styles.topic}>Details</Text>
                                 <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
@@ -264,33 +302,30 @@ class RequestView extends React.Component {
                                         fontWeight: 'bold',
                                         paddingTop: 10,
                                         paddingBottom: 10,
-                                    }}>Reviews</Text>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
-                                        <Image
-                                            style={{
-                                                height: 40,
-                                                width: 40,
-                                                borderRadius: 20,
-                                                paddingRight: 5,
-                                            }}
-                                            resizeMode={"cover"}
-                                            source={{ uri: "https://s-media-cache-ak0.pinimg.com/736x/43/cd/6e/43cd6e82491bf130d97624c198ee1a3f--funny-movie-quotes-funny-movies.jpg" }}
-                                        />
-                                        <View style={{ width: window.width * 0.3 }} >
-                                            <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>Test Test</Text>
-                                            <Text style={{ color: Colors.grey2, fontSize: 15, }}>21 Oct 2017</Text>
+                                    }}>Comments</Text>
+                                    {this.props.requestAccepted.numComments > 0 &&
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
+                                            <Image
+                                                style={{
+                                                    height: 40,
+                                                    width: 40,
+                                                    borderRadius: 20,
+                                                }}
+                                                resizeMode={"cover"}
+                                                source={{ uri: comment[lastComment].ownerprofilePicture }}
+                                            />
+                                            <View style={{ paddingLeft: 10 }}>
+                                                <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].ownerName}</Text>
+                                                <Text style={{ color: Colors.grey2, fontSize: 15, }}>{comment[lastComment].comment}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                    <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</Text>
+                                    }
+                                    <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
-                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}>Read all 1 Reviews</Text>
-                                    <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
-                                        <Icon name="star" color={Colors.mintColor} size={15} />
+                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}>Read all {this.props.requestAccepted.numComments} Comments</Text>
+                                    <View style={{ paddingTop: 10 }}>
+                                        <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{this.props.requestAccepted.rated / this.props.requestAccepted.numComments}</Text> /5</Text>
                                     </View>
                                 </View>
                             </View>}
@@ -305,7 +340,7 @@ class RequestView extends React.Component {
                             <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold' }}>{((this.props.requestAccepted.topic).length > 18) ?
                                 (((this.props.requestAccepted.topic).substring(0, 18 - 3)) + '...') :
                                 this.props.requestAccepted.topic}</Text>
-                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.uid}</Text></Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.item.uid}</Text></Text>
                         </View>
                         {this.props.requestAccepted.requestType == 'Request' &&
                             <Button
