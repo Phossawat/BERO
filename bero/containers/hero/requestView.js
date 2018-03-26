@@ -151,6 +151,9 @@ class RequestView extends React.Component {
             this.setState({ loading: false });
         }, 1000)
     }
+    handleComment = (comment) => {
+        this.props.navigation.navigate('AllCommentScreen' ,{ item: comment });
+    }
     render() {
         if (this.props.requestAccepted.heroAccepted >= Number(this.props.requestAccepted.hero)) {
             console.log(this.props.requestAccepted + " " + this.props.requestAccepted.hero)
@@ -323,10 +326,15 @@ class RequestView extends React.Component {
                                     <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
-                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}>Read all {this.props.requestAccepted.numComments} Comments</Text>
+                                {this.props.requestAccepted.numComments > 0 &&
+                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}
+                                    onPress={()=>this.handleComment(comment)}>Read all {comment.length} Comments</Text>
+                                }
+                                {this.props.requestAccepted.numComments > 0 &&
                                     <View style={{ paddingTop: 10 }}>
-                                        <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{this.props.requestAccepted.rated / this.props.requestAccepted.numComments}</Text> /5</Text>
+                                        <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{(this.props.requestAccepted.rated / comment.length).toFixed(1)}</Text> /5</Text>
                                     </View>
+                                }
                                 </View>
                             </View>}
                         {this.props.requestAccepted.requestType == 'Request' &&

@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 });
 
 
-class ChoosePhotoScreen extends React.Component {
+class ChoosePhotoAnnounced extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state
     return {
@@ -63,11 +63,11 @@ class ChoosePhotoScreen extends React.Component {
   };
 
   onButtonPress = () => {
-    const { topic, type, view, must_be, hero, detail, mark_position } = this.props;
+    const { topic, detail, mark_position } = this.props;
     this.setState({ uploading: true })
-    this.props.requestCreate({ topic, type, view, must_be, hero, detail, mark_position }, this.state.url );
+    this.props.announcedCreate({ topic, detail, mark_position }, this.state.url );
     setTimeout(() => {
-      this.props.navigation.navigate('FormReqScreen');
+      this.props.navigation.navigate('HomeScreen');
       this.setState({ uploading: false });
     }, 1000);
   }
@@ -136,7 +136,7 @@ class ChoosePhotoScreen extends React.Component {
         uploadResponse = await uploadImageAsync(pickerResult.uri);
         uploadResult = await uploadResponse.json();
         this.setState({ url: uploadResult.location });
-        this.props.requestUpdate({  prop: 'photo', value: uploadResult.location })
+        this.props.announcedUpdate({  prop: 'photo', value: uploadResult.location })
       }
     } catch (e) {
       console.log({ uploadResponse });
@@ -176,10 +176,10 @@ async function uploadImageAsync(uri) {
 
 
 const mapStateToProps = (state) => {
-  const { topic, type, view, must_be, hero, detail, mark_position, photo } = state.requestForm
+  const { topic, detail, mark_position, photo } = state.announced
 
-  return { topic, type, view, must_be, hero, detail, mark_position, photo };
+  return { topic, detail, mark_position, photo };
 };
 
 
-export default connect(mapStateToProps, ActionCreators)(ChoosePhotoScreen);
+export default connect(mapStateToProps, ActionCreators)(ChoosePhotoAnnounced);

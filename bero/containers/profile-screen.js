@@ -40,6 +40,13 @@ class ProfileScreen extends React.Component {
    handleFriendsPress = () => {
      this.props.navigation.navigate('FriendList');
    };
+   handleRedeemPress = () => {
+    this.props.navigation.navigate('RedeemScreen');
+   }
+   handleSavedPress = () => {
+    this.props.fetch_saved();
+    this.props.navigation.navigate('SavedScreen');
+   }
 
   render() {
     return (
@@ -89,11 +96,31 @@ class ProfileScreen extends React.Component {
 
           <ListItem
             component={TouchableHighlight}
+            title="Saved"
+            titleStyle= {{ fontWeight: 'bold' }}
+            rightIcon={{ name: 'heart-outline', type: 'material-community', color: '#263238' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
+            onPress={this.handleSavedPress}
+            underlayColor="#ecf0f1"
+          />
+
+          <ListItem
+            component={TouchableHighlight}
             title="Friends"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'address-book-o', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleFriendsPress}
+            underlayColor="#ecf0f1"
+          />
+
+          <ListItem
+            component={TouchableHighlight}
+            title="Redeem Voucher"
+            titleStyle= {{ fontWeight: 'bold' }}
+            rightIcon={{ name: 'wallet-giftcard', type: 'material-community', color: '#263238' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
+            onPress={this.handleRedeemPress}
             underlayColor="#ecf0f1"
           />
 
@@ -107,23 +134,23 @@ class ProfileScreen extends React.Component {
             underlayColor="#ecf0f1"
           />
 
-          <ListItem
+          {/* <ListItem
             component={TouchableHighlight}
             title="Give us feedback"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'feedback', color: '#263238' }}
             containerStyle={{  borderColor: '#CFD8DC' }}
             underlayColor="#ecf0f1"
-          />
+          /> */}
 
-          <ListItem
+          {/* <ListItem
             component={TouchableHighlight}
             title="Get help"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'question', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderBottomWidth: 0, borderColor: '#CFD8DC' }}
             underlayColor="#ecf0f1"
-          />
+          /> */}
         </List>
 
       </ScrollView>

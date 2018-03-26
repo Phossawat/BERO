@@ -20,6 +20,7 @@ class App extends React.Component {
 
   componentDidUpdate() {
     this.routeOnAuth();
+    this.props.fetch_event();
   }
 
   routeOnAuth() {

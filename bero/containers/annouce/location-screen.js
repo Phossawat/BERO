@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
   },
 });
 
-class LocationPickupScreen extends React.Component {
+class LocationScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       tabBarVisible: false,
       title: 'Position',
-      headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Next"} onPress={() => {navigation.navigate('ChoosePhotoScreen')}} />,
+      headerRight: <Button color={Colors.red} fontSize={20} backgroundColor={"transparent"} title={"Next"} onPress={() => {navigation.navigate('ChoosePhotoAnnounced')}} />,
       headerTintColor: '#EF5350',
       headerTitleStyle: { color: 'black' },
       headerStyle: {
@@ -66,11 +66,6 @@ class LocationPickupScreen extends React.Component {
     this.setState({
       mapRegion: region,
     });
-  // var position = {
-  //     latitude: region.latitude,
-  //     longitude: region.longitude
-  //   }
-  // this.props.requestUpdate({  prop: 'mark_position', value: position  })
   }
 
   onRegionChangeComplete(region){
@@ -81,7 +76,7 @@ class LocationPickupScreen extends React.Component {
       latitude: region.latitude,
       longitude: region.longitude
     }
-  this.props.requestUpdate({  prop: 'mark_position', value: position  })
+  this.props.announcedUpdate({  prop: 'mark_position', value: position  })
   }
 
   render() {
@@ -106,10 +101,10 @@ class LocationPickupScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { mark_position } = state.requestForm;
+  const { mark_position } = state.announced;
 
   return { mark_position };
 };
 
 
-export default connect(mapStateToProps, ActionCreators)(LocationPickupScreen);
+export default connect(mapStateToProps, ActionCreators)(LocationScreen);

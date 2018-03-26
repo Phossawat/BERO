@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import Expo from 'expo';
+import GeoFire from 'geofire';
 import {
   REQUEST_CREATE,
   REQUEST_UPDATE,
@@ -12,6 +13,8 @@ import {
   SAVE_EVENT_SUCCESS,
   FETCH_MESSAGES,
   SEND_MESSAGES,
+  FETCH_SAVED,
+  FETCH_EVENT,
 } from './types';
 
 export const requestUpdate = ({ prop, value }) => {
@@ -53,6 +56,8 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
       heroAccepted: 0,
     })
       .then((result) => {
+        var geoFire = new GeoFire(firebase.database().ref(`/geofire`));
+        geoFire.set(result.key,[mark_position.latitude,mark_position.longitude])
         var ref = firebase.database().ref('users/' + owneruid);
         ref.update({
           "Profile/statusCreate": "in-progress",
@@ -64,14 +69,14 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
             'createdAt': Date.now(),
             'system': true,
             'text': "Hello from BERO",
-          }).then(()=>{
+          }).then(() => {
             const request = firebase.database().ref('requests/' + result.key)
-          request.on('value', snapshot => {
-            dispatch({
-              type: REQUEST_FETCH_SINGLE_SUCCESS,
-              payload: snapshot.val()
+            request.on('value', snapshot => {
+              dispatch({
+                type: REQUEST_FETCH_SINGLE_SUCCESS,
+                payload: snapshot.val()
+              });
             });
-          });
           })
         });
       });
@@ -90,6 +95,19 @@ export const requestFetch = () => {
     });
   };
 };
+
+export const requestFetchNear = () => {
+  var geoFire = new GeoFire(firebase.database().ref(`/geofire`));
+  var geoQuery = geoFire.query({
+    center: [13.732772, 100.781193],
+    radius: 1.609
+  });
+  return () =>{
+    geoQuery.on("key_entered", (key, location, distance) => {
+      console.log("Help " + key + " found at " + location + " (" + distance + " km away)");
+    });
+  }
+}
 
 export const requestFetchSingle = (requestId) => {
   const { currentUser } = firebase.auth()
@@ -158,7 +176,8 @@ export const request_inprogress = () => {
 
 export const save_event = (requestId) => {
   const { currentUser } = firebase.auth()
-  const request = firebase.database().ref('requests/' + requestId + '/saved')
+  var owneruid = currentUser.uid
+  const request = firebase.database().ref('users/' + owneruid + '/saved')
   return () => {
     request.child(requestId).set({
       requestId,
@@ -166,9 +185,35 @@ export const save_event = (requestId) => {
   };
 };
 
+export const fetch_saved = () => {
+  const { currentUser } = firebase.auth()
+  var owneruid = currentUser.uid
+  const saved = firebase.database().ref('users/' + owneruid + '/saved')
+  return (dispatch) => {
+    saved.on('value', snapshot => {
+      keys = Object.keys(snapshot.val())
+      const promises = keys.map(id => {
+        firebase.database().ref('requests').child(id).on('value', s => s)
+      })
+      // Wait for all the async requests mapped into 
+      // the array to complete
+      Promise.all(promises)
+        .then(request => {
+          dispatch({
+            type: FETCH_SAVED,
+            payload: request
+          })
+        })
+        .catch(err => {
+          // handle error
+        })
+    })
+  };
+}
+
 export const fetch_messages = (requestId) => {
   const { currentUser } = firebase.auth()
-  const chat = firebase.database().ref('chats/'+requestId)
+  const chat = firebase.database().ref('chats/' + requestId)
   return (dispatch) => {
     chat.on('value', snapshot => {
       dispatch({
@@ -179,7 +224,20 @@ export const fetch_messages = (requestId) => {
   };
 };
 
-export const send_messages = (message, requestId) => { 
+export const fetch_event = () => {
+  const { currentUser } = firebase.auth()
+  const event = firebase.database().ref('requests/')
+  return (dispatch) => {
+    event.orderByChild('type').equalTo('Event').on('value', snapshot => {
+      dispatch({
+        type: FETCH_EVENT,
+        payload: snapshot.val()
+      });
+    });
+  };
+};
+
+export const send_messages = (message, requestId) => {
   const { currentUser } = firebase.auth()
   const chat = firebase.database().ref('chats/' + requestId)
   console.log(message[0])
@@ -193,8 +251,8 @@ export const send_messages = (message, requestId) => {
       'createdAt': Date.now(),
       text,
       user,
-    }).then(()=>{
-      dispatch({ type: SEND_MESSAGES})
+    }).then(() => {
+      dispatch({ type: SEND_MESSAGES })
     })
   };
 };

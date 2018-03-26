@@ -76,7 +76,7 @@ class FormReqScreen extends React.Component {
         this.props.navigation.navigate('LocationPickupScreen');
     };
     handleChatPress = () => {
-        this.props.navigation.navigate('ChatScreen',{ requestId: this.props.userProfileObject.requestCreate})
+        this.props.navigation.navigate('ChatScreen',{ requestId: this.props.userProfileObject.requestCreate , requestTopic: this.props.requestSingle.topic })
     };
 
     render() {

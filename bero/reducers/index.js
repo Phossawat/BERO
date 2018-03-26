@@ -5,6 +5,7 @@ import requestReducer from './request';
 import requestStatus from './requestStatus';
 import heroStatus from './heroStatus';
 import chat from './chat';
+import announced from './announced';
 
 export default combineReducers({
   auth: authReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
   requestStatus: requestStatus,
   heroStatus: heroStatus,
   chatMessages: chat,
+  announced: announced,
 });

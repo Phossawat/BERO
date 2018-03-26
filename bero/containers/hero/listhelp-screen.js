@@ -71,16 +71,6 @@ class ListHelpScreen extends React.Component {
             <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
             <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
             <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
-            {item.type == 'Event' &&
-            <View style={{ flexDirection: 'row', paddingTop: 3, }}>
-              <Icon name="star" color={Colors.mintColor} size={15} />
-              <Icon name="star" color={Colors.mintColor} size={15} />
-              <Icon name="star" color={Colors.mintColor} size={15} />
-              <Icon name="star" color={Colors.grey3} size={15} />
-              <Icon name="star" color={Colors.grey3} size={15} />
-              <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold', }}> 0 reviews</Text>
-            </View>
-            }
           </TouchableOpacity>
         )}
         keyExtractor={item => item.uid}

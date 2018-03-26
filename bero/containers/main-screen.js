@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
 import { Constants } from 'expo';
@@ -10,6 +10,7 @@ import SearchBox from '../components/SearchBox';
 import { FloatingAction } from 'react-native-floating-action';
 import call from 'react-native-phone-call'
 import Colors from '../constants/colors';
+import _ from 'lodash';
 
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -40,7 +41,23 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040'
+  },
+  Wrapper: {
+    backgroundColor: '#FFFFFF',
+    height: window.height * 0.3,
+    width: window.width * 0.8,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
 });
 
 const actions = [{
@@ -70,17 +87,62 @@ class MainScreen extends React.Component {
   static navigationOptions = { header: null };
 
   state = {
-    visible: true
+    visible: true,
+    modalVisible: false,
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.userProfileFetch()
   }
 
+  handleMap = () => {
+    this.setState({ modalVisible: true })
+    this.props.announcedFetch()
+  }
+  handleMapSecond = () => {
+    this.setState({ modalVisible: false })
+    this.props.navigation.navigate('MapAnnoucedScreen')
+  }
+
+  handleCreate = () => {
+    this.setState({ modalVisible: false })
+    this.props.navigation.navigate('AnnouncedScreen')
+  }
+
+  handleRequest = (item) => {
+    this.props.requestFetchAccepted(item.uid)
+    this.props.navigation.navigate('RequestView', {
+      item: item })
+  }
+
   render() {
-    const { visible } = this.state;
+    const { visible, modalVisible } = this.state;
     return (
       <View style={styles.container}>
+        <Modal
+          transparent={true}
+          animationType={'slide'}
+          visible={modalVisible}
+          onRequestClose={() => { console.log('close modal') }}>
+          <View style={styles.modalBackground}>
+            <View style={styles.Wrapper}>
+              <Button
+                buttonStyle={{ borderRadius: 6, width: window.width * 0.5, }}
+                backgroundColor={Colors.mintColor}
+                fontWeight='bold'
+                color='white'
+                title='Map'
+                onPress={this.handleMapSecond} />
+              <Button
+                buttonStyle={{ borderRadius: 6, width: window.width * 0.5, }}
+                backgroundColor={Colors.mintColor}
+                fontWeight='bold'
+                color='white'
+                title='Create Announce'
+                onPress={this.handleCreate} />
+            </View>
+          </View>
+        </Modal>
         <SearchBox />
         <ScrollView showsVerticalScrollIndicator={false} style={{ paddingLeft: 20 }}
           onScrollBeginDrag={() => this.setState({
@@ -90,15 +152,15 @@ class MainScreen extends React.Component {
             visible: true
           })}
         ><View style={{ paddingBottom: 20, paddingTop: 20 }}>
-            <TouchableOpacity style={styles.LongButton}>
+            <TouchableOpacity style={styles.LongButton} onPress={this.handleMap}>
               {/* <Image source={require('../../assets/Test.jpeg')} style={styles.image} resizeMode="stretch" /> */}
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-                <Text style={{color:"white",fontSize:30, fontWeight:"bold" }}>Map</Text>
+                <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>Map</Text>
               </View>
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-            <Text style={styles.Header}>Recently Added</Text>
+            <Text style={styles.Header}>Saved</Text>
             <Text style={styles.more}>More ></Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
@@ -110,29 +172,27 @@ class MainScreen extends React.Component {
           </ScrollView>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
             <View>
-              <Text style={styles.Header}>Match For</Text>
-              <Text style={styles.Header}>Your Skills</Text>
+              <Text style={styles.Header}>Event</Text>
             </View>
-            <Text style={styles.more}>More ></Text>
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-          </ScrollView>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-            <Text style={styles.Header}>Official</Text>
-            <Text style={styles.more}>More ></Text>
+          <View style={{paddingRight:20}}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={this.props.requestArray}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
+                onPress={() => this.handleRequest(item)}>
+                <Image resizeMode={"cover"}
+                  source={{ uri: item.imageUrl }}
+                  style={{ height: window.height * 0.3, borderRadius: 3, }} />
+                <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
+                <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
+                <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.uid}
+          />
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-          </ScrollView>
         </ScrollView>
         <FloatingAction
           visible={visible}
@@ -171,7 +231,13 @@ class MainScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ user: state.auth.user, userProfileObject: state.userForm });
+const mapStateToProps = (state) => {
+  const { requestEvent } = state.requestForm;
+  const requestArray = _.map(requestEvent, (val, uid) => {
+    return { ...val, uid };
+  });
+  return { user: state.auth.user, userProfileObject: state.userForm, requestEvent, requestArray };
+};
 
 MainScreen.propTypes = {
   user: React.PropTypes.object.isRequired,

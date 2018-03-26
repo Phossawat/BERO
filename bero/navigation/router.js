@@ -23,6 +23,13 @@ import RequestView from '../containers/hero/requestView';
 import FriendListScreen from '../containers/friendList-screen';
 import ChatScreen1 from '../containers/requester/chat-screen';
 import MapRouteScreen from '../containers/hero/mapRoute-screen';
+import AllCommentScreen from '../containers/hero/allComments';
+import RedeemScreen from '../containers/redeem-screen';
+import SavedScreen from '../containers/saved-screen';
+import MapAnnoucedScreen from '../containers/annouce/mapAnnounced-screen';
+import LocationScreen from '../containers/annouce/location-screen';
+import ChoosePhotoAnnounced from '../containers/annouce/choosPhoto-announced';
+import AnnouncedScreen from '../containers/annouce/announced-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -46,6 +53,9 @@ export const HeroStack = StackNavigator({
   },
   MapRouteScreen: {
     screen: MapRouteScreen,
+  },
+  AllCommentScreen: {
+    screen: AllCommentScreen,
   },
 })
 
@@ -83,6 +93,18 @@ export const HomeStack = StackNavigator({
   RequestView: {
     screen: RequestView,
   },
+  MapAnnoucedScreen: {
+    screen: MapAnnoucedScreen,
+  },
+  LocationScreen: {
+    screen: LocationScreen,
+  },
+  ChoosePhotoAnnounced: {
+    screen: ChoosePhotoAnnounced,
+  },
+  AnnouncedScreen: {
+    screen: AnnouncedScreen
+  }
 })
 
 const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;
@@ -112,6 +134,12 @@ export const SettingsStack = StackNavigator({
  },
  FriendList: {
    screen: FriendListScreen,
+ },
+ RedeemScreen: {
+   screen: RedeemScreen,
+ },
+ SavedScreen: {
+   screen: SavedScreen,
  },
 })
 

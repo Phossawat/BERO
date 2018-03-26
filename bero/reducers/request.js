@@ -1,4 +1,4 @@
-import { REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_FETCH_SINGLE_SUCCESS, REQUEST_FETCH_ACCEPTED_SUCCESS } from '../actions/types';
+import { REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_FETCH_SINGLE_SUCCESS, REQUEST_FETCH_ACCEPTED_SUCCESS, FETCH_SAVED, FETCH_EVENT } from '../actions/types';
 
 const INITIAL_STATE = {
   topic: '',
@@ -15,6 +15,8 @@ const INITIAL_STATE = {
   requestObject: null,
   requestSingle: null,
   requestAccepted: null,
+  requestSaved: null,
+  requestEvent: null,
 };
 
 const request = (state = INITIAL_STATE, action) => {
@@ -27,6 +29,10 @@ const request = (state = INITIAL_STATE, action) => {
       return { ...state, requestSingle: action.payload };
     case REQUEST_FETCH_ACCEPTED_SUCCESS:
       return { ...state, requestAccepted: action.payload };
+    case FETCH_SAVED:
+      return { ...state, requestSaved: action.payload };
+    case FETCH_EVENT:
+      return { ...state, requestEvent: action.payload };
     default:
       return state;
   }

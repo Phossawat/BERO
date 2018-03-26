@@ -9,10 +9,10 @@ import _ from 'lodash';
 
 class ChatScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
-        const { params = {} } = navigation.state
+        // const { params = {} } = navigation.state
         return {
             tabBarVisible: false,
-            title: "Test Test",
+            title: `${navigation.state.params.requestTopic}`,
             headerTintColor: '#EF5350',
             headerTitleStyle: { color: 'black' },
             headerStyle: {

@@ -161,6 +161,7 @@ class FindingScreen extends React.Component {
   goToNearMe = () => {
     this.setState({ loading: true });
     this.props.requestFetch()
+    this.props.requestFetchNear()
     this.props.navigation.navigate('ListHelpScreen');
     this.setState({ loading: false });
   };
@@ -174,7 +175,7 @@ class FindingScreen extends React.Component {
   }
 
   handleChat = () => {
-    this.props.navigation.navigate('ChatScreen', { requestId: this.props.userProfileObject.requestAccepted})
+    this.props.navigation.navigate('ChatScreen', { requestId: this.props.userProfileObject.requestAccepted, requestTopic: this.props.requestAccepted.topic })
   }
 
   render() {
