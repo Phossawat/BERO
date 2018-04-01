@@ -104,7 +104,10 @@ export const HomeStack = StackNavigator({
   },
   AnnouncedScreen: {
     screen: AnnouncedScreen
-  }
+  },
+  AllCommentScreen: {
+    screen: AllCommentScreen,
+  },
 })
 
 const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;
@@ -141,6 +144,12 @@ export const SettingsStack = StackNavigator({
  SavedScreen: {
    screen: SavedScreen,
  },
+ RequestView: {
+   screen: RequestView,
+ },
+ AllCommentScreen: {
+   screen: AllCommentScreen
+ }
 })
 
 

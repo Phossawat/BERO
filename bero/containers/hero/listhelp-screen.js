@@ -37,21 +37,22 @@ class ListHelpScreen extends React.Component {
 
   componentDidMount(){
     console.log("data is "+this.props.requestArray)
-
+    this.props.requestFetchNear(this.props.keyNear)
   }
 
   handleRefresh= () => {
     this.setState({ refreshing: true })
-    this.props.requestFetch()
+    this.props.requestFetchNear(this.props.keyNear)
   }
   componentWillReceiveProps(nextProps){
     this.setState({ refreshing: false })
   }
 
   handleRequest = (item) => {
+    console.log("test uid "+item.uid)
     this.props.requestFetchAccepted(item.uid)
     this.props.navigation.navigate('RequestView', {
-      item: item })
+      item: item, save: "Save" })
   }
 
   render() {
@@ -59,7 +60,7 @@ class ListHelpScreen extends React.Component {
       <View style={styles.container} >
          <FlatList
         showsVerticalScrollIndicator={false}
-        data={this.props.requestArray}
+        data={this.props.requestObject}
         refreshing={false}
         onRefresh={this.handleRefresh}
         renderItem={({ item }) => (
@@ -85,11 +86,11 @@ class ListHelpScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { requestObject } = state.requestForm;
-  const requestArray = _.map(requestObject, (val, uid) => {
-    return { ...val, uid }; 
-});
-  return { requestObject, requestArray };
+  const { requestObject, keyNear } = state.requestForm;
+//   const requestArray = _.map(requestObject, (val, uid) => {
+//     return { ...val, uid }; 
+// });
+  return { requestObject, keyNear };
 };
 
 

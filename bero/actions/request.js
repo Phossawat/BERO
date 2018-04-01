@@ -15,6 +15,7 @@ import {
   SEND_MESSAGES,
   FETCH_SAVED,
   FETCH_EVENT,
+  FETCH_KEY_NEAR,
 } from './types';
 
 export const requestUpdate = ({ prop, value }) => {
@@ -57,7 +58,7 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
     })
       .then((result) => {
         var geoFire = new GeoFire(firebase.database().ref(`/geofire`));
-        geoFire.set(result.key,[mark_position.latitude,mark_position.longitude])
+        geoFire.set(result.key, [mark_position.latitude, mark_position.longitude])
         var ref = firebase.database().ref('users/' + owneruid);
         ref.update({
           "Profile/statusCreate": "in-progress",
@@ -96,16 +97,54 @@ export const requestFetch = () => {
   };
 };
 
-export const requestFetchNear = () => {
+export const requestFetchNearKeys = (latitude, longitude) => {
   var geoFire = new GeoFire(firebase.database().ref(`/geofire`));
   var geoQuery = geoFire.query({
-    center: [13.732772, 100.781193],
-    radius: 1.609
+    center: [latitude, longitude],
+    radius: 1
   });
-  return () =>{
+  var keys = [];
+  return (dispatch) => {
     geoQuery.on("key_entered", (key, location, distance) => {
-      console.log("Help " + key + " found at " + location + " (" + distance + " km away)");
-    });
+      keys.push(key)
+      dispatch({
+        type: FETCH_KEY_NEAR,
+        payload: keys
+      })
+    })
+  }
+}
+
+
+export const requestFetchNear = (keys) => {
+  console.log("key is" + keys)
+  var array = [];
+  return (dispatch) => {
+    if (keys == null) {
+      dispatch({
+        type: REQUEST_FETCH_SUCCESS,
+        payload: null
+      })
+    } else {
+      var promises = keys.map(function (key) {
+        return firebase.database().ref("/requests/").child(key).once("value");
+      })
+      Promise.all(promises).then(function (snapshots) {
+        snapshots.forEach(function (snapshot) {
+          if(snapshot.val().status=="done"){
+
+          }else{
+            var obj = snapshot.val()
+          obj["uid"] = snapshot.key
+          array.push(obj)
+          }
+        })
+        dispatch({
+          type: REQUEST_FETCH_SUCCESS,
+          payload: array
+        })
+      })
+    }
   }
 }
 
@@ -177,7 +216,7 @@ export const request_inprogress = () => {
 export const save_event = (requestId) => {
   const { currentUser } = firebase.auth()
   var owneruid = currentUser.uid
-  const request = firebase.database().ref('users/' + owneruid + '/saved')
+  const request = firebase.database().ref('users/' + owneruid + '/Profile/saved')
   return () => {
     request.child(requestId).set({
       requestId,
@@ -188,27 +227,44 @@ export const save_event = (requestId) => {
 export const fetch_saved = () => {
   const { currentUser } = firebase.auth()
   var owneruid = currentUser.uid
-  const saved = firebase.database().ref('users/' + owneruid + '/saved')
+  var array = [];
+  const saved = firebase.database().ref('users/' + owneruid + '/Profile/saved')
   return (dispatch) => {
-    saved.on('value', snapshot => {
-      keys = Object.keys(snapshot.val())
-      const promises = keys.map(id => {
-        firebase.database().ref('requests').child(id).on('value', s => s)
-      })
-      // Wait for all the async requests mapped into 
-      // the array to complete
-      Promise.all(promises)
-        .then(request => {
+    saved.once('value', snapshot => {
+      if (snapshot.val() == null) {
+        dispatch({
+          type: FETCH_SAVED,
+          payload: null
+        })
+      }
+      else {
+        keys = Object.keys(snapshot.val())
+        var promises = keys.map(function (key) {
+          return firebase.database().ref("/requests/").child(key).once("value");
+        })
+        Promise.all(promises).then(function (snapshots) {
+          snapshots.forEach(function (snapshot) {
+            var obj = snapshot.val()
+            obj["uid"] = snapshot.key
+            array.push(obj)
+          })
           dispatch({
             type: FETCH_SAVED,
-            payload: request
+            payload: array
           })
         })
-        .catch(err => {
-          // handle error
-        })
+      }
     })
-  };
+  }
+}
+
+export const delete_saved = (uid) => {
+  const { currentUser } = firebase.auth()
+  var owneruid = currentUser.uid
+  const request = firebase.database().ref('users/' + owneruid + '/Profile/saved/' + uid)
+  return () => {
+    request.remove()
+  }
 }
 
 export const fetch_messages = (requestId) => {

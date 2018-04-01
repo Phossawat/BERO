@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Platform, Text, TextInput, Dimensions } from 'react-native';
+import { StyleSheet, View, Platform, Text, TextInput, Dimensions, FlatList, TouchableOpacity, Image } from 'react-native';
 import Col, { Button } from 'react-native-elements'
 import { login } from '../actions/auth';
 import { connect } from 'react-redux';
@@ -13,8 +13,7 @@ const window = Dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        padding: 33,
+        padding: 20,
         backgroundColor: 'white',
     },
     button: {
@@ -41,13 +40,35 @@ class SavedScreen extends React.Component {
         super(props);
         this.state = { code: '', message: '' };
     }
+
     componentDidMount(){
+        this.props.fetch_saved()
+    }
+    handleRequest = (item) => {
+        this.props.requestFetchAccepted(item.uid)
+        this.props.navigation.navigate('RequestView', {
+            item: item, save: "Remove" })
     }
 
     render() {
-        console.log(this.props.requestArray[0])
         return (
             <View style={styles.container}>
+            <FlatList
+            showsVerticalScrollIndicator={false}
+            data={this.props.requestSaved}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
+                onPress={() => this.handleRequest(item)}>
+                <Image resizeMode={"cover"}
+                  source={{ uri: item.imageUrl }}
+                  style={{ height: window.height * 0.3, borderRadius: 3, }} />
+                <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
+                <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
+                <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.uid}
+          />
             </View>
         );
     }
@@ -55,11 +76,8 @@ class SavedScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     const { requestSaved } = state.requestForm;
-    const requestArray = _.map(requestSaved, (val, uid) => {
-      return { ...val, uid }; 
-  });
-  console.log("test2 "+ requestArray)
-    return { requestArray };
+
+    return { requestSaved };
 };
 
 export default connect(mapStateToProps, ActionCreators)(SavedScreen);

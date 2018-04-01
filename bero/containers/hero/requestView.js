@@ -145,14 +145,26 @@ class RequestView extends React.Component {
     }
     handleSavePress = () => {
         this.setState({ loading: true })
-        this.props.save_event(this.props.navigation.state.params.item.uid);
-        setTimeout(() => {
-            this.props.navigation.navigate('FindingScreen');
-            this.setState({ loading: false });
-        }, 1000)
+        if (this.props.navigation.state.params.save == "Save") {
+            this.props.save_event(this.props.navigation.state.params.item.uid);
+            setTimeout(() => {
+                this.props.navigation.navigate('MainScreen');
+                this.setState({ loading: false });
+            }, 1000)
+        }
+        else{
+            this.props.delete_saved(this.props.navigation.state.params.item.uid);
+            setTimeout(() => {
+                this.props.fetch_saved()
+                setTimeout(()=>{
+                this.props.navigation.goBack()
+                this.setState({ loading: false });
+                }, 1000)
+            }, 1000)
+        }
     }
     handleComment = (comment) => {
-        this.props.navigation.navigate('AllCommentScreen' ,{ item: comment });
+        this.props.navigation.navigate('AllCommentScreen', { item: comment });
     }
     render() {
         if (this.props.requestAccepted.heroAccepted >= Number(this.props.requestAccepted.hero)) {
@@ -326,15 +338,15 @@ class RequestView extends React.Component {
                                     <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
-                                {this.props.requestAccepted.numComments > 0 &&
-                                    <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}
-                                    onPress={()=>this.handleComment(comment)}>Read all {comment.length} Comments</Text>
-                                }
-                                {this.props.requestAccepted.numComments > 0 &&
-                                    <View style={{ paddingTop: 10 }}>
-                                        <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{(this.props.requestAccepted.rated / comment.length).toFixed(1)}</Text> /5</Text>
-                                    </View>
-                                }
+                                    {this.props.requestAccepted.numComments > 0 &&
+                                        <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}
+                                            onPress={() => this.handleComment(comment)}>Read all {comment.length} Comments</Text>
+                                    }
+                                    {this.props.requestAccepted.numComments > 0 &&
+                                        <View style={{ paddingTop: 10 }}>
+                                            <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{(this.props.requestAccepted.rated / comment.length).toFixed(1)}</Text> /5</Text>
+                                        </View>
+                                    }
                                 </View>
                             </View>}
                         {this.props.requestAccepted.requestType == 'Request' &&
@@ -368,7 +380,7 @@ class RequestView extends React.Component {
                                 color='white'
                                 onPress={this.handleSavePress}
                                 disabled={buttonStatus}
-                                title='Save' />
+                                title={this.props.navigation.state.params.save} />
                         }
                     </View>
                 </View>
@@ -411,8 +423,9 @@ class RequestView extends React.Component {
 
 const mapStateToProps = (state) => {
     const { status } = state.heroStatus;
+    const { userProfileObject } = state.userForm;
     const { requestAccepted } = state.requestForm;
-    return { status, requestAccepted };
+    return { status, requestAccepted, userProfileObject };
 };
 
 

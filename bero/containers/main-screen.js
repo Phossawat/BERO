@@ -112,7 +112,7 @@ class MainScreen extends React.Component {
   handleRequest = (item) => {
     this.props.requestFetchAccepted(item.uid)
     this.props.navigation.navigate('RequestView', {
-      item: item })
+      item: item, save: "Save" })
   }
 
   render() {

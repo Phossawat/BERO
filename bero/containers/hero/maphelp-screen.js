@@ -129,8 +129,8 @@ class MapHelpScreen extends React.Component {
     // We should just debounce the event listener here
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-      if (index >= this.props.requestArray.length) {
-        index = this.props.requestArray.length - 1;
+      if (index >= this.props.requestObject.length) {
+        index = this.props.requestObject.length - 1;
       }
       if (index <= 0) {
         index = 0;
@@ -140,7 +140,7 @@ class MapHelpScreen extends React.Component {
       this.regionTimeout = setTimeout(() => {
         if (this.index !== index) {
           this.index = index;
-          const { mark_position } = this.props.requestArray[index];
+          const { mark_position } = this.props.requestObject[index];
           this.map.animateToRegion(
             {
               ...mark_position,
@@ -170,11 +170,11 @@ class MapHelpScreen extends React.Component {
   handleRequest = (item) => {
     this.props.requestFetchAccepted(item.uid)
     this.props.navigation.navigate('RequestView', {
-      item: item })
+      item: item, save: "Save" })
   }
 
   render() {
-    const interpolations = this.props.requestArray.map((marker, index) => {
+    const interpolations = this.props.requestObject.map((marker, index) => {
       const inputRange = [
         (index - 1) * CARD_WIDTH,
         index * CARD_WIDTH,
@@ -203,7 +203,7 @@ class MapHelpScreen extends React.Component {
           showsUserLocation={true}
           style={styles.container}
         >
-          {this.props.requestArray.map((marker, index) => {
+          {this.props.requestObject.map((marker, index) => {
             const scaleStyle = {
               transform: [
                 {
@@ -244,7 +244,7 @@ class MapHelpScreen extends React.Component {
           style={styles.scrollView}
           contentContainerStyle={styles.endPadding}
         >
-          {this.props.requestArray.map((marker, index) => (
+          {this.props.requestObject.map((marker, index) => (
             <TouchableOpacity style={styles.card} key={index} onPress={() => this.handleRequest(marker)}>
               <Image
                 source={{ uri: marker.imageUrl }}
@@ -273,10 +273,7 @@ class MapHelpScreen extends React.Component {
 
 const mapStateToProps = (state) => {
   const { requestObject } = state.requestForm;
-  const requestArray = _.map(requestObject, (val, uid) => {
-    return { ...val, uid };
-  });
-  return { requestObject, requestArray };
+  return { requestObject };
 };
 
 

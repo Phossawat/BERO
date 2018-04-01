@@ -4,6 +4,7 @@ import { StyleSheet, View, ScrollView, TouchableHighlight } from 'react-native';
 import { Card, Text, Button, Tile, List, ListItem } from 'react-native-elements';
 import { ActionCreators } from '../actions';
 import { Constants } from 'expo';
+import _ from 'lodash';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,85 +12,86 @@ const styles = StyleSheet.create({
     padding: 33,
     backgroundColor: 'white',
   },
-  rectanglebit:{
-    height:56,
-    borderWidth:2,
-    flexDirection:'row',
-    borderColor:'#e3e3e3',
-    margin:20
+  rectanglebit: {
+    height: 56,
+    borderWidth: 2,
+    flexDirection: 'row',
+    borderColor: '#e3e3e3',
+    margin: 20
   },
-  columnbit:{
-    flex:1,
-    alignItems:'center',
-    justifyContent:'space-around'
+  columnbit: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around'
   },
-  title:{
-    color:"#666",
-    fontWeight:'600'
+  title: {
+    color: "#666",
+    fontWeight: '600'
   },
-  val:{
-    color:"#999"
+  val: {
+    color: "#999"
   },
 });
 
 class ProfileScreen extends React.Component {
   static navigationOptions = { header: null };
-   handleSettingsPress = () => {
+
+  handleSettingsPress = () => {
     this.props.navigation.navigate('Settings');
-  }; 
-   handleFriendsPress = () => {
-     this.props.navigation.navigate('FriendList');
-   };
-   handleRedeemPress = () => {
+  };
+  handleFriendsPress = () => {
+    this.props.navigation.navigate('FriendList');
+  };
+  handleRedeemPress = () => {
     this.props.navigation.navigate('RedeemScreen');
-   }
-   handleSavedPress = () => {
-    this.props.fetch_saved();
+  }
+  handleSavedPress = () => {
+    // this.props.fetch_saved();
     this.props.navigation.navigate('SavedScreen');
-   }
+  }
 
   render() {
     return (
-   <ScrollView style={{ backgroundColor: 'white' }}>
+      <ScrollView style={{ backgroundColor: 'white' }}>
         <Tile
-          imageSrc={{ uri: this.props.user.photoURL}}
+          imageSrc={{ uri: this.props.user.photoURL }}
           featured
           title={this.props.user.displayName}
-          titleStyle= {{ fontWeight: 'bold' }}
+          titleStyle={{ fontWeight: 'bold' }}
           caption={this.props.user.email}
         />
 
-      <View style={styles.rectanglebit}>
-      <View style={styles.columnbit}>
-      <Text style={styles.title}>
-      Rank
+        <View style={styles.rectanglebit}>
+          <View style={styles.columnbit}>
+            <Text style={styles.title}>
+              Rank
       </Text>
-      <Text style={styles.val}>
-      D+
+            <Text style={styles.val}>
+              D+
       </Text>
-      </View>
-       <View style={styles.columnbit}>
-      <Text style={styles.title}>
-      Score
+          </View>
+          <View style={styles.columnbit}>
+            <Text style={styles.title}>
+              Score
       </Text>
-      <Text style={styles.val}>
-      0
+            <Text style={styles.val}>
+              0
       </Text>
-      </View>
-       <View style={styles.columnbit}>
-      <Text style={styles.title}>
-      Helped
+          </View>
+          <View style={styles.columnbit}>
+            <Text style={styles.title}>
+              Helped
       </Text>
-      <Text style={styles.val}>
-      0
+            <Text style={styles.val}>
+              0
       </Text>
-      </View>
-      </View>
+          </View>
+        </View>
         <List containerStyle={{ paddingLeft: 20, paddingRight: 20, borderTopWidth: 0 }}>
           <ListItem
             component={TouchableHighlight}
             title="Notification"
-            titleStyle= {{ fontWeight: 'bold' }}
+            titleStyle={{ fontWeight: 'bold' }}
             rightIcon={{ name: 'bell-o', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
           />
@@ -97,7 +99,7 @@ class ProfileScreen extends React.Component {
           <ListItem
             component={TouchableHighlight}
             title="Saved"
-            titleStyle= {{ fontWeight: 'bold' }}
+            titleStyle={{ fontWeight: 'bold' }}
             rightIcon={{ name: 'heart-outline', type: 'material-community', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleSavedPress}
@@ -107,7 +109,7 @@ class ProfileScreen extends React.Component {
           <ListItem
             component={TouchableHighlight}
             title="Friends"
-            titleStyle= {{ fontWeight: 'bold' }}
+            titleStyle={{ fontWeight: 'bold' }}
             rightIcon={{ name: 'address-book-o', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleFriendsPress}
@@ -117,7 +119,7 @@ class ProfileScreen extends React.Component {
           <ListItem
             component={TouchableHighlight}
             title="Redeem Voucher"
-            titleStyle= {{ fontWeight: 'bold' }}
+            titleStyle={{ fontWeight: 'bold' }}
             rightIcon={{ name: 'wallet-giftcard', type: 'material-community', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleRedeemPress}
@@ -127,7 +129,7 @@ class ProfileScreen extends React.Component {
           <ListItem
             component={TouchableHighlight}
             title="Settings"
-            titleStyle= {{ fontWeight: 'bold' }}
+            titleStyle={{ fontWeight: 'bold' }}
             rightIcon={{ name: 'cog', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleSettingsPress}
@@ -158,7 +160,11 @@ class ProfileScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ user: state.auth.user });
+const mapStateToProps = (state) => {
+  const { userProfileObject } = state.userForm;
+
+  return { user: state.auth.user, userProfileObject };
+};
 
 ProfileScreen.propTypes = {
   user: React.PropTypes.object.isRequired,
