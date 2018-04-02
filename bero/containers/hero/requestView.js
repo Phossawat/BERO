@@ -220,7 +220,6 @@ class RequestView extends React.Component {
             outputRange: [0, 0, -8],
             extrapolate: 'clamp',
         });
-
         return (
             <View style={{ flex: 1, backgroundColor: 'white', }}>
                 <Loader
@@ -379,7 +378,6 @@ class RequestView extends React.Component {
                                 fontWeight='bold'
                                 color='white'
                                 onPress={this.handleSavePress}
-                                disabled={buttonStatus}
                                 title={this.props.navigation.state.params.save} />
                         }
                     </View>
@@ -424,8 +422,11 @@ class RequestView extends React.Component {
 const mapStateToProps = (state) => {
     const { status } = state.heroStatus;
     const { userProfileObject } = state.userForm;
+    const savedArray = _.map(userProfileObject.saved, (val, uid) => {
+    return { ...val, uid }; 
+    });
     const { requestAccepted } = state.requestForm;
-    return { status, requestAccepted, userProfileObject };
+    return { status, requestAccepted, userProfileObject, savedArray };
 };
 
 

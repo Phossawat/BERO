@@ -76,10 +76,12 @@ class ListHelpScreen extends React.Component {
         )}
         keyExtractor={item => item.uid}
         />
+        {this.props.requestObject&&
         <FloatingButton
           icon="map"
           onPress={()=>this.props.navigation.navigate('MapHelpScreen')}
         />
+        }
       </View>
     );
   }

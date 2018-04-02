@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 
 const styles = StyleSheet.create({
@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
 
 const MiniCard = (props) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container}
+    onPress={()=>this.props.navigation.navigate('SearchScreen')}>
        <Button
        buttonStyle={styles.button}
        backgroundColor='white'
@@ -32,7 +33,7 @@ const MiniCard = (props) => {
   iconLeft
   icon={{name: 'search', color: 'grey',}}
   title='Try "Official"' />
-    </View>
+    </TouchableOpacity>
   );
 };
 

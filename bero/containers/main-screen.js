@@ -58,6 +58,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around'
   },
+  miniCard: {
+    backgroundColor: 'white',
+    width: 140,
+    height: 170,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  miniImage: {
+    width: 137,
+    height: 80,
+    alignSelf: 'center',
+    borderRadius: 3,
+  },
+  miniTypeHeader: {
+    color: '#1ABC9C',
+    fontSize: 10,
+  },
+  miniHeader: {
+    color: '#34495e',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  miniMain: {
+    color: '#95a5a6',
+    fontSize: 10,
+  },
+  navBar: {
+    justifyContent: 'center',
+    paddingTop: 30,
+    paddingBottom: 10,
+    backgroundColor: 'white',
+  },
+  navButton: {
+      shadowColor: 'grey',
+      shadowRadius: 4, 
+      shadowOpacity: 0.5,
+      shadowOffset:{width:0,height:0},
+      backgroundColor: 'white',
+      borderColor: '#CFD8DC',
+      borderWidth: 1,
+      borderRadius: 2,
+
+  },
 });
 
 const actions = [{
@@ -93,6 +138,7 @@ class MainScreen extends React.Component {
 
   componentDidMount() {
     this.props.userProfileFetch()
+    this.props.fetch_saved()
   }
 
   handleMap = () => {
@@ -112,7 +158,8 @@ class MainScreen extends React.Component {
   handleRequest = (item) => {
     this.props.requestFetchAccepted(item.uid)
     this.props.navigation.navigate('RequestView', {
-      item: item, save: "Save" })
+      item: item, save: "Save"
+    })
   }
 
   render() {
@@ -143,7 +190,16 @@ class MainScreen extends React.Component {
             </View>
           </View>
         </Modal>
-        <SearchBox />
+        <View style={styles.navBar}>
+          <Button
+            buttonStyle={styles.navButton}
+            onPress={() => this.props.navigation.navigate('SearchScreen')}
+            backgroundColor='white'
+            color='grey'
+            iconLeft
+            icon={{ name: 'search', color: 'grey', }}
+            title='Try "Official"' />
+        </View>
         <ScrollView showsVerticalScrollIndicator={false} style={{ paddingLeft: 20 }}
           onScrollBeginDrag={() => this.setState({
             visible: false
@@ -159,39 +215,53 @@ class MainScreen extends React.Component {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-            <Text style={styles.Header}>Saved</Text>
-            <Text style={styles.more}>More ></Text>
-          </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} snapToInterval={130}>
-            <MiniCard onPress={() => this.props.navigation.navigate('RequestView')} />
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-            <MiniCard />
-          </ScrollView>
+          {this.props.requestSaved &&
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+              <Text style={styles.Header}>Saved</Text>
+            </View>
+          }
+          <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={this.props.requestSaved}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.miniCard}
+                onPress={() => this.handleRequest(item)}>
+                <Image source={{ uri: item.imageUrl }} style={styles.miniImage} resizeMode="stretch" />
+                <Text style={styles.miniTypeHeader}>{item.type}</Text>
+                <Text style={styles.miniHeader}>{((item.topic).length > 20) ?
+                  (((item.topic).substring(0, 20 - 3)) + '...') :
+                  item.topic}</Text>
+                <Text style={styles.miniMain}>
+                  {((item.detail).length > 40) ?
+                    (((item.detail).substring(0, 40 - 3)) + '...') :
+                    item.detail}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.uid}
+          />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
             <View>
               <Text style={styles.Header}>Event</Text>
             </View>
           </View>
-          <View style={{paddingRight:20}}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={this.props.requestArray}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
-                onPress={() => this.handleRequest(item)}>
-                <Image resizeMode={"cover"}
-                  source={{ uri: item.imageUrl }}
-                  style={{ height: window.height * 0.3, borderRadius: 3, }} />
-                <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
-                <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
-                <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={item => item.uid}
-          />
+          <View style={{ paddingRight: 20 }}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={this.props.requestArray}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
+                  onPress={() => this.handleRequest(item)}>
+                  <Image resizeMode={"cover"}
+                    source={{ uri: item.imageUrl }}
+                    style={{ height: window.height * 0.3, borderRadius: 3, }} />
+                  <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
+                  <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
+                  <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={item => item.uid}
+            />
           </View>
         </ScrollView>
         <FloatingAction
@@ -236,7 +306,8 @@ const mapStateToProps = (state) => {
   const requestArray = _.map(requestEvent, (val, uid) => {
     return { ...val, uid };
   });
-  return { user: state.auth.user, userProfileObject: state.userForm, requestEvent, requestArray };
+  const { requestSaved } = state.requestForm;
+  return { user: state.auth.user, userProfileObject: state.userForm, requestEvent, requestArray, requestSaved };
 };
 
 MainScreen.propTypes = {

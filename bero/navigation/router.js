@@ -30,6 +30,7 @@ import MapAnnoucedScreen from '../containers/annouce/mapAnnounced-screen';
 import LocationScreen from '../containers/annouce/location-screen';
 import ChoosePhotoAnnounced from '../containers/annouce/choosPhoto-announced';
 import AnnouncedScreen from '../containers/annouce/announced-screen';
+import SearchScreen from '../containers/search-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -103,11 +104,14 @@ export const HomeStack = StackNavigator({
     screen: ChoosePhotoAnnounced,
   },
   AnnouncedScreen: {
-    screen: AnnouncedScreen
+    screen: AnnouncedScreen,
   },
   AllCommentScreen: {
     screen: AllCommentScreen,
   },
+  SearchScreen: {
+    screen: SearchScreen,
+  }
 })
 
 const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;

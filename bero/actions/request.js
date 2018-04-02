@@ -16,6 +16,7 @@ import {
   FETCH_SAVED,
   FETCH_EVENT,
   FETCH_KEY_NEAR,
+  SEARCH_REQUEST,
 } from './types';
 
 export const requestUpdate = ({ prop, value }) => {
@@ -131,12 +132,12 @@ export const requestFetchNear = (keys) => {
       })
       Promise.all(promises).then(function (snapshots) {
         snapshots.forEach(function (snapshot) {
-          if(snapshot.val().status=="done"){
+          if (snapshot.val().status == "done") {
 
-          }else{
+          } else {
             var obj = snapshot.val()
-          obj["uid"] = snapshot.key
-          array.push(obj)
+            obj["uid"] = snapshot.key
+            array.push(obj)
           }
         })
         dispatch({
@@ -310,5 +311,27 @@ export const send_messages = (message, requestId) => {
     }).then(() => {
       dispatch({ type: SEND_MESSAGES })
     })
+  };
+};
+
+export const search_request = (text) => {
+  const { currentUser } = firebase.auth()
+  var searchText = text.toString();
+  const itemsRef = firebase.database().ref('requests/')
+
+  return (dispatch) => {
+    if (searchText == "") {
+      dispatch({
+        type: SEARCH_REQUEST,
+        payload: null
+      });
+    } else {
+      itemsRef.orderByChild("topic").startAt(searchText).endAt(searchText+"\uf8ff").on('value', (snap) => {
+        dispatch({
+          type: SEARCH_REQUEST,
+          payload: snap.val()
+        });
+      });
+    }
   };
 };
