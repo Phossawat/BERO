@@ -42,7 +42,7 @@ export default class AllCommentsScreen extends React.Component {
         };
     }
 
-    loadMore = () =>{
+    loadMore = () => {
         this.setState({ loading: true })
         const { page, data } = this.state;
         const start = page * ITEMS_PER_PAGE;
@@ -52,15 +52,15 @@ export default class AllCommentsScreen extends React.Component {
         setTimeout(() => {
             this.setState({ data: [...data, ...newData], page: newPage });
             this.setState({ loading: false })
-          }, 3000);
+        }, 3000);
     }
 
     renderFooter = () => {
-        if(!this.state.loading)return null;
+        if (!this.state.loading) return null;
 
         return (
             <View style={{ paddingVertical: 20, borderTopWidth: 1, borderColor: Colors.grey3 }}>
-            <ActivityIndicator animating size='large'/>
+                <ActivityIndicator animating size='large' />
             </View>
         )
     }
@@ -72,23 +72,25 @@ export default class AllCommentsScreen extends React.Component {
                     data={this.state.data}
                     renderItem={({ item }) => (
                         <View style={{ borderColor: Colors.grey3, borderBottomWidth: 1, }} >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 10 ,paddingTop: 10}}>
-                            <Image
-                                style={{
-                                    height: 40,
-                                    width: 40,
-                                    borderRadius: 20,
-                                }}
-                                resizeMode={"cover"}
-                                source={{ uri: item.ownerprofilePicture }}
-                            />
-                            <View style={{ paddingLeft: 10 }}>
-                                <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{item.ownerName}</Text>
-                                <Text style={{ color: Colors.grey2, fontSize: 15, }}>{item.comment}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 10, paddingTop: 10 }}>
+                                <Image
+                                    style={{
+                                        height: 40,
+                                        width: 40,
+                                        borderRadius: 20,
+                                    }}
+                                    resizeMode={"cover"}
+                                    source={{ uri: item.ownerprofilePicture }}
+                                />
+                                <View style={{ paddingLeft: 10 }}>
+                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{item.ownerName}</Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(comment[lastComment].when).toLocaleString()}</Text>
+                                </View>
                             </View>
+                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold', paddingBottom: 10 }}>{comment[lastComment].comment}</Text>
                         </View>
-                        </View>
-                    )}
+                    )
+                    }
                     ListFooterComponent={this.renderFooter}
                     onEndReached={this.loadMore}
                     onEndReachedThreshold={0}

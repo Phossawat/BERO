@@ -3,7 +3,8 @@ import {
   Image,             
   StyleSheet,         
   Text,              
-  View,               
+  View,
+  TouchableOpacity           
 } from 'react-native';
 import Colors from '../constants/colors';
 
@@ -11,7 +12,7 @@ export default class Callout extends Component {
   render() {
     const { topic, detail, imageUrl } = this.props;
     return (
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={()=>{}}>
         <View style={styles.bubble}>
           <View>
             <Image
@@ -19,12 +20,11 @@ export default class Callout extends Component {
               source={{ uri: imageUrl }}
             />
             <Text style={styles.topic}>{topic}</Text>
-            <Text style={styles.detail}>{detail}</Text>
           </View>
         </View>
         <View style={styles.arrowBorder} />
         <View style={styles.arrow} />
-      </View>
+      </TouchableOpacity>
     );
   }
 }

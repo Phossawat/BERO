@@ -17,6 +17,9 @@
     },
     "ios": {
       "supportsTablet": true
+    },
+    "notification": {
+      "icon": "./assets/logoNoti.png"
     }
   }
 }

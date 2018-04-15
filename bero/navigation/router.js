@@ -31,6 +31,7 @@ import LocationScreen from '../containers/annouce/location-screen';
 import ChoosePhotoAnnounced from '../containers/annouce/choosPhoto-announced';
 import AnnouncedScreen from '../containers/annouce/announced-screen';
 import SearchScreen from '../containers/search-screen';
+import RateScreen from '../containers/requester/rate-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -82,6 +83,9 @@ export const RequesterStack = StackNavigator({
   ChatScreen: {
     screen: ChatScreen1,
   },
+  RateScreen: {
+    screen: RateScreen,
+  }
 })
 
 export const HomeStack = StackNavigator({

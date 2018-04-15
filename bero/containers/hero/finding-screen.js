@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Platform, Text, Dimensions, ScrollView, Image, Animated, StatusBar, Modal } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { StyleSheet, View, Platform, Text, Dimensions, ScrollView, Image, Animated, StatusBar, Modal, Picker, } from 'react-native';
+import { Button, Icon, Slider } from 'react-native-elements';
 import { Constants, Location, Permissions, DangerZone, Font } from 'expo';
 import HeroLocateButton from '../../components/hero-locate-button';
+import ModalSelector from 'react-native-modal-selector';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
 import Colors from '../../constants/colors';
@@ -131,10 +132,12 @@ class FindingScreen extends React.Component {
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
       scrollY: new Animated.Value(0),
       location: null,
       errorMessage: null,
+      value: 0.1,
+      config: false,
     };
   }
 
@@ -154,7 +157,7 @@ class FindingScreen extends React.Component {
     }
     this.props.hero_loading()
     if (this.props.userProfileObject.statusRequest == 'accepted' || this.props.userProfileObject.statusRequest == 'in-progress') {
-      this.props.requestFetchAccepted(this.props.userProfileObject.requestAccepted)
+      this.props.requestFetchEvent(this.props.userProfileObject.requestAccepted)
       this.props.fetch_messages(this.props.userProfileObject.requestAccepted);
       setTimeout(() => {
         this.props.hero_inprogress();
@@ -180,12 +183,12 @@ class FindingScreen extends React.Component {
   };
 
   goToNearMe = () => {
-    this.setState({ loading: true });
-    this.props.requestFetchNearKeys(this.state.location.coords.latitude,this.state.location.coords.longitude)
-    setTimeout(() => {
-    this.props.navigation.navigate('ListHelpScreen');
     this.setState({ loading: false });
-    },2000)
+    this.props.requestFetchNearKeys(this.state.location.coords.latitude, this.state.location.coords.longitude, this.state.value )
+    setTimeout(() => {
+      this.props.navigation.navigate('ListHelpScreen', { distance: this.state.value, location: this.state.location.coords });
+      this.setState({ loading: true });
+    }, 2000)
   };
 
   cancleHandle = () => {
@@ -193,11 +196,12 @@ class FindingScreen extends React.Component {
   }
 
   handleDone = () => {
+    this.props.getPoint();
     this.props.hero_finding();
   }
 
   handleChat = () => {
-    this.props.navigation.navigate('ChatScreen', { requestId: this.props.userProfileObject.requestAccepted, requestTopic: this.props.requestAccepted.topic })
+    this.props.navigation.navigate('ChatScreen', { requestId: this.props.userProfileObject.requestAccepted, requestTopic: this.props.requestAccepted2.topic })
   }
 
   render() {
@@ -233,7 +237,7 @@ class FindingScreen extends React.Component {
     if (this.props.status == "in-progress") {
       content = (
         <View style={{ flex: 1, backgroundColor: 'white', }}>
-          {this.props.requestAccepted.status == 'done' &&
+          {this.props.requestAccepted2.status == 'done' &&
             <Modal
               transparent={true}
               animationType={'slide'}
@@ -244,7 +248,7 @@ class FindingScreen extends React.Component {
                     <Image
                       style={styles.imageModal}
                       resizeMode={"cover"}
-                      source={{ uri: this.props.requestAccepted.ownerprofilePicture }}
+                      source={{ uri: this.props.requestAccepted2.ownerprofilePicture }}
                     />
                   </View>
                 </View>
@@ -280,17 +284,17 @@ class FindingScreen extends React.Component {
           >
             <View style={styles.scrollViewContent}>
               <View style={styles.headerTopic}>
-                <Text style={styles.topic}>{this.props.requestAccepted.topic}</Text>
+                <Text style={styles.topic}>{this.props.requestAccepted2.topic}</Text>
                 <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View>
-                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.requestAccepted.type}</Text>
-                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.ownerName}</Text></Text>
-                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Created 21/10/17</Text>
+                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.requestAccepted2.type}</Text>
+                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted2.ownerName}</Text></Text>
+                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Created {new Date(this.props.requestAccepted2.when).toLocaleString()}</Text>
                   </View>
                   <Image
                     style={styles.image}
                     resizeMode={"cover"}
-                    source={{ uri: this.props.requestAccepted.ownerprofilePicture }}
+                    source={{ uri: this.props.requestAccepted2.ownerprofilePicture }}
                   />
                 </View>
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
@@ -301,7 +305,7 @@ class FindingScreen extends React.Component {
                       fontWeight='bold'
                       color='white'
                       title='Route'
-                      onPress={() => this.props.navigation.navigate('MapRouteScreen', { item: this.props.requestAccepted.mark_position })} />
+                      onPress={() => this.props.navigation.navigate('MapRouteScreen', { item: this.props.requestAccepted2.mark_position })} />
                     <Button
                       buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                       backgroundColor='#EF5350'
@@ -314,7 +318,7 @@ class FindingScreen extends React.Component {
                 <View style={{ paddingTop: 15, paddingBottom: 15, borderColor: Colors.grey3, borderBottomWidth: 1 }}>
                   <Text style={styles.topic}>Details</Text>
                   <Text style={{ color: Colors.grey1, fontSize: 15, paddingTop: 10, paddingBottom: 10, }}>
-                    {this.props.requestAccepted.detail}
+                    {this.props.requestAccepted2.detail}
                   </Text>
                 </View>
                 <View style={{ borderColor: Colors.grey3, borderTopWidth: 1, borderBottomWidth: 1, padding: 15 }}>
@@ -345,7 +349,7 @@ class FindingScreen extends React.Component {
                   transform: [{ translateY: imageTranslate }],
                 },
               ]}
-              source={{ uri: this.props.requestAccepted.imageUrl }}
+              source={{ uri: this.props.requestAccepted2.imageUrl }}
             />
           </Animated.View>
           <Animated.View
@@ -359,18 +363,100 @@ class FindingScreen extends React.Component {
               },
             ]}
           >
-            <Text style={styles.title}>{this.props.requestAccepted.topic}</Text>
+            <Text style={styles.title}>{this.props.requestAccepted2.topic}</Text>
           </Animated.View>
         </View>
       );
     } else if (this.props.status == 'finding') {
       content = (
         <View style={styles.container}>
-          <HeroLocateButton
-            onPress={this.goToNearMe}
-            loading={this.state.loading}
-          />
-          <Text style={styles.header2}>Find Nearest Request</Text>
+          <Modal
+            transparent={true}
+            visible={this.state.config}
+            onRequestClose={() => { console.log('close modal') }}>
+            <View style={styles.modalBackground}>
+              <View style={styles.Wrapper}>
+                <View style={{ alignItems: 'stretch', justifyContent: 'center' }}>
+                  <Text>Distance area to find</Text>
+                  <Slider
+                    style={{ width:window.width * 0.7 }}
+                    thumbStyle={{ backgroundColor: Colors.mintColor }}
+                    thumbTintColor={ Colors.mintColor }
+                    maximumValue={10}
+                    minimumValue={0.1}
+                    step={0.1}
+                    value={this.state.value}
+                    onValueChange={(value) => this.setState({ value })} />
+                  <Text>Distance: {this.state.value.toFixed(1)} Km</Text>
+                </View>
+                <Button
+                  buttonStyle={{ borderRadius: 6, width: window.width * 0.3, }}
+                  backgroundColor={Colors.mintColor}
+                  fontWeight='bold'
+                  color='white'
+                  title='OK'
+                  onPress={() => {
+                    this.setState({ config: false })
+                  }} />
+              </View>
+            </View>
+          </Modal>
+          {this.state.loading ?
+            <View style={{
+              flex: 1,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: 'white',
+            }}>
+              <View style={{ paddingTop: window.height * 0.4, alignItems: 'center', justifyContent: 'space-around' }}>
+                <Text style={{ paddingBottom: 1, color: Colors.grey1, fontSize: 30, fontWeight: 'bold' }}>Find nearest request</Text>
+                <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 20 }}>Press button below.</Text>
+                <Button
+                  buttonStyle={{
+                    borderRadius: 6,
+                    borderColor: Colors.mintColor,
+                    borderWidth: 1,
+                    width: window.width * 0.4,
+                  }}
+                  backgroundColor='white'
+                  fontSize={15}
+                  color={Colors.mintColor}
+                  title="Find"
+                  onPress={this.goToNearMe}
+                />
+              </View>
+              <Button
+                title='Setting'
+                buttonStyle={{ backgroundColor: 'white', }}
+                color={Colors.grey2}
+                onPress={() => {
+                  this.setState({ config: true })
+                }}
+              />
+            </View>
+            :
+            <View style={styles.container}>
+              <View>
+                <Lottie
+                  ref={animation => {
+                    if (animation == null) {
+
+                    }
+                    else {
+                      animation.play();
+                    }
+                  }}
+                  style={{
+                    width: window.width * 0.6,
+                    height: window.width * 0.6,
+                    backgroundColor: 'white',
+                  }}
+                  loop={true}
+                  source={require('../../assets/animations/location.json')}
+                />
+              </View>
+            </View>
+          }
         </View>
       );
     } else {
@@ -412,9 +498,9 @@ class FindingScreen extends React.Component {
 const mapStateToProps = (state) => {
   const { status } = state.heroStatus;
   const { userProfileObject } = state.userForm;
-  const { requestAccepted } = state.requestForm;
+  const { requestAccepted2 } = state.requestForm;
 
-  return { status, userProfileObject, requestAccepted };
+  return { status, userProfileObject, requestAccepted2 };
 };
 
 

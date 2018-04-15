@@ -1,4 +1,4 @@
-import { REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_FETCH_SINGLE_SUCCESS, REQUEST_FETCH_ACCEPTED_SUCCESS, FETCH_SAVED, FETCH_EVENT, FETCH_KEY_NEAR, SEARCH_REQUEST } from '../actions/types';
+import { REQUEST_UPDATE, REQUEST_FETCH_SUCCESS, REQUEST_FETCH_SINGLE_SUCCESS, REQUEST_FETCH_ACCEPTED_SUCCESS, FETCH_SAVED, FETCH_EVENT, FETCH_KEY_NEAR, SEARCH_REQUEST, REQUEST_FETCH_EVENT_SUCCESS } from '../actions/types';
 
 const INITIAL_STATE = {
   topic: '',
@@ -37,6 +37,7 @@ const INITIAL_STATE = {
   requestEvent: null,
   keyNear: null,
   searchRequest: null,
+  requestAccepted2: null,
 };
 
 const request = (state = INITIAL_STATE, action) => {
@@ -49,6 +50,8 @@ const request = (state = INITIAL_STATE, action) => {
       return { ...state, requestSingle: action.payload };
     case REQUEST_FETCH_ACCEPTED_SUCCESS:
       return { ...state, requestAccepted: action.payload };
+    case REQUEST_FETCH_EVENT_SUCCESS:
+      return { ...state, requestAccepted2: action.payload };
     case FETCH_SAVED:
       return { ...state, requestSaved: action.payload };
     case FETCH_EVENT:

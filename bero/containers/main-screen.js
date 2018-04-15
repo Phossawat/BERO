@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
-import { Constants } from 'expo';
+import { Constants, Permissions, Notifications } from 'expo';
 import MiniCard from '../components/MiniCard';
 import CatagoryCard from '../components/CatagoryCard';
 import SearchBox from '../components/SearchBox';
@@ -11,6 +11,7 @@ import { FloatingAction } from 'react-native-floating-action';
 import call from 'react-native-phone-call'
 import Colors from '../constants/colors';
 import _ from 'lodash';
+import * as firebase from 'firebase';
 
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -134,9 +135,13 @@ class MainScreen extends React.Component {
   state = {
     visible: true,
     modalVisible: false,
+    notification: {},
   };
 
   componentDidMount() {
+    console.log('user '+ this.props.user.uid)
+    this.registerForPushNotificationsAsync(this.props.user)
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
     this.props.userProfileFetch()
     this.props.fetch_saved()
   }
@@ -161,6 +166,36 @@ class MainScreen extends React.Component {
       item: item, save: "Save"
     })
   }
+
+  _handleNotification = (notification) => {
+    console.log("noti "+notification.data)
+    this.setState({notification: notification});
+  };
+
+  registerForPushNotificationsAsync = async (currentUser) => {
+    const { existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = existingStatus;
+
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+        // Android remote notification permissions are granted during the app
+        // install, so this will only ask on iOS
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+    }
+
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+        return;
+    }
+
+    let token = await Notifications.getExpoPushTokenAsync();
+    console.log("key "+token)
+    var updates = {}
+    updates['/expoToken'] = token
+    await firebase.database().ref('/users/' + currentUser.uid).update(updates)
+}
 
   render() {
     const { visible, modalVisible } = this.state;

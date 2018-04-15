@@ -137,7 +137,7 @@ class RequestView extends React.Component {
 
     handleAcceptPress = () => {
         this.setState({ loading: true })
-        this.props.hero_accepted(this.props.navigation.state.params.item.uid, this.state.user_location);
+        this.props.hero_accepted(this.props.navigation.state.params.item.uid, this.state.user_location, this.props.userProfileObject);
         setTimeout(() => {
             this.props.navigation.navigate('FindingScreen');
             this.setState({ loading: false });
@@ -318,6 +318,7 @@ class RequestView extends React.Component {
                                         paddingBottom: 10,
                                     }}>Comments</Text>
                                     {this.props.requestAccepted.numComments > 0 &&
+                                    <View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
                                             <Image
                                                 style={{
@@ -330,8 +331,10 @@ class RequestView extends React.Component {
                                             />
                                             <View style={{ paddingLeft: 10 }}>
                                                 <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].ownerName}</Text>
-                                                <Text style={{ color: Colors.grey2, fontSize: 15, }}>{comment[lastComment].comment}</Text>
+                                                <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(comment[lastComment].when).toLocaleString()}</Text>
                                             </View>
+                                        </View>
+                                        <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].comment}</Text>
                                         </View>
                                     }
                                     <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>

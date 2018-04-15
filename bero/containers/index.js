@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator, NavigationActions } from 'react-navigation';
+import { Permissions, Notifications } from 'expo';
 
 // import SplashScreen from '../components/splash-screen';
 // import AuthScreen from './auth-screen';
@@ -54,7 +55,7 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ loggedIn: state.auth.isLoggedIn, newUser: state.auth.isNewUser });
+const mapStateToProps = state => ({ loggedIn: state.auth.isLoggedIn, newUser: state.auth.isNewUser, user: state.auth.user });
 
 App.propTypes = {
   loggedIn: React.PropTypes.bool.isRequired,

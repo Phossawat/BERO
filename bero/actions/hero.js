@@ -22,10 +22,12 @@ export const hero_loading = () => {
 
 }
 
-export const hero_accepted = (requestId, location) => {
+export const hero_accepted = (requestId, location, user) => {
   const { currentUser } = firebase.auth();
   var owneruid = currentUser.uid;
   var ownerName = currentUser.displayName;
+  var help = user.help;
+  var score = user.score;
   currentUser.providerData.forEach(function (profile) {
     facebookUid = profile.uid;
   });
@@ -38,6 +40,8 @@ export const hero_accepted = (requestId, location) => {
       var ref = firebase.database().ref('requests/' + requestId + '/Helpers');
       ref.child(owneruid).set({
         'ownerprofilePicture': 'http://graph.facebook.com/' + facebookUid + '/picture?type=square',
+        help,
+        score,
         ownerName,
         owneruid,
         location,
@@ -94,4 +98,28 @@ export const hero_cancle = (requestId) => {
       })
     })
   };
+}
+
+export const getPoint = () => {
+  const { currentUser } = firebase.auth();
+  var owneruid = currentUser.uid;
+  var ref = firebase.database().ref('users/' + owneruid+ '/Profile/help');
+  return () => {
+    ref.transaction(function (value) {
+      if (typeof value === 'number') {
+        return value + 1;
+      } else {
+        console.log('The counter has a non-numeric value: ' + value)
+      }
+    }).then(()=>{
+      var ref = firebase.database().ref('users/' + owneruid+ '/Profile/point');
+      ref.transaction(function (value) {
+        if (typeof value === 'number') {
+          return value + 10;
+        } else {
+          console.log('The counter has a non-numeric value: ' + value)
+        }
+      })
+    })
+  }
 }

@@ -17,6 +17,7 @@ import {
   FETCH_EVENT,
   FETCH_KEY_NEAR,
   SEARCH_REQUEST,
+  REQUEST_FETCH_EVENT_SUCCESS,
 } from './types';
 
 export const requestUpdate = ({ prop, value }) => {
@@ -98,11 +99,11 @@ export const requestFetch = () => {
   };
 };
 
-export const requestFetchNearKeys = (latitude, longitude) => {
+export const requestFetchNearKeys = (latitude, longitude, distance) => {
   var geoFire = new GeoFire(firebase.database().ref(`/geofire`));
   var geoQuery = geoFire.query({
     center: [latitude, longitude],
-    radius: 1
+    radius: distance
   });
   var keys = [];
   return (dispatch) => {
@@ -142,7 +143,7 @@ export const requestFetchNear = (keys) => {
         })
         dispatch({
           type: REQUEST_FETCH_SUCCESS,
-          payload: array
+          payload: array.reverse()
         })
       })
     }
@@ -171,6 +172,20 @@ export const requestFetchAccepted = (requestId) => {
     request.on('value', snapshot => {
       dispatch({
         type: REQUEST_FETCH_ACCEPTED_SUCCESS,
+        payload: snapshot.val()
+      });
+    });
+  };
+};
+
+export const requestFetchEvent = (requestId) => {
+  const { currentUser } = firebase.auth()
+  const request = firebase.database().ref('requests/' + requestId)
+
+  return (dispatch) => {
+    request.on('value', snapshot => {
+      dispatch({
+        type: REQUEST_FETCH_EVENT_SUCCESS,
         payload: snapshot.val()
       });
     });

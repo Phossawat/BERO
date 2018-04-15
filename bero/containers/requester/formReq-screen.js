@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../../actions';
-import { StyleSheet, View, ScrollView, TextInput, Dimensions, Image, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, TextInput, Dimensions, Image, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import { DangerZone } from 'expo';
 import ModalSelector from 'react-native-modal-selector'
@@ -45,6 +45,39 @@ const styles = StyleSheet.create({
         width: 40,
         borderRadius: 20,
     },
+    modalBackground: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        backgroundColor: '#00000040'
+    },
+    Wrapper: {
+        backgroundColor: '#FFFFFF',
+        height: window.height * 0.6,
+        width: window.width * 0.8,
+        borderRadius: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around'
+    },
+    viewImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    imageModal: {
+        height: 100,
+        width: 100,
+        borderRadius: 50,
+    },
+    outerCircle: {
+        borderRadius: 55,
+        width: 110,
+        height: 110,
+        backgroundColor: Colors.mintColor,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 class FormReqScreen extends React.Component {
@@ -54,6 +87,8 @@ class FormReqScreen extends React.Component {
     }
     state = {
         location: null,
+        modal: false,
+        item: null,
     };
 
     componentWillMount() {
@@ -76,8 +111,15 @@ class FormReqScreen extends React.Component {
         this.props.navigation.navigate('LocationPickupScreen');
     };
     handleChatPress = () => {
-        this.props.navigation.navigate('ChatScreen',{ requestId: this.props.userProfileObject.requestCreate , requestTopic: this.props.requestSingle.topic })
+        this.props.navigation.navigate('ChatScreen', { requestId: this.props.userProfileObject.requestCreate, requestTopic: this.props.requestSingle.topic })
     };
+    userView = (object) => {
+        this.setState({ item: object })
+        this.setState({ modal: true })
+    }
+    handleDone = () => {
+        this.props.request_form(this.props.userProfileObject.requestCreate)
+    }
 
     render() {
         let index = 0;
@@ -140,7 +182,7 @@ class FormReqScreen extends React.Component {
                                         fontWeight='bold'
                                         buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
                                         backgroundColor='#EF5350'
-                                        onPress={() => this.props.request_form(this.props.userProfileObject.requestCreate)}
+                                        onPress={this.handleDone}
                                         color='white'
                                         title='Done' />
                                 </View>
@@ -155,7 +197,7 @@ class FormReqScreen extends React.Component {
                                     return { ...val, uid };
                                 })}
                                 renderItem={({ item }) => (
-                                    <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}>
+                                    <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }} onPress={() => this.userView(item)}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20, }}>
                                             <Image
                                                 style={styles.image}
@@ -166,14 +208,6 @@ class FormReqScreen extends React.Component {
                                                 <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{((item.ownerName).length > 10) ?
                                                     (((item.ownerName).substring(0, 18 - 3)) + '...') :
                                                     item.ownerName}</Text>
-                                                <View style={{ flexDirection: 'row' }}>
-                                                    <Icon name="star" color={Colors.mintColor} size={15} />
-                                                    <Icon name="star" color={Colors.mintColor} size={15} />
-                                                    <Icon name="star" color={Colors.mintColor} size={15} />
-                                                    <Icon name="star" color={Colors.mintColor} size={15} />
-                                                    <Icon name="star" color={Colors.mintColor} size={15} />
-                                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold', }}> 0 reviews</Text>
-                                                </View>
                                             </View>
                                             <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>is coming</Text>
                                         </View>
@@ -187,7 +221,7 @@ class FormReqScreen extends React.Component {
                                     {this.props.requestSingle.detail}
                                 </Text>
                             </View>
-                            <Text style={{ color: Colors.grey2, fontSize: 10, paddingTop: 10, }}>{ new Date(this.props.requestSingle.when).toString()}</Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 10, paddingTop: 10, }}>{new Date(this.props.requestSingle.when).toString()}</Text>
                         </View>
                     </ScrollView>
                 </View>
@@ -306,6 +340,57 @@ class FormReqScreen extends React.Component {
         }
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
+                {this.state.item &&
+                    <Modal
+                        visible={this.state.modal}
+                        transparent={true}
+                        animationType={'slide'}
+                        onRequestClose={() => { console.log('close modal') }}>
+                        <View style={styles.modalBackground}>
+                            <View style={styles.Wrapper}>
+                                <View style={styles.viewImage}>
+                                    <View style={styles.outerCircle}>
+                                        <Image
+                                            style={styles.imageModal}
+                                            resizeMode={"cover"}
+                                            source={{ uri: this.state.item.ownerprofilePicture }}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={{ alignItems: 'center', }}>
+                                    <Text style={{ fontSize: 18, color: Colors.grey1 }}>
+                                            {this.state.item.ownerName}
+                                    </Text>
+                                    <View style={{ justifyContent:'space-between', flexDirection: 'row', alignItems: 'center', width: window.width*0.5 }}>
+                                    <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight:'bold' }}>Help </Text>
+                                    <Text style={{ fontSize: 22, color: Colors.mintColor }}>
+                                            {this.state.item.help}
+                                            <Text style={{ fontSize: 18, color:Colors.grey1}}> Time</Text>
+                                    </Text>
+                                    </View>
+                                    <View style={{ justifyContent:'space-between', flexDirection: 'row', alignItems: 'center', width: window.width*0.5 }}>
+                                    {this.state.item.help!=0 &&
+                                    <View>
+                                    <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight:'bold' }}>Rating </Text>
+                                    <Text style={{ fontSize: 22, color: Colors.mintColor }}>
+                                            {(this.state.item.score/this.state.item.help).toFixed(1)}
+                                            <Text style={{ fontSize: 18, color:Colors.grey1}}>/5</Text>
+                                    </Text>
+                                    </View>
+                                    }
+                                    </View>
+                                </View>
+                                <Button
+                                    buttonStyle={{ borderRadius: 6, width: window.width * 0.3, }}
+                                    backgroundColor={Colors.mintColor}
+                                    fontWeight='bold'
+                                    color='white'
+                                    title='OK'
+                                    onPress={() => this.setState({ modal: false })} />
+                            </View>
+                        </View>
+                    </Modal>
+                }
                 {content}
             </View>
         );

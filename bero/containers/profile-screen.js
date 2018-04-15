@@ -5,6 +5,7 @@ import { Card, Text, Button, Tile, List, ListItem } from 'react-native-elements'
 import { ActionCreators } from '../actions';
 import { Constants } from 'expo';
 import _ from 'lodash';
+import Colors from '../constants/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +17,8 @@ const styles = StyleSheet.create({
     height: 56,
     borderWidth: 2,
     flexDirection: 'row',
-    borderColor: '#e3e3e3',
+    borderColor: Colors.grey3,
+    borderRadius: 4,
     margin: 20
   },
   columnbit: {
@@ -64,18 +66,10 @@ class ProfileScreen extends React.Component {
         <View style={styles.rectanglebit}>
           <View style={styles.columnbit}>
             <Text style={styles.title}>
-              Rank
+              Point
       </Text>
             <Text style={styles.val}>
-              D+
-      </Text>
-          </View>
-          <View style={styles.columnbit}>
-            <Text style={styles.title}>
-              Score
-      </Text>
-            <Text style={styles.val}>
-              0
+              {this.props.userProfileObject.point}
       </Text>
           </View>
           <View style={styles.columnbit}>
@@ -83,7 +77,7 @@ class ProfileScreen extends React.Component {
               Helped
       </Text>
             <Text style={styles.val}>
-              0
+              {this.props.userProfileObject.help}
       </Text>
           </View>
         </View>

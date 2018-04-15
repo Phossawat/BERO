@@ -41,6 +41,9 @@ class ListHelpScreen extends React.Component {
   }
 
   handleRefresh= () => {
+    this.props.requestFetchNearKeys(this.props.navigation.state.params.location.latitude, 
+      this.props.navigation.state.params.location.longitude, 
+      this.props.navigation.state.params.distance )
     this.setState({ refreshing: true })
     this.props.requestFetchNear(this.props.keyNear)
   }
