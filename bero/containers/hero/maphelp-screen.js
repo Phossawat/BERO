@@ -170,7 +170,7 @@ class MapHelpScreen extends React.Component {
   handleRequest = (item) => {
     this.props.requestFetchAccepted(item.uid)
     this.props.navigation.navigate('RequestView', {
-      item: item, save: "Save" })
+      uid:item.uid })
   }
 
   render() {

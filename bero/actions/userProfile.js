@@ -28,6 +28,8 @@ export const userProfileCreate = ({ skill, score }) => {
       displayName,
       phoneNumber,
       email,
+      "point": 0,
+      "help": 0,
       profilePicture,
       statusCreate: "create",
       requestCreate: "none",

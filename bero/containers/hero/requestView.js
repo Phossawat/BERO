@@ -100,8 +100,8 @@ class RequestView extends React.Component {
         this.state = {
             scrollY: new Animated.Value(0),
             region: {
-                latitude: this.props.navigation.state.params.item.mark_position.latitude,
-                longitude: this.props.navigation.state.params.item.mark_position.longitude,
+                latitude: this.props.requestAccepted.mark_position.latitude,
+                longitude: this.props.requestAccepted.mark_position.longitude,
                 latitudeDelta: 0.1,
                 longitudeDelta: 0.05,
             },
@@ -137,7 +137,7 @@ class RequestView extends React.Component {
 
     handleAcceptPress = () => {
         this.setState({ loading: true })
-        this.props.hero_accepted(this.props.navigation.state.params.item.uid, this.state.user_location, this.props.userProfileObject);
+        this.props.hero_accepted(this.props.navigation.state.params.uid, this.state.user_location, this.props.userProfileObject, this.props.requestAccepted.hero);
         setTimeout(() => {
             this.props.navigation.navigate('FindingScreen');
             this.setState({ loading: false });
@@ -145,28 +145,33 @@ class RequestView extends React.Component {
     }
     handleSavePress = () => {
         this.setState({ loading: true })
-        if (this.props.navigation.state.params.save == "Save") {
-            this.props.save_event(this.props.navigation.state.params.item.uid);
+        this.props.save_event(this.props.navigation.state.params.uid);
+        setTimeout(() => {
+            this.props.navigation.navigate('MainScreen');
+            this.setState({ loading: false });
+        }, 1000)
+    }
+
+    handleUnsavedPress = () => {
+        this.setState({ loading: true })
+        this.props.delete_saved(this.props.navigation.state.params.uid);
+        setTimeout(() => {
+            this.props.fetch_saved()
             setTimeout(() => {
-                this.props.navigation.navigate('MainScreen');
-                this.setState({ loading: false });
-            }, 1000)
-        }
-        else{
-            this.props.delete_saved(this.props.navigation.state.params.item.uid);
-            setTimeout(() => {
-                this.props.fetch_saved()
-                setTimeout(()=>{
                 this.props.navigation.goBack()
                 this.setState({ loading: false });
-                }, 1000)
             }, 1000)
-        }
+        }, 1000)
     }
+
     handleComment = (comment) => {
         this.props.navigation.navigate('AllCommentScreen', { item: comment });
     }
     render() {
+        var savedArray = []
+        if (this.props.userProfileObject.saved != null) {
+            var savedArray = Object.keys(this.props.userProfileObject.saved)
+        }
         if (this.props.requestAccepted.heroAccepted >= Number(this.props.requestAccepted.hero)) {
             console.log(this.props.requestAccepted + " " + this.props.requestAccepted.hero)
             buttonStatus = true
@@ -318,23 +323,23 @@ class RequestView extends React.Component {
                                         paddingBottom: 10,
                                     }}>Comments</Text>
                                     {this.props.requestAccepted.numComments > 0 &&
-                                    <View>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
-                                            <Image
-                                                style={{
-                                                    height: 40,
-                                                    width: 40,
-                                                    borderRadius: 20,
-                                                }}
-                                                resizeMode={"cover"}
-                                                source={{ uri: comment[lastComment].ownerprofilePicture }}
-                                            />
-                                            <View style={{ paddingLeft: 10 }}>
-                                                <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].ownerName}</Text>
-                                                <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(comment[lastComment].when).toLocaleString()}</Text>
+                                        <View>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
+                                                <Image
+                                                    style={{
+                                                        height: 40,
+                                                        width: 40,
+                                                        borderRadius: 20,
+                                                    }}
+                                                    resizeMode={"cover"}
+                                                    source={{ uri: comment[lastComment].ownerprofilePicture }}
+                                                />
+                                                <View style={{ paddingLeft: 10 }}>
+                                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].ownerName}</Text>
+                                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(comment[lastComment].when).toLocaleString()}</Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                        <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].comment}</Text>
+                                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].comment}</Text>
                                         </View>
                                     }
                                     <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>
@@ -362,7 +367,7 @@ class RequestView extends React.Component {
                             <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold' }}>{((this.props.requestAccepted.topic).length > 18) ?
                                 (((this.props.requestAccepted.topic).substring(0, 18 - 3)) + '...') :
                                 this.props.requestAccepted.topic}</Text>
-                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.item.uid}</Text></Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.uid}</Text></Text>
                         </View>
                         {this.props.requestAccepted.requestType == 'Request' &&
                             <Button
@@ -374,14 +379,23 @@ class RequestView extends React.Component {
                                 disabled={buttonStatus}
                                 title='Accept' />
                         }
-                        {this.props.requestAccepted.requestType == 'Event' &&
+                        {this.props.requestAccepted.requestType == 'Event' && savedArray.includes(this.props.navigation.state.params.uid) &&
+                            <Button
+                                buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
+                                backgroundColor='#EF5350'
+                                fontWeight='bold'
+                                color='white'
+                                onPress={this.handleUnsavedPress}
+                                title='Unsaved' />
+                        }
+                        {this.props.requestAccepted.requestType == 'Event' && savedArray.includes(this.props.navigation.state.params.uid)==false &&
                             <Button
                                 buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
                                 backgroundColor='#EF5350'
                                 fontWeight='bold'
                                 color='white'
                                 onPress={this.handleSavePress}
-                                title={this.props.navigation.state.params.save} />
+                                title='Save' />
                         }
                     </View>
                 </View>
@@ -425,11 +439,9 @@ class RequestView extends React.Component {
 const mapStateToProps = (state) => {
     const { status } = state.heroStatus;
     const { userProfileObject } = state.userForm;
-    const savedArray = _.map(userProfileObject.saved, (val, uid) => {
-    return { ...val, uid }; 
-    });
     const { requestAccepted } = state.requestForm;
-    return { status, requestAccepted, userProfileObject, savedArray };
+    const { requestSaved } = state.requestForm
+    return { status, requestAccepted, userProfileObject, requestSaved };
 };
 
 

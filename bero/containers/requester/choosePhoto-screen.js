@@ -67,8 +67,8 @@ class ChoosePhotoScreen extends React.Component {
     this.setState({ uploading: true })
     this.props.requestCreate({ topic, type, view, must_be, hero, detail, mark_position }, this.state.url );
     setTimeout(() => {
-      this.props.navigation.navigate('FormReqScreen');
       this.setState({ uploading: false });
+      this.props.navigation.navigate('FormReqScreen');
     }, 1000);
   }
 

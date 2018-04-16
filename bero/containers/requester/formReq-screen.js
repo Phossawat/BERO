@@ -89,6 +89,7 @@ class FormReqScreen extends React.Component {
         location: null,
         modal: false,
         item: null,
+        loadingDone: false,
     };
 
     componentWillMount() {
@@ -118,6 +119,7 @@ class FormReqScreen extends React.Component {
         this.setState({ modal: true })
     }
     handleDone = () => {
+        this.setState({ loadingDone: true })
         this.props.request_form(this.props.userProfileObject.requestCreate)
     }
 
@@ -181,6 +183,9 @@ class FormReqScreen extends React.Component {
                                     <Button
                                         fontWeight='bold'
                                         buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
+                                        loading={this.state.loadingDone}
+                                        disabled={this.state.loadingDone}
+                                        loadingProps={{ size: "large", color: "white" }}
                                         backgroundColor='#EF5350'
                                         onPress={this.handleDone}
                                         color='white'
@@ -359,25 +364,25 @@ class FormReqScreen extends React.Component {
                                 </View>
                                 <View style={{ alignItems: 'center', }}>
                                     <Text style={{ fontSize: 18, color: Colors.grey1 }}>
-                                            {this.state.item.ownerName}
+                                        {this.state.item.ownerName}
                                     </Text>
-                                    <View style={{ justifyContent:'space-between', flexDirection: 'row', alignItems: 'center', width: window.width*0.5 }}>
-                                    <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight:'bold' }}>Help </Text>
-                                    <Text style={{ fontSize: 22, color: Colors.mintColor }}>
+                                    <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', width: window.width * 0.5 }}>
+                                        <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight: 'bold' }}>Help </Text>
+                                        <Text style={{ fontSize: 22, color: Colors.mintColor }}>
                                             {this.state.item.help}
-                                            <Text style={{ fontSize: 18, color:Colors.grey1}}> Time</Text>
-                                    </Text>
+                                            <Text style={{ fontSize: 18, color: Colors.grey1 }}> Time</Text>
+                                        </Text>
                                     </View>
-                                    <View style={{ justifyContent:'space-between', flexDirection: 'row', alignItems: 'center', width: window.width*0.5 }}>
-                                    {this.state.item.help!=0 &&
-                                    <View>
-                                    <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight:'bold' }}>Rating </Text>
-                                    <Text style={{ fontSize: 22, color: Colors.mintColor }}>
-                                            {(this.state.item.score/this.state.item.help).toFixed(1)}
-                                            <Text style={{ fontSize: 18, color:Colors.grey1}}>/5</Text>
-                                    </Text>
-                                    </View>
-                                    }
+                                    <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', width: window.width * 0.5 }}>
+                                        {this.state.item.help != 0 &&
+                                            <View>
+                                                <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight: 'bold' }}>Rating </Text>
+                                                <Text style={{ fontSize: 22, color: Colors.mintColor }}>
+                                                    {(this.state.item.score / this.state.item.help).toFixed(1)}
+                                                    <Text style={{ fontSize: 18, color: Colors.grey1 }}>/5</Text>
+                                                </Text>
+                                            </View>
+                                        }
                                     </View>
                                 </View>
                                 <Button

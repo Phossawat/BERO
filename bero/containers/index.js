@@ -1,4 +1,5 @@
 import React from 'react';
+import { BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 import { Permissions, Notifications } from 'expo';
@@ -12,6 +13,11 @@ import { AppRoot } from '../navigation/router';
 import { ActionCreators } from '../actions';
 
 class App extends React.Component {
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', function() {
+      return false;
+    });
+  }
   componentDidMount() {
     this.props.verifyAuth();
     setTimeout(() => {

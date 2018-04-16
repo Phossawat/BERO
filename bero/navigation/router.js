@@ -95,7 +95,7 @@ export const HomeStack = StackNavigator({
       headerVisible: false,
     },
   },
-  RequestView: {
+  RequestViewEvent: {
     screen: RequestView,
   },
   MapAnnoucedScreen: {

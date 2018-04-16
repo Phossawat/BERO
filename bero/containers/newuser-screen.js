@@ -26,12 +26,22 @@ const styles = StyleSheet.create({
 
 class NewUserScreen extends React.Component {
     static navigationOptions = {
-    header: null,
+        header: null,
     };
+
+    state = {
+        skills: [],
+    }
+
     onButtonPress() {
-    const { skill, score } = this.props;
- 
-    this.props.userProfileCreate({ skill, score });
+        const { skill, score } = this.props;
+
+        this.props.userProfileCreate({ skill, score });
+    }
+    handleSkillSelected = (skillSelected) => {
+        this.setState(prevState => ({
+            skills: [...prevState.skills, skillSelected]
+        }))
     }
     render() {
         let index = 0;
@@ -70,9 +80,9 @@ class NewUserScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { skill, score } = state.userForm;
- 
-  return { skill, score };
+    const { skill, score } = state.userForm;
+
+    return { skill, score };
 };
 
 

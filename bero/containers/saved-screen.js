@@ -47,7 +47,7 @@ class SavedScreen extends React.Component {
     handleRequest = (item) => {
         this.props.requestFetchAccepted(item.uid)
         this.props.navigation.navigate('RequestView', {
-            item: item, save: "Remove" })
+            uid:item.uid })
     }
 
     render() {

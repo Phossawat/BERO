@@ -141,9 +141,9 @@ class MainScreen extends React.Component {
   componentDidMount() {
     console.log('user '+ this.props.user.uid)
     this.registerForPushNotificationsAsync(this.props.user)
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
     this.props.userProfileFetch()
     this.props.fetch_saved()
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
 
   handleMap = () => {
@@ -162,14 +162,19 @@ class MainScreen extends React.Component {
 
   handleRequest = (item) => {
     this.props.requestFetchAccepted(item.uid)
-    this.props.navigation.navigate('RequestView', {
-      item: item, save: "Save"
+    this.props.navigation.navigate('RequestViewEvent', {
+      uid: item.uid
     })
   }
 
   _handleNotification = (notification) => {
-    console.log("noti "+notification.data)
     this.setState({notification: notification});
+    if(notification.origin=='selected' || notification.origin=='recieved'){
+      this.props.requestFetchAccepted(notification.data.id)
+      this.props.navigation.navigate('RequestView', {
+        uid: notification.data.id
+      })
+    }
   };
 
   registerForPushNotificationsAsync = async (currentUser) => {

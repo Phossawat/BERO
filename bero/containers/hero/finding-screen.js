@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Platform, Text, Dimensions, ScrollView, Image, Animated, StatusBar, Modal, Picker, } from 'react-native';
+import { StyleSheet, View, Platform, Text, Dimensions, ScrollView, Image, Animated, StatusBar, Modal, Picker, BackHandler, } from 'react-native';
 import { Button, Icon, Slider } from 'react-native-elements';
 import { Constants, Location, Permissions, DangerZone, Font } from 'expo';
 import HeroLocateButton from '../../components/hero-locate-button';
@@ -138,6 +138,7 @@ class FindingScreen extends React.Component {
       errorMessage: null,
       value: 0.1,
       config: false,
+      loadingCancle: false,
     };
   }
 
@@ -148,6 +149,9 @@ class FindingScreen extends React.Component {
   }
 
   componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      return false;
+    });
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
         errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
@@ -192,6 +196,7 @@ class FindingScreen extends React.Component {
   };
 
   cancleHandle = () => {
+    this.setState({ loadingCancle:true })
     this.props.hero_cancle(this.props.userProfileObject.requestAccepted);
   }
 
@@ -325,6 +330,9 @@ class FindingScreen extends React.Component {
                   <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
                     <Button
                       buttonStyle={{ borderRadius: 3, width: window.width * 0.3, }}
+                      loading={this.state.loadingCancle}
+                      disabled={this.state.loadingCancle}
+                      loadingProps={{ size: "large", color: "white" }}
                       backgroundColor='#EF5350'
                       fontWeight='bold'
                       color='white'
