@@ -71,7 +71,10 @@ class ListHelpScreen extends React.Component {
             <Image resizeMode={"cover"}
               source={{ uri: item.imageUrl }}
               style={{ height: window.height * 0.3, borderRadius: 3, }} />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
+            <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.distance.toFixed(2)} Km </Text>
+            </View>
             <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
             <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
           </TouchableOpacity>

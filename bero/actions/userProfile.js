@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import Expo from 'expo';
+import GeoFire from 'geofire';
 import { USER_PROFILE_UPDATE, USER_PROFILE_CREATE, JUST_REGIS, USER_PROFILE_FETCH } from './types';
 
 export const userProfileUpdate = ({ prop, value }) => {
@@ -9,7 +10,7 @@ export const userProfileUpdate = ({ prop, value }) => {
   };
 };
 
-export const userProfileCreate = ({ skill, score }) => {
+export const userProfileCreate = ({ skills, score, gender }) => {
   const { currentUser } = firebase.auth();
   var facebookUid = null;
   var userProfile = firebase.database().ref(`/users/${currentUser.uid}`);
@@ -22,15 +23,16 @@ export const userProfileCreate = ({ skill, score }) => {
   });
   return (dispatch) => {
     userProfile.child("Profile").set({
-      skill,
+      skills,
       score,
       facebookUid,
       displayName,
       phoneNumber,
       email,
+      gender,
       "point": 0,
       "help": 0,
-      profilePicture,
+      "profilePicture": 'http://graph.facebook.com/' + facebookUid + '/picture?type=square',
       statusCreate: "create",
       requestCreate: "none",
       statusRequest: "finding",
@@ -55,3 +57,12 @@ export const userProfileFetch = () => {
     });
   };
 };
+
+export const trackLocation = (coordinator) => {
+  const { currentUser } = firebase.auth();
+  var owneruid = currentUser.uid;
+  return () =>{
+    var geoFire = new GeoFire(firebase.database().ref(`/userLocations`));
+    geoFire.set(owneruid, [coordinator.latitude, coordinator.longitude])
+  }
+}

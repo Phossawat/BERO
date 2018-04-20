@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList, Platform } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
-import { Constants, Permissions, Notifications } from 'expo';
+import { Constants, Permissions, Notifications, Location } from 'expo';
 import MiniCard from '../components/MiniCard';
 import CatagoryCard from '../components/CatagoryCard';
 import SearchBox from '../components/SearchBox';
@@ -129,6 +129,8 @@ const actions = [{
 },
 ];
 
+const GEOLOCATION_OPTIONS = { enableHighAccuracy: false, timeInterval: 100000, distanceInterval: 10 };
+
 class MainScreen extends React.Component {
   static navigationOptions = { header: null };
 
@@ -136,14 +138,28 @@ class MainScreen extends React.Component {
     visible: true,
     modalVisible: false,
     notification: {},
+    errorMessage: null,
   };
 
   componentDidMount() {
-    console.log('user '+ this.props.user.uid)
+    this._getLocationAsync()
     this.registerForPushNotificationsAsync(this.props.user)
     this.props.userProfileFetch()
     this.props.fetch_saved()
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged);
+  }
+
+  locationChanged = (location) => {
+    coordination = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    }
+    this.props.trackLocation(coordination)
   }
 
   handleMap = () => {

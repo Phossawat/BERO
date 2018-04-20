@@ -3,6 +3,7 @@ import { USER_PROFILE_UPDATE, USER_PROFILE_FETCH } from '../actions/types';
 const INITIAL_STATE = {
   skill: 'Nothing',
   score: 0,
+  gender: 'Male',
   userProfileObject: null,
 };
 

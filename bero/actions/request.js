@@ -108,7 +108,7 @@ export const requestFetchNearKeys = (latitude, longitude, distance) => {
   var keys = [];
   return (dispatch) => {
     geoQuery.on("key_entered", (key, location, distance) => {
-      keys.push(key)
+      keys.push({"key": key,"distance": distance})
       dispatch({
         type: FETCH_KEY_NEAR,
         payload: keys
@@ -128,16 +128,18 @@ export const requestFetchNear = (keys) => {
         payload: null
       })
     } else {
-      var promises = keys.map(function (key) {
-        return firebase.database().ref("/requests/").child(key).once("value");
+      var promises = keys.map(function (object) {
+        return firebase.database().ref("/requests/").child(object.key).once("value");
       })
       Promise.all(promises).then(function (snapshots) {
         snapshots.forEach(function (snapshot) {
           if (snapshot.val().status == "done") {
 
           } else {
+            const index = keys.findIndex(item => item.key === snapshot.key);
             var obj = snapshot.val()
             obj["uid"] = snapshot.key
+            obj["distance"] = keys[index].distance
             array.push(obj)
           }
         })
@@ -341,7 +343,7 @@ export const search_request = (text) => {
         payload: null
       });
     } else {
-      itemsRef.orderByChild("topic").startAt(searchText).endAt(searchText+"\uf8ff").on('value', (snap) => {
+      itemsRef.orderByChild("topic").startAt("\uf8ff"+searchText).endAt(searchText+"\uf8ff").on('value', (snap) => {
         dispatch({
           type: SEARCH_REQUEST,
           payload: snap.val()

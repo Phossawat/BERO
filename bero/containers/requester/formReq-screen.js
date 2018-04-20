@@ -126,12 +126,13 @@ class FormReqScreen extends React.Component {
     render() {
         let index = 0;
         const type_data = [
-            { key: index++, label: 'Car repair' },
+            { key: index++, label: 'Mechanic' },
             { key: index++, label: 'Medic' },
+            { key: index++, label: 'Language' },
+            { key: index++, label: 'Computer' },
             { key: index++, label: 'Chef' },
-            { key: index++, label: 'Path Finder' },
-            { key: index++, label: 'Programmer' },
-            { key: index++, label: 'Nothing' },
+            { key: index++, label: 'Strength' },
+            { key: index++, label: 'Any' },
         ];
         const view_data = [
             { key: index++, label: 'Friend only' },
