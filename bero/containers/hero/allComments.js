@@ -84,10 +84,10 @@ export default class AllCommentsScreen extends React.Component {
                                 />
                                 <View style={{ paddingLeft: 10 }}>
                                     <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{item.ownerName}</Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(comment[lastComment].when).toLocaleString()}</Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(item.when).toLocaleString()}</Text>
                                 </View>
                             </View>
-                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold', paddingBottom: 10 }}>{comment[lastComment].comment}</Text>
+                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold', paddingBottom: 10 }}>{item.comment}</Text>
                         </View>
                     )
                     }

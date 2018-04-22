@@ -140,7 +140,7 @@ class FormReqScreen extends React.Component {
             { key: index++, label: 'Except Friend' },
         ];
         const mustBe_data = [
-            { key: index++, label: 'All' },
+            { key: index++, label: 'all' },
             { key: index++, label: 'Male' },
             { key: index++, label: 'Female' },
         ];
@@ -350,7 +350,7 @@ class FormReqScreen extends React.Component {
                     <Modal
                         visible={this.state.modal}
                         transparent={true}
-                        animationType={'slide'}
+                        animationType={'fade'}
                         onRequestClose={() => { console.log('close modal') }}>
                         <View style={styles.modalBackground}>
                             <View style={styles.Wrapper}>
@@ -373,17 +373,6 @@ class FormReqScreen extends React.Component {
                                             {this.state.item.help}
                                             <Text style={{ fontSize: 18, color: Colors.grey1 }}> Time</Text>
                                         </Text>
-                                    </View>
-                                    <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', width: window.width * 0.5 }}>
-                                        {this.state.item.help != 0 &&
-                                            <View>
-                                                <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight: 'bold' }}>Rating </Text>
-                                                <Text style={{ fontSize: 22, color: Colors.mintColor }}>
-                                                    {(this.state.item.score / this.state.item.help).toFixed(1)}
-                                                    <Text style={{ fontSize: 18, color: Colors.grey1 }}>/5</Text>
-                                                </Text>
-                                            </View>
-                                        }
                                     </View>
                                 </View>
                                 <Button

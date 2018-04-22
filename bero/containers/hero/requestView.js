@@ -192,12 +192,6 @@ class RequestView extends React.Component {
             maleStatus = "Yes"
             femaleStatus = "Yes"
         }
-        if (this.props.requestAccepted.numComments > 0) {
-            comment = _.map(this.props.requestAccepted.Comments, (val, uid) => {
-                return { ...val, uid };
-            })
-            lastComment = this.props.requestAccepted.numComments - 1
-        }
         const headerTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
             outputRange: [0, -HEADER_SCROLL_DISTANCE],
@@ -235,7 +229,7 @@ class RequestView extends React.Component {
                     backgroundColor="rgba(0, 0, 0, 0.251)"
                 />
                 <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
-                    <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
+                    <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 30, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
                 </View>
                 <Animated.ScrollView
                     style={styles.fill}
@@ -322,7 +316,7 @@ class RequestView extends React.Component {
                                         paddingTop: 10,
                                         paddingBottom: 10,
                                     }}>Comments</Text>
-                                    {this.props.requestAccepted.numComments > 0 &&
+                                    {this.props.commentArray.length > 0 &&
                                         <View>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, }}>
                                                 <Image
@@ -332,26 +326,26 @@ class RequestView extends React.Component {
                                                         borderRadius: 20,
                                                     }}
                                                     resizeMode={"cover"}
-                                                    source={{ uri: comment[lastComment].ownerprofilePicture }}
+                                                    source={{ uri: this.props.commentArray[this.props.commentArray.length-1].ownerprofilePicture }}
                                                 />
                                                 <View style={{ paddingLeft: 10 }}>
-                                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].ownerName}</Text>
-                                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(comment[lastComment].when).toLocaleString()}</Text>
+                                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{this.props.commentArray[this.props.commentArray.length-1].ownerName}</Text>
+                                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(this.props.commentArray[this.props.commentArray.length-1].when).toLocaleString()}</Text>
                                                 </View>
                                             </View>
-                                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{comment[lastComment].comment}</Text>
+                                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{this.props.commentArray[this.props.commentArray.length-1].comment}</Text>
                                         </View>
                                     }
                                     <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20, justifyContent: 'space-between' }}>
-                                    {this.props.requestAccepted.numComments > 0 &&
+                                    {this.props.commentArray.length > 0 &&
                                         <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', paddingTop: 10 }}
-                                            onPress={() => this.handleComment(comment)}>Read all {comment.length} Comments</Text>
+                                            onPress={() => this.handleComment(this.props.commentArray)}>Read all {this.props.commentArray.length} Comments</Text>
                                     }
-                                    {this.props.requestAccepted.numComments > 0 &&
+                                    {this.props.commentArray.length > 0 &&
                                         <View style={{ paddingTop: 10 }}>
-                                            <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{(this.props.requestAccepted.rated / comment.length).toFixed(1)}</Text> /5</Text>
+                                            <Text style={{ color: Colors.grey2, fontSize: 12, }}>Rating: <Text style={{ color: Colors.mintColor, fontSize: 15, fontWeight: 'bold', }}>{(this.props.requestAccepted.rated / this.props.commentArray.length).toFixed(1)}</Text> /5</Text>
                                         </View>
                                     }
                                 </View>
@@ -440,8 +434,11 @@ const mapStateToProps = (state) => {
     const { status } = state.heroStatus;
     const { userProfileObject } = state.userForm;
     const { requestAccepted } = state.requestForm;
+    const commentArray = _.map(requestAccepted.Comments, (val, uid) => {
+        return { ...val, uid };
+    })
     const { requestSaved } = state.requestForm
-    return { status, requestAccepted, userProfileObject, requestSaved };
+    return { status, requestAccepted, userProfileObject, requestSaved, commentArray };
 };
 
 

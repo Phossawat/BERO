@@ -108,7 +108,7 @@ export const requestFetchNearKeys = (latitude, longitude, distance) => {
   var keys = [];
   return (dispatch) => {
     geoQuery.on("key_entered", (key, location, distance) => {
-      keys.push({"key": key,"distance": distance})
+      keys.push({ "key": key, "distance": distance })
       dispatch({
         type: FETCH_KEY_NEAR,
         payload: keys
@@ -118,8 +118,7 @@ export const requestFetchNearKeys = (latitude, longitude, distance) => {
 }
 
 
-export const requestFetchNear = (keys) => {
-  console.log("key is" + keys)
+export const requestFetchNear = (keys, user) => {
   var array = [];
   return (dispatch) => {
     if (keys == null) {
@@ -136,11 +135,23 @@ export const requestFetchNear = (keys) => {
           if (snapshot.val().status == "done") {
 
           } else {
-            const index = keys.findIndex(item => item.key === snapshot.key);
-            var obj = snapshot.val()
-            obj["uid"] = snapshot.key
-            obj["distance"] = keys[index].distance
-            array.push(obj)
+            if (snapshot.val().must_be == "all") {
+              const index = keys.findIndex(item => item.key === snapshot.key);
+              var obj = snapshot.val()
+              obj["uid"] = snapshot.key
+              obj["distance"] = keys[index].distance
+              array.push(obj)
+            }
+            else if (snapshot.val().must_be == user.gender) {
+              const index = keys.findIndex(item => item.key === snapshot.key);
+              var obj = snapshot.val()
+              obj["uid"] = snapshot.key
+              obj["distance"] = keys[index].distance
+              array.push(obj)
+            }
+            else {
+
+            }
           }
         })
         dispatch({
@@ -210,6 +221,8 @@ export const request_form = (requestId) => {
         ref.update({
           "status": "done",
         }).then(() => {
+          var ref = firebase.database().ref('geofire/' + requestId);
+          ref.remove()
           dispatch({ type: REQUEST_STATUS_CREATE })
         })
       }
@@ -302,7 +315,7 @@ export const fetch_event = () => {
   const { currentUser } = firebase.auth()
   const event = firebase.database().ref('requests/')
   return (dispatch) => {
-    event.orderByChild('type').equalTo('Event').on('value', snapshot => {
+    event.orderByChild('requestType').equalTo('Event').on('value', snapshot => {
       dispatch({
         type: FETCH_EVENT,
         payload: snapshot.val()
@@ -343,7 +356,7 @@ export const search_request = (text) => {
         payload: null
       });
     } else {
-      itemsRef.orderByChild("topic").startAt("\uf8ff"+searchText).endAt(searchText+"\uf8ff").on('value', (snap) => {
+      itemsRef.orderByChild("topic").startAt(searchText).endAt(searchText + "\uf8ff").on('value', (snap) => {
         dispatch({
           type: SEARCH_REQUEST,
           payload: snap.val()

@@ -172,6 +172,7 @@ class MapAnnoucedScreen extends React.Component {
                                     <View style={styles.bubble}>
                                         <View>
                                             <Image
+                                                resizeMode="cover"
                                                 style={styles.image}
                                                 source={{ uri: marker.imageUrl }}
                                             />

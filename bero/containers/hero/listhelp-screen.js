@@ -37,7 +37,7 @@ class ListHelpScreen extends React.Component {
 
   componentDidMount(){
     console.log("data is "+this.props.requestArray)
-    this.props.requestFetchNear(this.props.keyNear)
+    this.props.requestFetchNear(this.props.keyNear, this.props.userProfileObject)
   }
 
   handleRefresh= () => {
@@ -45,7 +45,7 @@ class ListHelpScreen extends React.Component {
       this.props.navigation.state.params.location.longitude, 
       this.props.navigation.state.params.distance )
     this.setState({ refreshing: true })
-    this.props.requestFetchNear(this.props.keyNear)
+    this.props.requestFetchNear(this.props.keyNear, this.props.userProfileObject)
   }
   componentWillReceiveProps(nextProps){
     this.setState({ refreshing: false })
@@ -94,10 +94,8 @@ class ListHelpScreen extends React.Component {
 
 const mapStateToProps = (state) => {
   const { requestObject, keyNear } = state.requestForm;
-//   const requestArray = _.map(requestObject, (val, uid) => {
-//     return { ...val, uid }; 
-// });
-  return { requestObject, keyNear };
+  const { userProfileObject } = state.userForm;
+  return { requestObject, keyNear, userProfileObject };
 };
 
 

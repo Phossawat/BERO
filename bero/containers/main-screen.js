@@ -224,7 +224,7 @@ class MainScreen extends React.Component {
       <View style={styles.container}>
         <Modal
           transparent={true}
-          animationType={'slide'}
+          animationType={'fade'}
           visible={modalVisible}
           onRequestClose={() => { console.log('close modal') }}>
           <View style={styles.modalBackground}>
