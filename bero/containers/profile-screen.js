@@ -82,13 +82,13 @@ class ProfileScreen extends React.Component {
           </View>
         </View>
         <List containerStyle={{ paddingLeft: 20, paddingRight: 20, borderTopWidth: 0 }}>
-          <ListItem
+          {/* <ListItem
             component={TouchableHighlight}
             title="Notification"
             titleStyle={{ fontWeight: 'bold' }}
             rightIcon={{ name: 'bell-o', type: 'font-awesome', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
-          />
+          /> */}
 
           <ListItem
             component={TouchableHighlight}
@@ -100,7 +100,7 @@ class ProfileScreen extends React.Component {
             underlayColor="#ecf0f1"
           />
 
-          <ListItem
+          {/* <ListItem
             component={TouchableHighlight}
             title="Friends"
             titleStyle={{ fontWeight: 'bold' }}
@@ -108,7 +108,7 @@ class ProfileScreen extends React.Component {
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleFriendsPress}
             underlayColor="#ecf0f1"
-          />
+          /> */}
 
           <ListItem
             component={TouchableHighlight}
@@ -129,24 +129,16 @@ class ProfileScreen extends React.Component {
             onPress={this.handleSettingsPress}
             underlayColor="#ecf0f1"
           />
-
-          {/* <ListItem
+          
+          <ListItem
             component={TouchableHighlight}
-            title="Give us feedback"
+            title="Report"
             titleStyle= {{ fontWeight: 'bold' }}
             rightIcon={{ name: 'feedback', color: '#263238' }}
             containerStyle={{  borderColor: '#CFD8DC' }}
             underlayColor="#ecf0f1"
-          /> */}
-
-          {/* <ListItem
-            component={TouchableHighlight}
-            title="Get help"
-            titleStyle= {{ fontWeight: 'bold' }}
-            rightIcon={{ name: 'question', type: 'font-awesome', color: '#263238' }}
-            containerStyle={{ borderBottomWidth: 0, borderColor: '#CFD8DC' }}
-            underlayColor="#ecf0f1"
-          /> */}
+            onPress={()=>this.props.navigation.navigate("ReportScreen")}
+          />
         </List>
 
       </ScrollView>

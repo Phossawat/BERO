@@ -106,7 +106,8 @@ class NewUserScreen extends React.Component {
                     </ModalSelector>
                 </View>
                 <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 53, paddingBottom: window.height * 0.05 }} >Select your skills</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flex: 0.4, }} contentContainerStyle={{flex: 0}}>
+                <View style={{ height: 150 }}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{flex: 0}}>
                     <View style={{ flexDirection: 'row', paddingLeft: 33, }}>
                         <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
                             <ButtonDisable onPress={() => this.handleSkillSelected('Mechanic')} title='Mechanic' disabled={this.state.skills.includes('Mechanic')} />
@@ -122,7 +123,8 @@ class NewUserScreen extends React.Component {
                         </View>
                     </View>
                 </ScrollView>
-                <View style={{ alignItems: 'center', paddingRight: 33, paddingBottom: window.height * 0.1, paddingTop: window.height * 0.05, paddingLeft: 33 }}>
+                </View>
+                <View style={{ alignItems: 'center', paddingRight: 33, paddingTop: window.height * 0.05, paddingLeft: 33 }}>
                     <Button
                         buttonStyle={{
                             borderRadius: 6,

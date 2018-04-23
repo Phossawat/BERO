@@ -24,6 +24,7 @@ class Settings extends Component {
             title="Profile"
             titleStyle= {{ fontWeight: 'bold' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
+            onPress={()=>this.props.navigation.navigate("ProfileChangeScreen")}
           />
           <ListItem
             title="Log Out"

@@ -56,13 +56,16 @@ export default class AllCommentsScreen extends React.Component {
     }
 
     renderFooter = () => {
-        if (!this.state.loading) return null;
-
-        return (
-            <View style={{ paddingVertical: 20, borderTopWidth: 1, borderColor: Colors.grey3 }}>
-                <ActivityIndicator animating size='large' />
-            </View>
-        )
+        if (!this.state.loading) {
+            return null;
+        }
+        else {
+            return (
+                <View style={{ paddingVertical: 20, borderTopWidth: 1, borderColor: Colors.grey3 }}>
+                    <ActivityIndicator animating size='large' />
+                </View>
+            )
+        }
     }
 
     render() {
@@ -93,7 +96,7 @@ export default class AllCommentsScreen extends React.Component {
                     }
                     ListFooterComponent={this.renderFooter}
                     onEndReached={this.loadMore}
-                    onEndReachedThreshold={0}
+                    onEndReachedThreshold={100}
                     keyExtractor={item => item.uid}
                 />
             </View>

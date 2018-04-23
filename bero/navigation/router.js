@@ -4,7 +4,6 @@ import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
 import MainScreen from '../containers/main-screen';
-import RequesterScreen from '../containers/requester-screen';
 import SplashScreen from '../components/splash-screen';
 import AuthScreen from '../containers/auth-screen';
 import NewUserScreen from '../containers/newuser-screen';
@@ -32,6 +31,8 @@ import ChoosePhotoAnnounced from '../containers/annouce/choosPhoto-announced';
 import AnnouncedScreen from '../containers/annouce/announced-screen';
 import SearchScreen from '../containers/search-screen';
 import RateScreen from '../containers/requester/rate-screen';
+import ProfileChangeScreen from '../containers/profileChange-screen';
+import ReportScreen from '../containers/report-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -157,7 +158,13 @@ export const SettingsStack = StackNavigator({
  },
  AllCommentScreen: {
    screen: AllCommentScreen
- }
+ },
+ ProfileChangeScreen: {
+   screen: ProfileChangeScreen
+ },
+ ReportScreen: {
+   screen: ReportScreen
+ },
 })
 
 

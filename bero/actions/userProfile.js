@@ -66,3 +66,26 @@ export const trackLocation = (coordinator) => {
     geoFire.set(owneruid, [coordinator.latitude, coordinator.longitude])
   }
 }
+
+export const saveChangeSkill = (skills) => {
+  const { currentUser } = firebase.auth();
+  var ref = firebase.database().ref(`/users/${currentUser.uid}/Profile/skills`);
+  return () => {
+    ref.set(skills)
+  }
+}
+
+export const sendReport = ( title, detail ) => {
+  const { currentUser } = firebase.auth();
+  var owneruid = currentUser.uid;
+  var ref = firebase.database().ref(`/reports`);
+  return () => {
+    ref.push({
+      detail,
+      title,
+      "owner": owneruid,
+      "status": "inprogress",
+      "when": Date.now(),
+    })
+  }
+}

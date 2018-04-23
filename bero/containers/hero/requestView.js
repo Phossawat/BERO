@@ -9,6 +9,7 @@ import Colors from '../../constants/colors';
 import { Card, Text, Button, FormInput, FormLabel, FormValidationMessage, CheckBox, Tile, Icon } from 'react-native-elements';
 import { MapView, Constants, Location, Permissions } from 'expo';
 import Loader from '../../components/loader';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import _ from 'lodash'
 
 const window = Dimensions.get('window');
@@ -107,6 +108,7 @@ class RequestView extends React.Component {
             },
             user_location: null,
             loading: false,
+            fullView: false,
         }
     };
 
@@ -167,6 +169,7 @@ class RequestView extends React.Component {
     handleComment = (comment) => {
         this.props.navigation.navigate('AllCommentScreen', { item: comment });
     }
+
     render() {
         var savedArray = []
         if (this.props.userProfileObject.saved != null) {
@@ -219,6 +222,7 @@ class RequestView extends React.Component {
             outputRange: [0, 0, -8],
             extrapolate: 'clamp',
         });
+
         return (
             <View style={{ flex: 1, backgroundColor: 'white', }}>
                 <Loader
@@ -296,6 +300,11 @@ class RequestView extends React.Component {
                             </View>
                             <View style={{ paddingTop: 15, paddingBottom: 10, }}>
                                 <Text style={styles.topic}>Location</Text>
+                                {this.props.requestAccepted.location &&
+                                    <Text style={{ color: Colors.grey1, fontSize: 15, }}>
+                                        {this.props.requestAccepted.location}
+                                    </Text>
+                                }
                             </View>
                         </View>
                         <MapView
@@ -326,14 +335,14 @@ class RequestView extends React.Component {
                                                         borderRadius: 20,
                                                     }}
                                                     resizeMode={"cover"}
-                                                    source={{ uri: this.props.commentArray[this.props.commentArray.length-1].ownerprofilePicture }}
+                                                    source={{ uri: this.props.commentArray[this.props.commentArray.length - 1].ownerprofilePicture }}
                                                 />
                                                 <View style={{ paddingLeft: 10 }}>
-                                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{this.props.commentArray[this.props.commentArray.length-1].ownerName}</Text>
-                                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(this.props.commentArray[this.props.commentArray.length-1].when).toLocaleString()}</Text>
+                                                    <Text style={{ color: Colors.grey1, fontSize: 15, fontWeight: 'bold' }}>{this.props.commentArray[this.props.commentArray.length - 1].ownerName}</Text>
+                                                    <Text style={{ color: Colors.grey2, fontSize: 15, }}>{new Date(this.props.commentArray[this.props.commentArray.length - 1].when).toLocaleString()}</Text>
                                                 </View>
                                             </View>
-                                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{this.props.commentArray[this.props.commentArray.length-1].comment}</Text>
+                                            <Text style={{ color: Colors.grey2, fontSize: 15, fontWeight: 'bold' }}>{this.props.commentArray[this.props.commentArray.length - 1].comment}</Text>
                                         </View>
                                     }
                                     <Text style={{ color: Colors.grey2, fontSize: 15, paddingBottom: 15 }}>{this.props.requestAccepted.uid}</Text>
@@ -363,7 +372,7 @@ class RequestView extends React.Component {
                                 this.props.requestAccepted.topic}</Text>
                             <Text style={{ color: Colors.grey2, fontSize: 10, }}>Request ID <Text style={{ color: Colors.mintColor }}>{this.props.navigation.state.params.uid}</Text></Text>
                         </View>
-                        {this.props.requestAccepted.requestType == 'Request' &&
+                        {this.props.requestAccepted.requestType == 'Request' && this.props.requestAccepted.status != "done" &&
                             <Button
                                 buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
                                 backgroundColor='#EF5350'
@@ -373,7 +382,7 @@ class RequestView extends React.Component {
                                 disabled={buttonStatus}
                                 title='Accept' />
                         }
-                        {this.props.requestAccepted.requestType == 'Event' && savedArray.includes(this.props.navigation.state.params.uid) &&
+                        {this.props.requestAccepted.requestType == 'Event' && savedArray.includes(this.props.navigation.state.params.uid) && this.props.requestAccepted.status != "done" &&
                             <Button
                                 buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
                                 backgroundColor='#EF5350'
@@ -382,7 +391,7 @@ class RequestView extends React.Component {
                                 onPress={this.handleUnsavedPress}
                                 title='Unsaved' />
                         }
-                        {this.props.requestAccepted.requestType == 'Event' && savedArray.includes(this.props.navigation.state.params.uid)==false &&
+                        {this.props.requestAccepted.requestType == 'Event' && savedArray.includes(this.props.navigation.state.params.uid) == false && this.props.requestAccepted.status != "done" &&
                             <Button
                                 buttonStyle={{ borderRadius: 3, width: window.width * 0.3, paddingRight: 20 }}
                                 backgroundColor='#EF5350'
@@ -399,16 +408,16 @@ class RequestView extends React.Component {
                         { transform: [{ translateY: headerTranslate }] },
                     ]}
                 >
-                    <Animated.Image
-                        style={[
-                            styles.backgroundImage,
-                            {
-                                opacity: imageOpacity,
-                                transform: [{ translateY: imageTranslate }],
-                            },
-                        ]}
-                        source={{ uri: this.props.requestAccepted.imageUrl }}
-                    />
+                        <Animated.Image
+                            style={[
+                                styles.backgroundImage,
+                                {
+                                    opacity: imageOpacity,
+                                    transform: [{ translateY: imageTranslate }],
+                                },
+                            ]}
+                            source={{ uri: this.props.requestAccepted.imageUrl }}
+                        />
                 </Animated.View>
                 <Animated.View
                     style={[

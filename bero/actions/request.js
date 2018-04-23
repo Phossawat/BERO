@@ -120,6 +120,7 @@ export const requestFetchNearKeys = (latitude, longitude, distance) => {
 
 export const requestFetchNear = (keys, user) => {
   var array = [];
+  console.log("key "+ keys)
   return (dispatch) => {
     if (keys == null) {
       dispatch({

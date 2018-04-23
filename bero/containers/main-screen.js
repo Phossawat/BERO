@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList, Platform } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList, Platform, ActivityIndicator } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ActionCreators } from '../actions';
 import { Constants, Permissions, Notifications, Location } from 'expo';
@@ -94,14 +94,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   navButton: {
-      shadowColor: 'grey',
-      shadowRadius: 4, 
-      shadowOpacity: 0.5,
-      shadowOffset:{width:0,height:0},
-      backgroundColor: 'white',
-      borderColor: '#CFD8DC',
-      borderWidth: 1,
-      borderRadius: 2,
+    shadowColor: 'grey',
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 0 },
+    backgroundColor: 'white',
+    borderColor: '#CFD8DC',
+    borderWidth: 1,
+    borderRadius: 2,
 
   },
 });
@@ -130,7 +130,7 @@ const actions = [{
 ];
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: false, timeInterval: 100000, distanceInterval: 10 };
-
+const ITEMS_PER_PAGE = 4;
 class MainScreen extends React.Component {
   static navigationOptions = { header: null };
 
@@ -139,6 +139,10 @@ class MainScreen extends React.Component {
     modalVisible: false,
     notification: {},
     errorMessage: null,
+    data: this.props.requestArray.slice(0, 4),
+    dataSource: [],
+    page: 1,
+    loading: false,
   };
 
   componentDidMount() {
@@ -184,8 +188,8 @@ class MainScreen extends React.Component {
   }
 
   _handleNotification = (notification) => {
-    this.setState({notification: notification});
-    if(notification.origin=='selected' || notification.origin=='recieved'){
+    this.setState({ notification: notification });
+    if (notification.origin == 'selected' || notification.origin == 'recieved') {
       this.props.requestFetchAccepted(notification.data.id)
       this.props.navigation.navigate('RequestView', {
         uid: notification.data.id
@@ -200,23 +204,58 @@ class MainScreen extends React.Component {
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
     if (existingStatus !== 'granted') {
-        // Android remote notification permissions are granted during the app
-        // install, so this will only ask on iOS
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        finalStatus = status;
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
     }
 
     // Stop here if the user did not grant permissions
     if (finalStatus !== 'granted') {
-        return;
+      return;
     }
 
     let token = await Notifications.getExpoPushTokenAsync();
-    console.log("key "+token)
+    console.log("key " + token)
     var updates = {}
     updates['/expoToken'] = token
     await firebase.database().ref('/users/' + currentUser.uid).update(updates)
-}
+  }
+
+  loadMore = () => {
+    if (!this.state.loading) {
+      this.setState({ loading: true })
+      const { page, data } = this.state;
+      const start = page * ITEMS_PER_PAGE;
+      const end = (page + 1) * ITEMS_PER_PAGE - 1;
+      const newPage = page + 1
+      const newData = this.props.requestArray.slice(start, end);
+      setTimeout(() => {
+        this.setState({ data: [...data, ...newData], page: newPage });
+        this.setState({ loading: false })
+      }, 1000);
+    }
+  }
+
+  renderFooter = () => {
+    if (this.state.loading) {
+      return (
+        <View style={{ paddingVertical: 20, borderTopWidth: 1, borderColor: Colors.grey3 }}>
+          <ActivityIndicator animating size='large' />
+        </View>
+      )
+    } else {
+      return null;
+    }
+    // if (!this.state.loading) {
+    //   return null;
+    // }
+    // return (
+    //   <View style={{ paddingVertical: 20, borderTopWidth: 1, borderColor: Colors.grey3 }}>
+    //     <ActivityIndicator animating size='large' />
+    //   </View>
+    // )
+  }
 
   render() {
     const { visible, modalVisible } = this.state;
@@ -303,8 +342,7 @@ class MainScreen extends React.Component {
           </View>
           <View style={{ paddingRight: 20 }}>
             <FlatList
-              showsVerticalScrollIndicator={false}
-              data={this.props.requestArray}
+              data={this.state.data}
               renderItem={({ item }) => (
                 <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
                   onPress={() => this.handleRequest(item)}>
@@ -316,6 +354,9 @@ class MainScreen extends React.Component {
                   <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
                 </TouchableOpacity>
               )}
+              ListFooterComponent={this.renderFooter}
+              onEndReached={this.loadMore}
+              onEndReachedThreshold={100}
               keyExtractor={item => item.uid}
             />
           </View>

@@ -259,17 +259,6 @@ class FormReqScreen extends React.Component {
                                     editable={false}
                                     value={this.props.type} />
                             </ModalSelector>
-                            <ModalSelector
-                                style={{ width: window.width * 0.5 }}
-                                data={view_data}
-                                onChange={view => this.props.requestUpdate({ prop: 'view', value: view.label })}>
-                                <FormLabel>
-                                    <Text style={{ color: Colors.mintColor }}>View</Text>
-                                </FormLabel>
-                                <FormInput
-                                    editable={false}
-                                    value={this.props.view} />
-                            </ModalSelector>
                         </View>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
