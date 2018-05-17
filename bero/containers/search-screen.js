@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions, Platform, ActivityIndicator, ListView, ScrollView, FlatList, TouchableOpacity, Image, Text } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { SearchBar, Button } from 'react-native-elements';
 import Colors from '../constants/colors';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../actions';
@@ -13,6 +13,30 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
     },
+    button: {
+        width: window.width * 0.3,
+        height: window.width * 0.1,
+        borderRadius: 20,
+        padding: 10
+    },
+    tagContainer: {
+        alignItems: 'center',
+        height: 40,
+        shadowColor: 'grey',
+        shadowRadius: 2,
+        shadowOpacity: 0.5,
+        shadowOffset: { width: 1, height: 3 },
+    },
+    tag: {
+        height: 30,
+        paddingLeft: 10,
+        paddingRight: 10,
+        borderColor: Colors.grey2,
+        borderRadius: 4,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });
 
 class SearchScreen extends React.Component {
@@ -38,29 +62,28 @@ class SearchScreen extends React.Component {
     handleRequest = (item) => {
         this.props.requestFetchAccepted(item.uid)
         this.props.navigation.navigate('RequestView', {
-          item: item, save: "Save" })
-      }
+            item: item, save: "Save"
+        })
+    }
 
     render() {
         return (
             <View style={styles.container} >
-                    <SearchBar
-                        returnKeyType='search'
-                        containerStyle={{
-                            backgroundColor: 'white',
-                            borderTopColor: 'transparent',
-                        }}
-                        inputStyle={{ backgroundColor: 'white' }}
-                        lightTheme
-                        placeholder='Search...'
-                        onChangeText={(text) => this.firstSearch(text)}
-                    />
-                    <View style={{paddingLeft:20, paddingRight:20}}>
+                <SearchBar
+                    returnKeyType='search'
+                    containerStyle={{
+                        backgroundColor: 'white',
+                        borderTopColor: 'transparent',
+                    }}
+                    inputStyle={{ backgroundColor: 'white' }}
+                    lightTheme
+                    placeholder='Search...'
+                    onChangeText={(text) => this.firstSearch(text)}
+                />
+                <View style={{ paddingLeft: 20, paddingRight: 20 }}>
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         data={this.props.searchArray}
-                        refreshing={false}
-                        onRefresh={this.handleRefresh}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
                                 onPress={() => this.handleRequest(item)}>
@@ -74,7 +97,7 @@ class SearchScreen extends React.Component {
                         )}
                         keyExtractor={item => item.uid}
                     />
-                    </View>
+                </View>
             </View>
         );
     }

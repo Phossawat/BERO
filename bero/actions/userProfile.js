@@ -89,3 +89,9 @@ export const sendReport = ( title, detail ) => {
     })
   }
 }
+
+export const friendList = async ()  => {
+  const { currentUser } = firebase.auth();
+  console.log("user "+ currentUser)
+  return null;
+} 

@@ -188,7 +188,7 @@ class FindingScreen extends React.Component {
 
   goToNearMe = () => {
     this.setState({ loading: false });
-    this.props.requestFetchNearKeys(this.state.location.coords.latitude, this.state.location.coords.longitude, this.state.value )
+    this.props.requestFetchNearKeys(this.state.location.coords.latitude, this.state.location.coords.longitude, this.state.value, this.props.userProfileObject.requestCreate )
     setTimeout(() => {
       this.props.navigation.navigate('ListHelpScreen', { distance: this.state.value, location: this.state.location.coords });
       this.setState({ loading: true });

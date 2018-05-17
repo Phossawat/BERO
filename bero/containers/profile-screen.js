@@ -56,7 +56,7 @@ class ProfileScreen extends React.Component {
     return (
       <ScrollView style={{ backgroundColor: 'white' }}>
         <Tile
-          imageSrc={{ uri: this.props.user.photoURL }}
+          imageSrc={{ uri: this.props.userProfileObject.profilePicture }}
           featured
           title={this.props.user.displayName}
           titleStyle={{ fontWeight: 'bold' }}

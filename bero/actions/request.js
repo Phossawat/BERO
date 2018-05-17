@@ -99,7 +99,7 @@ export const requestFetch = () => {
   };
 };
 
-export const requestFetchNearKeys = (latitude, longitude, distance) => {
+export const requestFetchNearKeys = (latitude, longitude, distance, userCreate) => {
   var geoFire = new GeoFire(firebase.database().ref(`/geofire`));
   var geoQuery = geoFire.query({
     center: [latitude, longitude],
@@ -108,11 +108,15 @@ export const requestFetchNearKeys = (latitude, longitude, distance) => {
   var keys = [];
   return (dispatch) => {
     geoQuery.on("key_entered", (key, location, distance) => {
-      keys.push({ "key": key, "distance": distance })
-      dispatch({
-        type: FETCH_KEY_NEAR,
-        payload: keys
-      })
+      if (key == userCreate) {
+
+      } else {
+        keys.push({ "key": key, "distance": distance })
+        dispatch({
+          type: FETCH_KEY_NEAR,
+          payload: keys
+        })
+      }
     })
   }
 }
@@ -120,7 +124,7 @@ export const requestFetchNearKeys = (latitude, longitude, distance) => {
 
 export const requestFetchNear = (keys, user) => {
   var array = [];
-  console.log("key "+ keys)
+  console.log("key " + keys)
   return (dispatch) => {
     if (keys == null) {
       dispatch({
@@ -157,7 +161,7 @@ export const requestFetchNear = (keys, user) => {
         })
         dispatch({
           type: REQUEST_FETCH_SUCCESS,
-          payload: array.reverse()
+          payload: array
         })
       })
     }
@@ -315,15 +319,23 @@ export const fetch_messages = (requestId) => {
 export const fetch_event = () => {
   const { currentUser } = firebase.auth()
   const event = firebase.database().ref('requests/')
+  const events = []
   return (dispatch) => {
     event.orderByChild('requestType').equalTo('Event').on('value', snapshot => {
+      snapshot.forEach((childSnapshot) => {
+        if (childSnapshot.val().status == "in-progress") {
+          var obj = childSnapshot.val()
+          obj["uid"] = childSnapshot.key
+          events.push(obj)
+        }
+      })
       dispatch({
         type: FETCH_EVENT,
-        payload: snapshot.val()
-      });
-    });
-  };
-};
+        payload: events.reverse()
+      })
+    })
+  }
+}
 
 export const send_messages = (message, requestId) => {
   const { currentUser } = firebase.auth()
@@ -345,24 +357,46 @@ export const send_messages = (message, requestId) => {
   };
 };
 
+// export const search_request = (text) => {
+//   const { currentUser } = firebase.auth()
+//   var searchText = text.toString();
+//   const itemsRef = firebase.database().ref('requests/')
+
+//   return (dispatch) => {
+//     if (searchText == "") {
+//       dispatch({
+//         type: SEARCH_REQUEST,
+//         payload: null
+//       });
+//     } else {
+//       itemsRef.orderByChild("topic").startAt(searchText).endAt(searchText + "\uf8ff").on('value', (snap) => {
+//         dispatch({
+//           type: SEARCH_REQUEST,
+//           payload: snap.val()
+//         });
+//       });
+//     }
+//   };
+// };
+
 export const search_request = (text) => {
   const { currentUser } = firebase.auth()
-  var searchText = text.toString();
-  const itemsRef = firebase.database().ref('requests/')
-
+  const event = firebase.database().ref('requests/')
+  const results = []
   return (dispatch) => {
-    if (searchText == "") {
+    event.orderByChild('requestType').equalTo('Event').on('value', snapshot => {
+      snapshot.forEach((childSnapshot) => {
+        if (childSnapshot.val().topic.includes(text) && text != "") {
+          var obj = childSnapshot.val()
+          obj["uid"] = childSnapshot.key
+          results.push(obj)
+        }
+      })
       dispatch({
         type: SEARCH_REQUEST,
-        payload: null
+        payload: results.reverse()
       });
-    } else {
-      itemsRef.orderByChild("topic").startAt(searchText).endAt(searchText + "\uf8ff").on('value', (snap) => {
-        dispatch({
-          type: SEARCH_REQUEST,
-          payload: snap.val()
-        });
-      });
-    }
-  };
-};
+    })
+  }
+}
+

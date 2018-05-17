@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, ScrollView, TouchableHighlight, Image, Dimensions, TouchableOpacity, Modal, FlatList, Platform, ActivityIndicator } from 'react-native';
-import { Card, Text, Button, Icon } from 'react-native-elements';
+import { Card, Text, Button, Icon, Col } from 'react-native-elements';
 import { ActionCreators } from '../actions';
-import { Constants, Permissions, Notifications, Location } from 'expo';
+import { Constants, Permissions, Notifications, Location, } from 'expo';
 import MiniCard from '../components/MiniCard';
 import CatagoryCard from '../components/CatagoryCard';
 import SearchBox from '../components/SearchBox';
@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
   },
   Header: {
     color: '#34495e',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+    fontFamily: 'promptB'
   },
   image: {
     flex: 1,
@@ -81,27 +82,32 @@ const styles = StyleSheet.create({
   miniHeader: {
     color: '#34495e',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily: 'prompt'
   },
   miniMain: {
     color: '#95a5a6',
     fontSize: 10,
+    fontFamily: 'prompt'
   },
   navBar: {
     justifyContent: 'center',
     paddingTop: 30,
     paddingBottom: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#FDFFFF',
+    shadowColor: 'grey',
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 0 },
   },
   navButton: {
     shadowColor: 'grey',
-    shadowRadius: 4,
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 0.5,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 1, height: 2 },
     backgroundColor: 'white',
     borderColor: '#CFD8DC',
-    borderWidth: 1,
-    borderRadius: 2,
+    borderWidth: 0.3,
+    borderRadius: 4,
 
   },
 });
@@ -139,7 +145,6 @@ class MainScreen extends React.Component {
     modalVisible: false,
     notification: {},
     errorMessage: null,
-    data: this.props.requestArray.slice(0, 4),
     dataSource: [],
     page: 1,
     loading: false,
@@ -222,19 +227,8 @@ class MainScreen extends React.Component {
     await firebase.database().ref('/users/' + currentUser.uid).update(updates)
   }
 
-  loadMore = () => {
-    if (!this.state.loading) {
-      this.setState({ loading: true })
-      const { page, data } = this.state;
-      const start = page * ITEMS_PER_PAGE;
-      const end = (page + 1) * ITEMS_PER_PAGE - 1;
-      const newPage = page + 1
-      const newData = this.props.requestArray.slice(start, end);
-      setTimeout(() => {
-        this.setState({ data: [...data, ...newData], page: newPage });
-        this.setState({ loading: false })
-      }, 1000);
-    }
+  handleMore =() => {
+    this.props.navigation.navigate("AllEventScreen")
   }
 
   renderFooter = () => {
@@ -247,14 +241,6 @@ class MainScreen extends React.Component {
     } else {
       return null;
     }
-    // if (!this.state.loading) {
-    //   return null;
-    // }
-    // return (
-    //   <View style={{ paddingVertical: 20, borderTopWidth: 1, borderColor: Colors.grey3 }}>
-    //     <ActivityIndicator animating size='large' />
-    //   </View>
-    // )
   }
 
   render() {
@@ -290,9 +276,9 @@ class MainScreen extends React.Component {
             buttonStyle={styles.navButton}
             onPress={() => this.props.navigation.navigate('SearchScreen')}
             backgroundColor='white'
-            color='grey'
+            color={Colors.grey2}
             iconLeft
-            icon={{ name: 'search', color: 'grey', }}
+            icon={{ name: 'search', color: Colors.grey2, }}
             title='Try "Official"' />
         </View>
         <ScrollView showsVerticalScrollIndicator={false} style={{ paddingLeft: 20 }}
@@ -335,14 +321,16 @@ class MainScreen extends React.Component {
             )}
             keyExtractor={item => item.uid}
           />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 10 }}>
             <View>
               <Text style={styles.Header}>Event</Text>
             </View>
+            <Text style={styles.more} onPress={()=> this.handleMore()}>See all > </Text>
           </View>
           <View style={{ paddingRight: 20 }}>
+          {this.props.requestEvent != undefined &&
             <FlatList
-              data={this.state.data}
+              data={this.props.requestEvent.slice(0,3)}
               renderItem={({ item }) => (
                 <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
                   onPress={() => this.handleRequest(item)}>
@@ -350,15 +338,13 @@ class MainScreen extends React.Component {
                     source={{ uri: item.imageUrl }}
                     style={{ height: window.height * 0.3, borderRadius: 3, }} />
                   <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
-                  <Text style={{ color: Colors.grey1, fontSize: 20, fontWeight: 'bold', paddingTop: 3 }}>{item.topic}</Text>
+                  <Text style={{ color: Colors.grey1, fontSize: 20, fontFamily: 'prompt', paddingTop: 3 }}>{item.topic}</Text>
                   <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
                 </TouchableOpacity>
               )}
-              ListFooterComponent={this.renderFooter}
-              onEndReached={this.loadMore}
-              onEndReachedThreshold={100}
               keyExtractor={item => item.uid}
             />
+            }
           </View>
         </ScrollView>
         <FloatingAction
@@ -400,11 +386,8 @@ class MainScreen extends React.Component {
 
 const mapStateToProps = (state) => {
   const { requestEvent } = state.requestForm;
-  const requestArray = _.map(requestEvent, (val, uid) => {
-    return { ...val, uid };
-  });
   const { requestSaved } = state.requestForm;
-  return { user: state.auth.user, userProfileObject: state.userForm, requestEvent, requestArray, requestSaved };
+  return { user: state.auth.user, userProfileObject: state.userForm, requestEvent, requestSaved };
 };
 
 MainScreen.propTypes = {

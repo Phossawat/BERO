@@ -33,6 +33,9 @@ import SearchScreen from '../containers/search-screen';
 import RateScreen from '../containers/requester/rate-screen';
 import ProfileChangeScreen from '../containers/profileChange-screen';
 import ReportScreen from '../containers/report-screen';
+import AllEventScreen from '../containers/allEvent-screen';
+import OtpScreen from '../containers/otp-screen';
+import PhoneAuthScreen from '../containers/phoneAuth-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -116,7 +119,10 @@ export const HomeStack = StackNavigator({
   },
   SearchScreen: {
     screen: SearchScreen,
-  }
+  },
+  AllEventScreen: {
+    screen: AllEventScreen,
+  },
 })
 
 const prevGetStateForActionHomeStack = HeroStack.router.getStateForAction;
@@ -144,9 +150,9 @@ export const SettingsStack = StackNavigator({
  Settings: {
    screen: SettingsScreen,
  },
- FriendList: {
-   screen: FriendListScreen,
- },
+//  FriendList: {
+//    screen: FriendListScreen,
+//  },
  RedeemScreen: {
    screen: RedeemScreen,
  },
@@ -232,6 +238,12 @@ export const AppRoot = StackNavigator({
     },
     CreateUserScreen: {
       screen: NewUserScreen
+    },
+    PhoneAuthScreen: {
+      screen: PhoneAuthScreen
+    },
+    OtpScreen: {
+      screen: OtpScreen
     },
     Settings: {
       screen: SettingsStack

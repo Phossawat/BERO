@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     topic: {
         color: Colors.grey1,
         fontSize: 25,
-        fontWeight: 'bold',
+        fontFamily: 'promptB'
     },
     headerTopic: {
         padding: 20,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         right: 0,
         width: null,
         height: HEADER_MAX_HEIGHT,
-        resizeMode: 'cover',
+        resizeMode: 'stretch',
     },
     bar: {
         backgroundColor: 'transparent',
@@ -146,24 +146,13 @@ class RequestView extends React.Component {
         }, 1000)
     }
     handleSavePress = () => {
-        this.setState({ loading: true })
         this.props.save_event(this.props.navigation.state.params.uid);
-        setTimeout(() => {
-            this.props.navigation.navigate('MainScreen');
-            this.setState({ loading: false });
-        }, 1000)
+        this.props.fetch_saved()
     }
 
     handleUnsavedPress = () => {
-        this.setState({ loading: true })
         this.props.delete_saved(this.props.navigation.state.params.uid);
-        setTimeout(() => {
-            this.props.fetch_saved()
-            setTimeout(() => {
-                this.props.navigation.goBack()
-                this.setState({ loading: false });
-            }, 1000)
-        }, 1000)
+        this.props.fetch_saved()
     }
 
     handleComment = (comment) => {
@@ -248,9 +237,9 @@ class RequestView extends React.Component {
                             <Text style={styles.topic}>{this.props.requestAccepted.topic}</Text>
                             <View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <View>
-                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontWeight: 'bold' }}>{this.props.requestAccepted.type}</Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.ownerName}</Text></Text>
-                                    <Text style={{ color: Colors.grey2, fontSize: 10, }}>{new Date(this.props.requestAccepted.when).toString()}</Text>
+                                    <Text style={{ color: Colors.grey1, fontSize: 10, fontFamily: 'promptB' }}>{this.props.requestAccepted.type}</Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, fontFamily: 'prompt' }}>Requested by <Text style={{ color: Colors.mintColor }}>{this.props.requestAccepted.ownerName}</Text></Text>
+                                    <Text style={{ color: Colors.grey2, fontSize: 10, fontFamily: 'prompt' }}>{new Date(this.props.requestAccepted.when).toString()}</Text>
                                 </View>
                                 <Image
                                     style={styles.image}

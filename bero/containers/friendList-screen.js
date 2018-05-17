@@ -3,7 +3,7 @@ import { StyleSheet, View, Platform, Text } from 'react-native';
 import { login } from '../actions/auth';
 import { connect } from 'react-redux';
 import { ActionCreators } from '../actions';
-import { Constants } from 'expo';
+import { Constants, Expo } from 'expo';
 
 const styles = StyleSheet.create({
     container: {
@@ -21,27 +21,32 @@ class FriendListScreen extends React.Component {
         headerTintColor: '#EF5350',
         headerTitleStyle: { color: 'black' },
         headerStyle: {
-            marginTop: (Platform.OS === 'ios') ? 0 : Expo.Constants.statusBarHeight,
+            marginTop: (Platform.OS === 'ios') ? 0 : Constants.statusBarHeight,
             backgroundColor: 'white',
             borderBottomWidth: 0,
         },
     };
 
     componentDidMount() {
-        login()
+        this.logIn()
     }
-    async logIn() {
-        const response = await fetch(
-            `https://graph.facebook.com/v2.3/me/friendsaccess_token=${token}&debug=all`);
-            console.log("friendlist "+response)
-            this.setState(token)
+    logIn() {
+        Expo.Facebook.token
+        Expo.Facebook
+            .logInWithReadPermissionsAsync('1735860930050502', {
+                permissions: ['public_profile', 'email', 'user_friends'],
+            }).then( async (result) => {
+                const response = await fetch(
+                    `https://graph.facebook.com/v2.11/me/friends&access_token=${result.token}`);
+                console.log("friendlist " + await response.status)
+            })
     }
 
     render() {
 
         return (
             <View style={styles.container}>
-            <Text>Hello{Object.values(this.props.user)}</Text>
+                <Text>Hello{this.props.refreshToken}</Text>
             </View>
         );
     }
@@ -50,7 +55,7 @@ class FriendListScreen extends React.Component {
 const mapStateToProps = state => ({ user: state.auth.user });
 
 FriendListScreen.propTypes = {
-  user: React.PropTypes.object.isRequired,
+    user: React.PropTypes.object.isRequired,
 };
-  
+
 export default connect(mapStateToProps, ActionCreators)(FriendListScreen);

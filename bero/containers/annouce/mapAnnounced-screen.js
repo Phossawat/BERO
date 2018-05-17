@@ -121,8 +121,14 @@ class MapAnnoucedScreen extends React.Component {
     };
 
     handleModal = (marker) => {
-        this.setState({ modalItem:marker })
+        this.setState({ modalItem: marker })
         this.setState({ modal: true })
+    }
+
+    handleVoteRemove = () => {
+        console.log(this.state.modalItem.uid)
+        this.props.voteRemove(this.state.modalItem.uid)
+        this.setState({ modal: false })
     }
 
 
@@ -130,30 +136,38 @@ class MapAnnoucedScreen extends React.Component {
         let { region } = this.state;
         return (
             <View style={styles.container} >
-            {this.state.modalItem &&
-                <Modal
-                    visible={this.state.modal}
-                    transparent={true}
-                    animationType={'fade'}
-                    onRequestClose={() => { console.log('close modal') }}>
-                    <View style={styles.modalBackground}>
-                        <Card
-                            style={{width:window.width*0.8, backgroundColor:'white', borderRadius:5}}
-                            title={this.state.modalItem.topic}
-                            image={{uri: this.state.modalItem.imageUrl}}>
-                            <Text style={{ marginBottom: 10 }}>
-                                {this.state.modalItem.detail}
-  </Text>
-                            <Button
-                                onPress={()=>{this.setState({modal: false})}}
-                                icon={{ name: 'close' }}
-                                backgroundColor={Colors.red}
-                                buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                title='Close' />
-                        </Card>
-                    </View>
-                </Modal>
-            }
+                {this.state.modalItem &&
+                    <Modal
+                        visible={this.state.modal}
+                        transparent={true}
+                        animationType={'fade'}
+                        onRequestClose={() => { console.log('close modal') }}>
+                        <View style={styles.modalBackground}>
+                            <Card
+                                style={{ width: window.width * 0.8, backgroundColor: 'white', borderRadius: 5 }}
+                                title={this.state.modalItem.topic}
+                                image={{ uri: this.state.modalItem.imageUrl }}>
+                                <Text style={{ marginBottom: 10 }}>
+                                    {this.state.modalItem.detail}
+                                </Text>
+                                <View flexDirection="row" style={{ alignItems: 'center', justifyContent:'center' }}>
+                                <Button
+                                    onPress={() => this.handleVoteRemove()}
+                                    icon={{ name: 'remove' }}
+                                    backgroundColor={Colors.red}
+                                    buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                    title='Remove' />
+                                <Button
+                                    onPress={() => { this.setState({ modal: false }) }}
+                                    icon={{ name: 'close' }}
+                                    backgroundColor={Colors.red}
+                                    buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                    title='Close' />
+                                </View>
+                            </Card>
+                        </View>
+                    </Modal>
+                }
                 <View style={{ zIndex: 2, backgroundColor: 'transparent', position: 'absolute' }}>
                     <Icon name="chevron-left" type='font-awesome' color={Colors.red} style={{ paddingTop: 25, paddingLeft: 20 }} onPress={() => this.props.navigation.goBack()} />
                 </View>
@@ -168,7 +182,7 @@ class MapAnnoucedScreen extends React.Component {
                             coordinate={marker.mark_position}
                         >
                             <MapView.Callout tooltip style={styles.callout}>
-                                <TouchableOpacity style={styles.containerCallOut} onPress={()=>this.handleModal(marker)}>
+                                <TouchableOpacity style={styles.containerCallOut} onPress={() => this.handleModal(marker)}>
                                     <View style={styles.bubble}>
                                         <View>
                                             <Image

@@ -2,7 +2,7 @@ import React from 'react';
 import { BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import { StackNavigator, NavigationActions } from 'react-navigation';
-import { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications, Font } from 'expo';
 
 // import SplashScreen from '../components/splash-screen';
 // import AuthScreen from './auth-screen';
@@ -19,6 +19,12 @@ class App extends React.Component {
     });
   }
   componentDidMount() {
+    Font.loadAsync({
+      'brown': require('../assets/fonts/lineto-brown-bold.ttf'),
+      'prompt': require('../assets/fonts/Prompt-Regular.ttf'),
+      'choco' : require('../assets/fonts/chocolate-cake.ttf'),
+      'promptB' : require('../assets/fonts/Prompt-SemiBold.ttf'),
+    });
     this.props.verifyAuth();
     setTimeout(() => {
       this.routeOnAuth();
