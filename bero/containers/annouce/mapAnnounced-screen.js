@@ -130,6 +130,9 @@ class MapAnnoucedScreen extends React.Component {
         this.props.voteRemove(this.state.modalItem.uid)
         this.setState({ modal: false })
     }
+    onRegionChange = (region) => {
+        this.setState({ mapRegion:region });
+    }
 
 
     render() {
@@ -174,14 +177,16 @@ class MapAnnoucedScreen extends React.Component {
                 <MapView
                     initialRegion={this.state.mapRegion}
                     region={this.state.mapRegion}
+                    onRegionChange={this.onRegionChange}
                     style={styles.container}
                 >
                     {this.props.announcedArray.map((marker) => (
                         <MapView.Marker
                             key={marker.uid}
                             coordinate={marker.mark_position}
+                            onPress={() => this.handleModal(marker)}
                         >
-                            <MapView.Callout tooltip style={styles.callout}>
+                            {/* <MapView.Callout tooltip style={styles.callout}>
                                 <TouchableOpacity style={styles.containerCallOut} onPress={() => this.handleModal(marker)}>
                                     <View style={styles.bubble}>
                                         <View>
@@ -198,7 +203,7 @@ class MapAnnoucedScreen extends React.Component {
                                     <View style={styles.arrowBorder} />
                                     <View style={styles.arrow} />
                                 </TouchableOpacity>
-                            </MapView.Callout>
+                            </MapView.Callout> */}
                         </MapView.Marker>
                     ))}
                 </MapView>

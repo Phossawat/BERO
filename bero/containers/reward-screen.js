@@ -27,6 +27,11 @@ class RewardScreen extends React.Component {
           borderBottomWidth: 0,
        },
       };
+    
+    handleReward = (item) => {
+        this.props.navigation.navigate("RewardViewScreen",{
+            item: item })
+    }  
     render() {
         return (
             <View style={styles.container}>
@@ -35,7 +40,7 @@ class RewardScreen extends React.Component {
                     data={this.props.rewardsArray}
                     renderItem={({ item }) => (
                         <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10, marginBottom:5 , width: window.width, height: window.height * 0.30 }}
-                            onPress={() => this.handleRequest(item)}>
+                            onPress={() => this.handleReward(item)}>
                             <Image resizeMode={"stretch"}
                                 source={{ uri: item.image }}
                                 style={{ width: window.width, height: window.height * 0.30 }} />

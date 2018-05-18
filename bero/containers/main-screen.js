@@ -194,12 +194,11 @@ class MainScreen extends React.Component {
   }
   
   handleMapSecond = () => {
-    this.setState({ modalVisible: false })
+    this.props.announcedFetch()
     this.props.navigation.navigate('MapAnnoucedScreen')
   }
 
   handleCreate = () => {
-    this.setState({ modalVisible: false })
     this.props.navigation.navigate('AnnouncedScreen')
   }
 

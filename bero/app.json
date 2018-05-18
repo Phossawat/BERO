@@ -16,7 +16,16 @@
       "assetExts": ["ttf", "mp4"]
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bero.bero"
+    },
+    "android": {
+      "package": "com.bero.bero",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDqRYyiUJjanbksqTOpLfJOX-8IXy3y6B4"
+        }
+      }
     },
     "notification": {
       "icon": "./assets/logoNoti.png"

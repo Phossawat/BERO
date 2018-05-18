@@ -149,18 +149,27 @@ export const redeemVoucher = (code) => {
                   console.log('The counter has a non-numeric value: ' + value)
                 }
               }).then(() => {
-                var ref = firebase.database().ref('/requests/' + snapshot.val().event + '/heroAccepted');
-                ref.transaction(function (value2) {
-                  if (typeof value2 === 'number') {
-                    return value2 + 1;
+                var ref = firebase.database().ref('users/' + owneruid + '/Profile/help');
+                ref.transaction(function (value) {
+                  if (typeof value === 'number') {
+                    return value + 1;
                   } else {
-                    console.log('The counter has a non-numeric value: ' + value2)
+                    console.log('The counter has a non-numeric value: ' + value)
                   }
                 }).then(() => {
-                  dispatch({
-                    type: REDEEM_SUCCESS,
-                    payload: snapshot.val().event
-                  });
+                  var ref = firebase.database().ref('/requests/' + snapshot.val().event + '/heroAccepted');
+                  ref.transaction(function (value2) {
+                    if (typeof value2 === 'number') {
+                      return value2 + 1;
+                    } else {
+                      console.log('The counter has a non-numeric value: ' + value2)
+                    }
+                  }).then(() => {
+                    dispatch({
+                      type: REDEEM_SUCCESS,
+                      payload: snapshot.val().event
+                    });
+                  })
                 })
               })
             })
@@ -223,10 +232,25 @@ export const fetch_rewards = () => {
   const request = firebase.database().ref('rewards/')
   return (dispatch) => {
     request.on('value', snapshot => {
-        dispatch({
-          type: FETCH_REWARDS,
-          payload: snapshot.val()
-        });
+      dispatch({
+        type: FETCH_REWARDS,
+        payload: snapshot.val()
+      });
     });
   };
 };
+
+export const getReward = (cost) => {
+  const { currentUser } = firebase.auth();
+  var owneruid = currentUser.uid;
+  const ref = firebase.database().ref(`/users/` + owneruid + '/Profile/point');
+  return () => {
+    ref.transaction(function (value) {
+      if (value >= cost) {
+        return value - cost;
+      } else {
+        console.log('The counter has a non-numeric value: ' + value)
+      }
+    })
+  }
+}

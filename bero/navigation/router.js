@@ -35,6 +35,7 @@ import ProfileChangeScreen from '../containers/profileChange-screen';
 import ReportScreen from '../containers/report-screen';
 import AllEventScreen from '../containers/allEvent-screen';
 import RewardScreen from '../containers/reward-screen';
+import RewardViewScreen from '../containers/rewardView-screen';
 
 export const HeroStack = StackNavigator({
   FindingScreen: {
@@ -157,6 +158,9 @@ export const SettingsStack = StackNavigator({
  },
  RewardScreen: {
    screen: RewardScreen,
+ },
+ RewardViewScreen: {
+   screen: RewardViewScreen,
  },
  SavedScreen: {
    screen: SavedScreen,
