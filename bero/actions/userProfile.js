@@ -10,7 +10,7 @@ export const userProfileUpdate = ({ prop, value }) => {
   };
 };
 
-export const userProfileCreate = ({ skills, score, gender }) => {
+export const userProfileCreate = ({ skills, score, gender, phone }) => {
   const { currentUser } = firebase.auth();
   var facebookUid = null;
   var userProfile = firebase.database().ref(`/users/${currentUser.uid}`);
@@ -30,6 +30,7 @@ export const userProfileCreate = ({ skills, score, gender }) => {
       phoneNumber,
       email,
       gender,
+      phone,
       "point": 0,
       "help": 0,
       "profilePicture": 'http://graph.facebook.com/' + facebookUid + '/picture?type=square',

@@ -150,19 +150,19 @@ class MapAnnoucedScreen extends React.Component {
                                 <Text style={{ marginBottom: 10 }}>
                                     {this.state.modalItem.detail}
                                 </Text>
-                                <View flexDirection="row" style={{ alignItems: 'center', justifyContent:'center' }}>
-                                <Button
-                                    onPress={() => this.handleVoteRemove()}
-                                    icon={{ name: 'remove' }}
-                                    backgroundColor={Colors.red}
-                                    buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                    title='Remove' />
-                                <Button
-                                    onPress={() => { this.setState({ modal: false }) }}
-                                    icon={{ name: 'close' }}
-                                    backgroundColor={Colors.red}
-                                    buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                                    title='Close' />
+                                <View flexDirection="row" style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Button
+                                        onPress={() => this.handleVoteRemove()}
+                                        icon={{ name: 'remove' }}
+                                        backgroundColor={Colors.red}
+                                        buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                        title='Remove' />
+                                    <Button
+                                        onPress={() => { this.setState({ modal: false }) }}
+                                        icon={{ name: 'close' }}
+                                        backgroundColor={Colors.red}
+                                        buttonStyle={{ borderRadius: 5, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                                        title='Close' />
                                 </View>
                             </Card>
                         </View>
@@ -185,11 +185,13 @@ class MapAnnoucedScreen extends React.Component {
                                 <TouchableOpacity style={styles.containerCallOut} onPress={() => this.handleModal(marker)}>
                                     <View style={styles.bubble}>
                                         <View>
-                                            <Image
-                                                resizeMode="cover"
-                                                style={styles.image}
-                                                source={{ uri: marker.imageUrl }}
-                                            />
+                                            {Platform.OS === 'ios' &&
+                                                <Image
+                                                    resizeMode="cover"
+                                                    style={styles.image}
+                                                    source={{ uri: marker.imageUrl }}
+                                                />
+                                            }
                                             <Text style={styles.topic}>{marker.topic}</Text>
                                         </View>
                                     </View>

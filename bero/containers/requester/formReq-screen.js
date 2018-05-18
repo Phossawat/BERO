@@ -9,6 +9,7 @@ import Colors from '../../constants/colors';
 import { style } from 'expo/src/Font';
 import firebase from 'firebase';
 import _ from 'lodash'
+import call from 'react-native-phone-call'
 
 const { Lottie } = DangerZone;
 
@@ -151,6 +152,13 @@ class FormReqScreen extends React.Component {
             { key: index++, label: '4' },
             { key: index++, label: '5' },
         ];
+        const length_data = [
+            { key: index++, label: '1 Km', value: 1 },
+            { key: index++, label: '2 Km', value: 2 },
+            { key: index++, label: '3 Km', value: 3 },
+            { key: index++, label: '4 Km', value: 4 },
+            { key: index++, label: '5 Km', value: 5 },
+        ];
         let content;
 
         if (this.props.status == "in-progress") {
@@ -259,6 +267,17 @@ class FormReqScreen extends React.Component {
                                     editable={false}
                                     value={this.props.type} />
                             </ModalSelector>
+                            <ModalSelector
+                                style={{ width: window.width * 0.5 }}
+                                data={length_data}
+                                onChange={type => this.props.requestUpdate({ prop: 'distance', value: type.label })}>
+                                <FormLabel>
+                                    <Text style={{ color: Colors.mintColor }}>Notify Distance</Text>
+                                </FormLabel>
+                                <FormInput
+                                    editable={false}
+                                    value={this.props.distance} />
+                            </ModalSelector>
                         </View>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
@@ -363,6 +382,16 @@ class FormReqScreen extends React.Component {
                                             <Text style={{ fontSize: 18, color: Colors.grey1 }}> Time</Text>
                                         </Text>
                                     </View>
+                                    <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', width: window.width * 0.5 }}>
+                                        <Text style={{ fontSize: 18, color: Colors.grey1, fontWeight: 'bold' }}>Phone </Text>
+                                        <Text style={{ fontSize: 15, color: Colors.mintColor }}
+                                            onPress={() => call({
+                                                number: this.state.item.phone,
+                                                prompt: false
+                                            }).catch(console.error)}>
+                                            {this.state.item.phone}
+                                        </Text>
+                                    </View>
                                 </View>
                                 <Button
                                     buttonStyle={{ borderRadius: 6, width: window.width * 0.3, }}
@@ -382,14 +411,11 @@ class FormReqScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const { topic, type, view, must_be, hero, detail, photo, requestSingle } = state.requestForm;
-    // const { heroArray } = _.map(requestSingle.helpers, (val, uid) => {
-    //         return { ...val, uid }; 
-    //     });
+    const { topic, type, view, must_be, hero, detail, photo, requestSingle, distance } = state.requestForm;
     const { status } = state.requestStatus;
     const { userProfileObject } = state.userForm;
 
-    return { topic, type, view, must_be, hero, detail, status, photo, userProfileObject, requestSingle, };
+    return { topic, type, view, must_be, hero, detail, status, photo, userProfileObject, requestSingle, distance };
 };
 
 

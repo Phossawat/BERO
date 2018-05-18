@@ -27,7 +27,7 @@ export const requestUpdate = ({ prop, value }) => {
   };
 };
 
-export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_position }, url) => {
+export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_position, distance }, url) => {
   const { currentUser } = firebase.auth();
   var facebookUid = null;
   const requestDB = firebase.database().ref(`/requests`);
@@ -52,6 +52,7 @@ export const requestCreate = ({ topic, type, view, must_be, hero, detail, mark_p
       must_be,
       hero,
       detail,
+      distance,
       mark_position,
       'requestType': 'Request',
       'status': 'in-progress',

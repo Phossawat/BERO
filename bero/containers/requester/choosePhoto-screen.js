@@ -63,9 +63,9 @@ class ChoosePhotoScreen extends React.Component {
   };
 
   onButtonPress = () => {
-    const { topic, type, view, must_be, hero, detail, mark_position } = this.props;
+    const { topic, type, view, must_be, hero, detail, mark_position, distance } = this.props;
     this.setState({ uploading: true })
-    this.props.requestCreate({ topic, type, view, must_be, hero, detail, mark_position }, this.state.url );
+    this.props.requestCreate({ topic, type, view, must_be, hero, detail, mark_position, distance }, this.state.url );
     setTimeout(() => {
       this.setState({ uploading: false });
       this.props.navigation.navigate('FormReqScreen');
@@ -176,9 +176,9 @@ async function uploadImageAsync(uri) {
 
 
 const mapStateToProps = (state) => {
-  const { topic, type, view, must_be, hero, detail, mark_position, photo } = state.requestForm
+  const { topic, type, view, must_be, hero, detail, mark_position, photo, distance } = state.requestForm
 
-  return { topic, type, view, must_be, hero, detail, mark_position, photo };
+  return { topic, type, view, must_be, hero, detail, mark_position, photo, distance };
 };
 
 

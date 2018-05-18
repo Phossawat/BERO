@@ -7,7 +7,6 @@ import { Constants, Permissions, Notifications, Location, } from 'expo';
 import MiniCard from '../components/MiniCard';
 import CatagoryCard from '../components/CatagoryCard';
 import SearchBox from '../components/SearchBox';
-import { FloatingAction } from 'react-native-floating-action';
 import call from 'react-native-phone-call'
 import Colors from '../constants/colors';
 import _ from 'lodash';
@@ -110,6 +109,30 @@ const styles = StyleSheet.create({
     borderRadius: 4,
 
   },
+  menuCard: {
+    marginRight: 10,
+    width: window.width * 0.3,
+    height: window.height * 0.15,
+    borderRadius: 4,
+    borderColor: '#CFD8DC',
+    borderWidth: 0.3,
+    backgroundColor: 'white',
+    shadowColor: 'grey',
+    shadowRadius: 0.5,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 1, height: 2 },
+  },
+  menuImage: {
+    width: window.width * 0.3,
+    height: window.height * 0.1,
+    borderTopLeftRadius: 4,
+    borderBottomRightRadius: 4,
+  },
+  menuHeader: {
+    color: Colors.grey1,
+    fontSize: 15,
+    fontFamily: 'prompt'
+  }
 });
 
 const actions = [{
@@ -142,7 +165,6 @@ class MainScreen extends React.Component {
 
   state = {
     visible: true,
-    modalVisible: false,
     notification: {},
     errorMessage: null,
     dataSource: [],
@@ -170,11 +192,7 @@ class MainScreen extends React.Component {
     }
     this.props.trackLocation(coordination)
   }
-
-  handleMap = () => {
-    this.setState({ modalVisible: true })
-    this.props.announcedFetch()
-  }
+  
   handleMapSecond = () => {
     this.setState({ modalVisible: false })
     this.props.navigation.navigate('MapAnnoucedScreen')
@@ -227,7 +245,7 @@ class MainScreen extends React.Component {
     await firebase.database().ref('/users/' + currentUser.uid).update(updates)
   }
 
-  handleMore =() => {
+  handleMore = () => {
     this.props.navigation.navigate("AllEventScreen")
   }
 
@@ -247,30 +265,6 @@ class MainScreen extends React.Component {
     const { visible, modalVisible } = this.state;
     return (
       <View style={styles.container}>
-        <Modal
-          transparent={true}
-          animationType={'fade'}
-          visible={modalVisible}
-          onRequestClose={() => { console.log('close modal') }}>
-          <View style={styles.modalBackground}>
-            <View style={styles.Wrapper}>
-              <Button
-                buttonStyle={{ borderRadius: 6, width: window.width * 0.5, }}
-                backgroundColor={Colors.mintColor}
-                fontWeight='bold'
-                color='white'
-                title='Map'
-                onPress={this.handleMapSecond} />
-              <Button
-                buttonStyle={{ borderRadius: 6, width: window.width * 0.5, }}
-                backgroundColor={Colors.mintColor}
-                fontWeight='bold'
-                color='white'
-                title='Create Announce'
-                onPress={this.handleCreate} />
-            </View>
-          </View>
-        </Modal>
         <View style={styles.navBar}>
           <Button
             buttonStyle={styles.navButton}
@@ -288,14 +282,47 @@ class MainScreen extends React.Component {
           onScrollEndDrag={() => this.setState({
             visible: true
           })}
-        ><View style={{ paddingBottom: 20, paddingTop: 20 }}>
-            <TouchableOpacity style={styles.LongButton} onPress={this.handleMap}>
-              {/* <Image source={require('../../assets/Test.jpeg')} style={styles.image} resizeMode="stretch" /> */}
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-                <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>Map</Text>
+        ><ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ paddingBottom: 20, paddingTop: 20 }}>
+            <TouchableOpacity style={styles.menuCard} onPress={this.handleMapSecond}>
+              <Image source={require('../assets/flat-map-mockup.png')} style={styles.menuImage} resizeMode="stretch" />
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.menuHeader}>Notice</Text>
               </View>
             </TouchableOpacity>
-          </View>
+            <TouchableOpacity style={styles.menuCard} onPress={this.handleCreate}>
+              <Image source={require('../assets/announced.jpeg')} style={styles.menuImage} resizeMode="stretch" />
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.menuHeader}>Announce</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuCard} onPress={()=> call({
+                    number: '1669',
+                    prompt: false
+                  }).catch(console.error)}>
+              <Image source={require('../assets/medical.jpg')} style={styles.menuImage} resizeMode="stretch" />
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.menuHeader}>Medical</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuCard} onPress={()=> call({
+                    number: '191',
+                    prompt: false
+                  }).catch(console.error)}>
+              <Image source={require('../assets/police.jpg')} style={styles.menuImage} resizeMode="stretch" />
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.menuHeader}>Police</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuCard} onPress={()=> call({
+                    number: '199',
+                    prompt: false
+                  }).catch(console.error)}>
+              <Image source={require('../assets/fire.jpeg')} style={styles.menuImage} resizeMode="stretch" />
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.menuHeader}>Fire</Text>
+              </View>
+            </TouchableOpacity>
+          </ScrollView>
           {this.props.requestSaved &&
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
               <Text style={styles.Header}>Saved</Text>
@@ -325,60 +352,28 @@ class MainScreen extends React.Component {
             <View>
               <Text style={styles.Header}>Event</Text>
             </View>
-            <Text style={styles.more} onPress={()=> this.handleMore()}>See all > </Text>
+            <Text style={styles.more} onPress={() => this.handleMore()}>See all > </Text>
           </View>
           <View style={{ paddingRight: 20 }}>
-          {this.props.requestEvent != undefined &&
-            <FlatList
-              data={this.props.requestEvent.slice(0,3)}
-              renderItem={({ item }) => (
-                <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
-                  onPress={() => this.handleRequest(item)}>
-                  <Image resizeMode={"cover"}
-                    source={{ uri: item.imageUrl }}
-                    style={{ height: window.height * 0.3, borderRadius: 3, }} />
-                  <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
-                  <Text style={{ color: Colors.grey1, fontSize: 20, fontFamily: 'prompt', paddingTop: 3 }}>{item.topic}</Text>
-                  <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={item => item.uid}
-            />
+            {this.props.requestEvent != undefined &&
+              <FlatList
+                data={this.props.requestEvent.slice(0, 3)}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
+                    onPress={() => this.handleRequest(item)}>
+                    <Image resizeMode={"cover"}
+                      source={{ uri: item.imageUrl }}
+                      style={{ height: window.height * 0.3, borderRadius: 3, }} />
+                    <Text style={{ color: Colors.mintColor, fontSize: 12, fontWeight: 'bold', paddingTop: 8 }}>{item.type}</Text>
+                    <Text style={{ color: Colors.grey1, fontSize: 20, fontFamily: 'prompt', paddingTop: 3 }}>{item.topic}</Text>
+                    <Text style={{ color: Colors.grey1, fontSize: 12, paddingTop: 3 }}>{item.heroAccepted}/{item.hero} persons</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={item => item.uid}
+              />
             }
           </View>
         </ScrollView>
-        <FloatingAction
-          visible={visible}
-          actions={actions}
-          distanceToEdge={10}
-          buttonColor={Colors.red}
-          onPressItem={
-            (name) => {
-              switch (name) {
-                case "ambulance":
-                  call({
-                    number: '1669',
-                    prompt: false
-                  }).catch(console.error)
-                  break;
-                case "police":
-                  call({
-                    number: '191',
-                    prompt: false
-                  }).catch(console.error)
-                  break;
-                case "fire":
-                  call({
-                    number: '199',
-                    prompt: false
-                  }).catch(console.error)
-                  break;
-                default:
-                  console.log(`selected button: ${name}`)
-              }
-            }
-          }
-        />
       </View>
     );
   }

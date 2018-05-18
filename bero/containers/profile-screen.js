@@ -51,6 +51,10 @@ class ProfileScreen extends React.Component {
     // this.props.fetch_saved();
     this.props.navigation.navigate('SavedScreen');
   }
+  handleRewards = () => {
+    this.props.fetch_rewards()
+    this.props.navigation.navigate('RewardScreen');
+  }
 
   render() {
     return (
@@ -117,6 +121,16 @@ class ProfileScreen extends React.Component {
             rightIcon={{ name: 'wallet-giftcard', type: 'material-community', color: '#263238' }}
             containerStyle={{ borderColor: '#CFD8DC' }}
             onPress={this.handleRedeemPress}
+            underlayColor="#ecf0f1"
+          />
+
+          <ListItem
+            component={TouchableHighlight}
+            title="Rewards"
+            titleStyle={{ fontWeight: 'bold' }}
+            rightIcon={{ name: 'heart-outline', type: 'material-community', color: '#263238' }}
+            containerStyle={{ borderColor: '#CFD8DC' }}
+            onPress={this.handleRewards}
             underlayColor="#ecf0f1"
           />
 

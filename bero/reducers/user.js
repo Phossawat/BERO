@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   redeemStatus: false,
   redeemRequestId: null,
   redeemText: '',
+  phone: '',
 };
 
 const user = (state = INITIAL_STATE, action) => {

@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 
 })
 
-class OtpScreen extends React.Component {
+class RewardViewScreen extends React.Component {
     static navigationOptions = {
         header: null,
     };
@@ -36,4 +36,4 @@ const mapStateToProps = (state) => {
 };
 
 
-export default connect(mapStateToProps, ActionCreators)(OtpScreen);
+export default connect(mapStateToProps, ActionCreators)(RewardViewScreen);

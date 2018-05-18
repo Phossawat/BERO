@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   type: 'Any',
   view: 'Public',
   must_be: 'all',
+  distance: "1",
   detail: '',
   photo: null,
   mark_position: {

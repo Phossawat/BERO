@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import Expo from 'expo';
-import { HERO_STATUS_LOADING, HERO_STATUS_FINDING, HERO_STATUS_ACCEPTED, HERO_STATUS_INPROGRESS, HERO_STATUS_DENIED, REDEEM_SUCCESS, REDEEM_FAILD, COMMENT_SUCCESS } from './types';
+import _ from 'lodash';
+import { HERO_STATUS_LOADING, HERO_STATUS_FINDING, HERO_STATUS_ACCEPTED, HERO_STATUS_INPROGRESS, HERO_STATUS_DENIED, REDEEM_SUCCESS, REDEEM_FAILD, COMMENT_SUCCESS, FETCH_REWARDS } from './types';
 
 export const hero_finding = () => {
   const { currentUser } = firebase.auth();
@@ -27,6 +28,7 @@ export const hero_accepted = (requestId, location, user, limitHero) => {
   var ownerName = currentUser.displayName;
   var help = user.help;
   var score = user.score;
+  var phone = user.phone;
   var state = false;
   currentUser.providerData.forEach((profile) => {
     facebookUid = profile.uid;
@@ -52,6 +54,7 @@ export const hero_accepted = (requestId, location, user, limitHero) => {
             'ownerprofilePicture': 'http://graph.facebook.com/' + facebookUid + '/picture?type=square',
             help,
             score,
+            phone,
             ownerName,
             owneruid,
             location,
@@ -214,3 +217,16 @@ export const noComment = () => {
     dispatch({ type: COMMENT_SUCCESS });
   }
 }
+
+export const fetch_rewards = () => {
+  const { currentUser } = firebase.auth()
+  const request = firebase.database().ref('rewards/')
+  return (dispatch) => {
+    request.on('value', snapshot => {
+        dispatch({
+          type: FETCH_REWARDS,
+          payload: snapshot.val()
+        });
+    });
+  };
+};

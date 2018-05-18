@@ -67,7 +67,8 @@ class AllEventScreen extends React.Component {
     }
 
     loadMore = () => {
-        if (!this.state.loading) {
+        var length = this.state.data.length
+        if (!this.state.loading && length>=(this.state.page*ITEMS_PER_PAGE)) {
             this.setState({ loading: true })
             const { page, data } = this.state;
             const start = page * ITEMS_PER_PAGE;

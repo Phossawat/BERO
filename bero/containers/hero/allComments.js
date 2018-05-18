@@ -43,16 +43,19 @@ export default class AllCommentsScreen extends React.Component {
     }
 
     loadMore = () => {
-        this.setState({ loading: true })
-        const { page, data } = this.state;
-        const start = page * ITEMS_PER_PAGE;
-        const end = (page + 1) * ITEMS_PER_PAGE - 1;
-        const newPage = page + 1
-        const newData = this.props.navigation.state.params.item.slice(start, end);
-        setTimeout(() => {
-            this.setState({ data: [...data, ...newData], page: newPage });
-            this.setState({ loading: false })
-        }, 3000);
+        var length = this.state.data.length
+        if (!this.state.loading && length >= (this.state.page * ITEMS_PER_PAGE)) {
+            this.setState({ loading: true })
+            const { page, data } = this.state;
+            const start = page * ITEMS_PER_PAGE;
+            const end = (page + 1) * ITEMS_PER_PAGE - 1;
+            const newPage = page + 1
+            const newData = this.props.navigation.state.params.item.slice(start, end);
+            setTimeout(() => {
+                this.setState({ data: [...data, ...newData], page: newPage });
+                this.setState({ loading: false })
+            }, 3000);
+        }
     }
 
     renderFooter = () => {

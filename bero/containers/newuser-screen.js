@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.grey5,
         flex: 1,
-        paddingTop: window.height*0.2,
+        paddingTop: window.height * 0.1,
         justifyContent: 'center',
     },
     heading: {
         paddingLeft: 33,
-        marginBottom: 33,
+        marginBottom: 10,
         paddingRight: 33,
         fontSize: 33,
         textAlign: 'center',
@@ -63,10 +63,10 @@ class NewUserScreen extends React.Component {
     }
 
     onButtonPress() {
-        const { score, gender } = this.props;
+        const { score, gender, phone } = this.props;
         const skills = this.state.skills;
 
-        this.props.userProfileCreate({ skills, score, gender });
+        this.props.userProfileCreate({ skills, score, gender, phone });
     }
 
     handleSkillSelected = (skillSelected) => {
@@ -92,7 +92,7 @@ class NewUserScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.heading}>WELCOME HERO</Text>
-                <View style={{ marginBottom: 40, paddingRight: 33, paddingLeft: 33, }}>
+                <View style={{ marginBottom: 10, paddingRight: 33, paddingLeft: 33, }}>
                     <ModalSelector
                         data={data}
                         onChange={selected => this.props.userProfileUpdate({ prop: 'gender', value: selected.label })}>
@@ -104,27 +104,36 @@ class NewUserScreen extends React.Component {
                             editable={false}
                             value={this.props.gender} />
                     </ModalSelector>
+                    <FormLabel labelStyle={{ color: 'white' }}>
+                        <Text>Phone</Text>
+                    </FormLabel>
+                    <FormInput
+                        keyboardType="phone-pad"
+                        style={{ color: 'white', marginTop: 10 }}
+                        maxLength={10}
+                        value={this.props.phone}
+                        onChangeText={text => this.props.userProfileUpdate({ prop: 'phone', value: text })} />
                 </View>
-                <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 53, paddingBottom: window.height * 0.05 }} >Select your skills</Text>
+                <Text style={{ color: 'white', fontWeight: 'bold', paddingLeft: 53, paddingBottom: window.height * 0.01 }} >Select your skills</Text>
                 <View style={{ height: 150 }}>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{flex: 0}}>
-                    <View style={{ flexDirection: 'row', paddingLeft: 33, }}>
-                        <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
-                            <ButtonDisable onPress={() => this.handleSkillSelected('Mechanic')} title='Mechanic' disabled={this.state.skills.includes('Mechanic')} />
-                            <ButtonDisable onPress={() => this.handleSkillSelected('Medic')} title='Medic' disabled={this.state.skills.includes('Medic')} />
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ flex: 0 }}>
+                        <View style={{ flexDirection: 'row', paddingLeft: 33, }}>
+                            <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
+                                <ButtonDisable onPress={() => this.handleSkillSelected('Mechanic')} title='Mechanic' disabled={this.state.skills.includes('Mechanic')} />
+                                <ButtonDisable onPress={() => this.handleSkillSelected('Medic')} title='Medic' disabled={this.state.skills.includes('Medic')} />
+                            </View>
+                            <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
+                                <ButtonDisable onPress={() => this.handleSkillSelected('Language')} title='Language' disabled={this.state.skills.includes('Language')} />
+                                <ButtonDisable onPress={() => this.handleSkillSelected('Computer')} title='Computer' disabled={this.state.skills.includes('Computer')} />
+                            </View>
+                            <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
+                                <ButtonDisable onPress={() => this.handleSkillSelected('Chef')} title='Chef' disabled={this.state.skills.includes('Chef')} />
+                                <ButtonDisable onPress={() => this.handleSkillSelected('Strength')} title='Strength' disabled={this.state.skills.includes('Strength')} />
+                            </View>
                         </View>
-                        <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
-                            <ButtonDisable onPress={() => this.handleSkillSelected('Language')} title='Language' disabled={this.state.skills.includes('Language')} />
-                            <ButtonDisable onPress={() => this.handleSkillSelected('Computer')} title='Computer' disabled={this.state.skills.includes('Computer')} />
-                        </View>
-                        <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
-                            <ButtonDisable onPress={() => this.handleSkillSelected('Chef')} title='Chef' disabled={this.state.skills.includes('Chef')} />
-                            <ButtonDisable onPress={() => this.handleSkillSelected('Strength')} title='Strength' disabled={this.state.skills.includes('Strength')} />
-                        </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
                 </View>
-                <View style={{ alignItems: 'center', paddingRight: 33, paddingTop: window.height * 0.05, paddingLeft: 33 }}>
+                <View style={{ alignItems: 'center', paddingRight: 33, paddingTop: window.height * 0.01, paddingLeft: 33 }}>
                     <Button
                         buttonStyle={{
                             borderRadius: 6,
@@ -143,9 +152,9 @@ class NewUserScreen extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const { skill, score, gender } = state.userForm;
+    const { skill, score, gender, phone } = state.userForm;
 
-    return { skill, score, gender };
+    return { skill, score, gender, phone };
 };
 
 

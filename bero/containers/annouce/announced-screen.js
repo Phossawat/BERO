@@ -74,7 +74,7 @@ class AnnouncedScreen extends React.Component {
                 </ScrollView>
                 <View style={{ backgroundColor: 'white' }}>
                         <Button
-                            style={{ paddingTop: 10, paddingBottom: 10, borderRadius: 3, }}
+                            style={{ paddingTop: 10, paddingBottom: 20, borderRadius: 3, }}
                             buttonStyle={{ borderRadius: 6, borderColor: Colors.mintColor, borderWidth: 1, }}
                             backgroundColor='white'
                             fontSize={15}

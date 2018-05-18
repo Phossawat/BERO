@@ -100,17 +100,19 @@ class RedeemScreen extends React.Component {
                                         <Text style={{ color: Colors.mintColor }}>Comment</Text>
                                     </FormLabel>
                                     <FormInput
-                                        inputStyle={{ width: window.width * 0.7 }}
+                                        inputStyle={{ width: window.width * 0.7, paddingBottom: 5 }}
                                         multiline={true}
                                         value={this.state.message}
                                         onChangeText={text => this.setState({ message: text })} />
+                                    <View style={{ paddingTop: 5, justifyContent: 'center' }}>
                                     <Button
-                                        buttonStyle={{ borderRadius: 6, width: window.width * 0.3, paddingTop: 5}}
+                                        buttonStyle={{ borderRadius: 6, width: window.width * 0.3 }}
                                         backgroundColor={Colors.mintColor}
                                         fontWeight='bold'
                                         color='white'
                                         title='Done'
                                         onPress={this.commentDone} />
+                                    </View>
                                 </View>
                             </View>
                         </View>
