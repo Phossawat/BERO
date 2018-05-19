@@ -62,7 +62,7 @@ class SearchScreen extends React.Component {
     handleRequest = (item) => {
         this.props.requestFetchAccepted(item.uid)
         this.props.navigation.navigate('RequestView', {
-            item: item, save: "Save"
+            item: item, save: "Save", uid: item.uid
         })
     }
 
@@ -83,7 +83,7 @@ class SearchScreen extends React.Component {
                 <View style={{ paddingLeft: 20, paddingRight: 20 }}>
                     <FlatList
                         showsVerticalScrollIndicator={false}
-                        data={this.props.searchArray}
+                        data={this.props.searchRequest}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }}
                                 onPress={() => this.handleRequest(item)}>
@@ -105,11 +105,11 @@ class SearchScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     const { requestObject, keyNear, searchRequest } = state.requestForm;
-    const searchArray = _.map(searchRequest, (val, uid) => {
-        return { ...val, uid };
-    });
+    // const searchArray = _.map(searchRequest, (val, uid) => {
+    //     return { ...val, uid };
+    // });
 
-    return { requestObject, keyNear, searchArray };
+    return { requestObject, keyNear, searchRequest };
 };
 
 

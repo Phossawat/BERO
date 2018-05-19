@@ -139,7 +139,7 @@ class RewardViewScreen extends React.Component {
                         {this.props.navigation.state.params.item.topic}
                     </Text>
                     <View style={styles.expire}>
-                        <Text style={styles.textInButton}>{this.props.navigation.state.params.item.expire}</Text>
+                        <Text style={styles.textInButton}>หมดอายุ {this.props.navigation.state.params.item.expire}</Text>
                     </View>
                     <Text style={styles.condition}>
                         เงื่อนไข

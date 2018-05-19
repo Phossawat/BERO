@@ -212,7 +212,7 @@ class FormReqScreen extends React.Component {
                                 })}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity style={{ paddingTop: 5, paddingBottom: 10 }} onPress={() => this.userView(item)}>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20, }}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingBottom: 20, }}>
                                             <Image
                                                 style={styles.image}
                                                 resizeMode={"cover"}
